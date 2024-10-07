@@ -1,0 +1,20 @@
+
+.Server-Log,
+.Log,
+.Log:cell-selection,
+.Log:selected,
+.Log:focused {
+    -fx-background-color: black;
+}
+
+.normal_Log {
+    -fx-text-fill: white;
+}
+
+.sys_Log {
+    -fx-text-fill: green;
+}
+
+.error_Log {
+    -fx-text-fill: red;
+}
