@@ -19,3 +19,11 @@ public class ClientApp extends Application {
         sceneController = SceneController.getInstance(scene);
         sceneController.addScene(SceneName.Main);
         sceneController.addScene(SceneName.MailCompose);
+        stage.setTitle("ClientMailApp");
+        sceneController.switchTo(SceneName.Main);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+}
