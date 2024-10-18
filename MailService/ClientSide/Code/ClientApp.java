@@ -1,3 +1,5 @@
+package ClientSide.Code;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -5,6 +7,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class ClientApp extends Application {
+
+    //*** DESCRIZIONE VARIABILI ***
+    //Inizializzazione delle variabili globali per la gestione della grafica e locali per la gestione delle mail in ricezione
+    //*** FINE DESCRIZIONE ***
 
     public static Model model;
     public static SceneController sceneController;
@@ -14,6 +20,12 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        //*** DESCRIZIONE FUNZIONE ***
+        //Creazione dell'interfaccia grafica lato Client, Vengono inizializzate il Main e la MailCompose ma viene mostrata inizialmente solo il Main da dove si ha accesso alla lista di mail ricevute
+        //Dal Main si può accedere alla MailCompose che viene visualizzata successivamente all'intenzione di voler scrivere o rispondere ad una mail
+        //*** FINE DESCRIZIONE ***
+
         Scene scene = new Scene(new Pane(), 1280, 720);
         //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         sceneController = SceneController.getInstance(scene);
@@ -25,5 +37,7 @@ public class ClientApp extends Application {
         stage.show();
     }
 
-
+    @Override
+    public void stop(){
+    // Aggiungere cosa deve fare alla chiusura dell'app
 }
