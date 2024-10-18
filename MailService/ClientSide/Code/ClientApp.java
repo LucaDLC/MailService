@@ -14,7 +14,7 @@ public class ClientApp extends Application {
 
     public static Model model;
     public static SceneController sceneController;
-    private static ExecutorService appFX;
+    private static ExecutorService clientFX;
     private static ScheduledExecutorService fetchEmails;
     private static Date lastFetch = new Date(Long.MIN_VALUE);
 
@@ -29,10 +29,10 @@ public class ClientApp extends Application {
         Scene scene = new Scene(new Pane(), 1280, 720);
         //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         sceneController = SceneController.getInstance(scene);
-        sceneController.addScene(SceneName.Main);
-        sceneController.addScene(SceneName.MailCompose);
+        sceneController.addScene(SceneName.MAIN);
+        sceneController.addScene(SceneName.MAILCOMPOSE);
         stage.setTitle("ClientMailApp");
-        sceneController.switchTo(SceneName.Main);
+        sceneController.switchTo(SceneName.MAIN);
         stage.setScene(scene);
         stage.show();
     }
