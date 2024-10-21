@@ -23,7 +23,6 @@ public class ClientApp extends Application {
         //Dal Main si può accedere alla MailCompose che viene visualizzata successivamente all'intenzione di voler scrivere o rispondere ad una mail
 
         Scene scene = new Scene(new Pane(), 1280, 720);
-        //scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         sceneController = SceneController.getInstance(scene);
         sceneController.addScene(SceneName.MAIN);
         sceneController.addScene(SceneName.MAILCOMPOSE);
