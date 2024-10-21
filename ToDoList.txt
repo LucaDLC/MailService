@@ -1,0 +1,4 @@
+Step 1 -> Grafica Main
+Step 2 -> ClientAPP + Conoscenza Teorica
+	Step 2.1 -> Costruire Lista con la Struttura Observer più Delete, Reply e Reply All
+Step 3 -> 
