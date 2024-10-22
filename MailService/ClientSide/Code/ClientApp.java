@@ -35,4 +35,15 @@ public class ClientApp extends Application {
     @Override
     public void stop(){
     // Aggiungere cosa deve fare alla chiusura dell'app
-}
+    }
+
+    public static void main(String[] args) {
+        model = Model.getInstance();
+        appFX = Executors.newSingleThreadExecutor();
+        fetchEmails = Executors.newSingleThreadScheduledExecutor();
+        Client client = model.getClient();
+
+        //Start JavaFX app using method reference
+        appFX.execute(Application::launch);
+
+    }
