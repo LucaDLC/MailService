@@ -1,4 +1,4 @@
-package ClientSide.Code;
+package mailservice.clientside;
 
 import javafx.application.Application;
 import javafx.application.Platform;
