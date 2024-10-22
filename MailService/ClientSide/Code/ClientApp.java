@@ -36,6 +36,7 @@ public class ClientApp extends Application {
     public void stop(){
     // Aggiungere cosa deve fare alla chiusura dell'app
     }
+}
 
     public static void main(String[] args) {
         model = Model.getInstance();
@@ -47,3 +48,4 @@ public class ClientApp extends Application {
         appFX.execute(Application::launch);
 
     }
+    
