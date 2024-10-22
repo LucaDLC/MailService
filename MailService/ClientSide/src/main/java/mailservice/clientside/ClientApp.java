@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.concurrent.Executors;
+
 public class ClientApp extends Application {
 
     //Inizializzazione delle variabili globali per la gestione della grafica e locali per la gestione delle mail in ricezione
