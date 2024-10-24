@@ -20,7 +20,7 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         //start(Stage stage) è il metodo principale di un'applicazione JavaFX, che viene chiamato quando l'applicazione viene avviata
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("Main.fxml")); //crea un oggetto per carica il file FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("/mailservice/clientside/Main.fxml")); //crea un oggetto per carica il file FXML
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720); //crea la scena con il contenuto del file FXML
         stage.setTitle("ClientSide - ClientApp"); //imposta il titolo della finestra
         stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra

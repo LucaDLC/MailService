@@ -11,39 +11,40 @@ public class ConfigManager {
     Una volta chiamato il ConfigManager.getInstance() posso usare il metodo readProperty(Nome Proprietà) per leggere le proprietà
     Essendo un Singleton, le proprietà vengono caricate una sola volta e poi restano in memoria e ConfigManager.getInstance() restituisce sempre la stessa istanza
     */
-    private final Properties prop;
+    private final Properties prop; //proprietà del file di configurazione
 
     private ConfigManager() {
-        prop = new Properties();
-        final File path = getDir();
+        prop = new Properties();    //inizializzo le proprietà
+        final File path = getDir(); //ottengo il file di configurazione
 
         try{
-            if (!path.exists()) {
-                prop.setProperty("Client.Email", "CHANGE_ME@EXAMPLE.IT");
-                prop.setProperty("Client.ServerHost", "127.0.0.1");
-                prop.setProperty("Client.ServerPort", "42069");
-                prop.setProperty("Client.Fetch", "5");
+            if (!path.exists()) { //se il file non esiste lo creo
+                //definisce alcune proprietà di default
+                prop.setProperty("Client.Email", "CHANGE_ME@EXAMPLE.IT");   //imposto la mail
+                prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
+                prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
+                prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
 
-
+                //crea il file e salvare le proprietà
                 prop.store(new FileOutputStream(path),  null);
             } else {
-                prop.load(new FileInputStream(path));
+                prop.load(new FileInputStream(path));   //se esiste, viene letto il file di configurazione per recuperare le impostazioni già salvate
             }
         } catch (IOException e){
-            e.printStackTrace();
+            e.printStackTrace();    //stampo errore se qualcosa va storto
         }
     }
 
     public static ConfigManager getInstance(){
         return new ConfigManager();
-    }
+    }   //restituisce un'unica istanza del ConfigManager, questo metodo è ciò che permette di usare il Singleton Pattern
 
     public String readProperty (String propName){
         return prop.getProperty(propName);
-    }
+    }   //restituisce la proprietà richiesta
 
     private File getDir() {
-        String uri = new File("").getAbsolutePath() + "/ClienSide/src/main/user.properties";
-        return new File(uri);
+        String uri = new File("").getAbsolutePath() + "/ClienSide/src/main/user.properties";    //ottengo il percorso del file
+        return new File(uri);   //restituisco il persorso del file di configurazione
     }
 }

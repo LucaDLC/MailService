@@ -62,7 +62,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>mailservice.clientside/mailservice.clientside.HelloApplication</mainClass>
+              <mainClass>mailservice.clientside/mailservice.clientside.ClientApp</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
