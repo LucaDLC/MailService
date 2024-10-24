@@ -4,25 +4,19 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientApp extends Application {
 
-    //Inizializzazione delle variabili globali per la gestione della grafica e locali per la gestione delle mail in ricezione
-
-
-    /*public static Model model;
-    public static SceneController sceneController;
     private static ExecutorService clientFX;
     private static ScheduledExecutorService fetchEmails;
-    private static Date lastFetch = new Date(Long.MIN_VALUE);
 
-     */
-    
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("Main.fxml"));
@@ -30,11 +24,30 @@ public class ClientApp extends Application {
         stage.setTitle("ClientSide - ClientApp");
         stage.setScene(scene);
         stage.show();
+
+        // Initialize services
+        clientFX = Executors.newSingleThreadExecutor();
+        fetchEmails = Executors.newScheduledThreadPool(1);
+        fetchEmails.scheduleAtFixedRate(() -> {
+            // Fetch emails logic
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
+    @Override
     public void stop() {
-        //clientFX.shutdown();
-        //fetchEmails.shutdown();
+        clientFX.shutdown();
+        fetchEmails.shutdown();
+        try {
+            if (!clientFX.awaitTermination(5, TimeUnit.SECONDS)) {
+                clientFX.shutdownNow();
+            }
+            if (!fetchEmails.awaitTermination(5, TimeUnit.SECONDS)) {
+                fetchEmails.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            clientFX.shutdownNow();
+            fetchEmails.shutdownNow();
+        }
         Platform.exit();
     }
 
@@ -42,4 +55,3 @@ public class ClientApp extends Application {
         launch();
     }
 }
-    

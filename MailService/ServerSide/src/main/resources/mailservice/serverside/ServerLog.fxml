@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projprogiii.servermail.controller.ServerController">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx:controller="mailservice.serverside.Controller.ServerController">
    <ListView fx:id="ServerLog" prefHeight="640.0" prefWidth="1040.0" styleClass="Server-Log" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0" />
    <Label layoutX="60.0" layoutY="12.0" text="ServerSide">
       <font>

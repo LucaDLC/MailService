@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane prefHeight="615.0" prefWidth="617.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.projprogiii.clientmail.controller.ComposeController">
+<AnchorPane prefHeight="615.0" prefWidth="617.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
     <Label layoutX="5.0" layoutY="23.0" text="Sender:" AnchorPane.leftAnchor="5.0" />
     <Label layoutX="5.0" layoutY="65.0" text="Recipient:" AnchorPane.leftAnchor="5.0" />
     <Label layoutX="5.0" layoutY="111.0" prefHeight="17.0" prefWidth="46.0" text="Object:" AnchorPane.leftAnchor="5.0" />
