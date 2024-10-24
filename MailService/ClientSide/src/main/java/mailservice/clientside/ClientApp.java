@@ -1,36 +1,37 @@
-package mailservice.clientside;
+package mailservice.clientside; //package che contiene le classi per il client
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.application.Application; //classe base per tutte le applicazioni JavaFX
+import javafx.application.Platform; //permette di accedere a metodi di utilità per le applicazioni JavaFX
+import javafx.fxml.FXMLLoader; //carica file FXML, che descrivono l'interfaccia utente di un'applicazione JavaFX
+import javafx.scene.Scene; //contenitore per tutti i contenuti di un'interfaccia utente JavaFX
+import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazione JavaFX
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService; //interfaccia che fornisce metodi per gestire un pool di thread
+import java.util.concurrent.Executors; //classe che fornisce metodi per creare pool di thread
+import java.util.concurrent.ScheduledExecutorService; //interfaccia che estende ExecutorService e fornisce metodi per eseguire attività in modo periodico
+import java.util.concurrent.TimeUnit; //classe che fornisce metodi per convertire il tempo da un'unità a un'altra
 
 public class ClientApp extends Application {
 
-    private static ExecutorService clientFX;
-    private static ScheduledExecutorService fetchEmails;
+    private static ExecutorService clientFX; //pool di thread per l'interfaccia utente
+    private static ScheduledExecutorService fetchEmails; //pool di thread per il fetch delle email
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("Main.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-        stage.setTitle("ClientSide - ClientApp");
-        stage.setScene(scene);
+        //start(Stage stage) è il metodo principale di un'applicazione JavaFX, che viene chiamato quando l'applicazione viene avviata
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("Main.fxml")); //crea un oggetto per carica il file FXML
+        Scene scene = new Scene(fxmlLoader.load(), 1280, 720); //crea la scena con il contenuto del file FXML
+        stage.setTitle("ClientSide - ClientApp"); //imposta il titolo della finestra
+        stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra
         stage.show();
 
         // Initialize services
-        clientFX = Executors.newSingleThreadExecutor();
-        fetchEmails = Executors.newScheduledThreadPool(1);
+        clientFX = Executors.newSingleThreadExecutor(); //crea un pool di thread con un solo thread
+        fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
         fetchEmails.scheduleAtFixedRate(() -> {
             // Fetch emails logic
-        }, 0, 1, TimeUnit.MINUTES);
+        }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
     }
 
     @Override
@@ -39,19 +40,19 @@ public class ClientApp extends Application {
         fetchEmails.shutdown();
         try {
             if (!clientFX.awaitTermination(5, TimeUnit.SECONDS)) {
-                clientFX.shutdownNow();
+                clientFX.shutdownNow(); //se entro 5 secondi non termina, interrompe l'esecuzione dei thread
             }
             if (!fetchEmails.awaitTermination(5, TimeUnit.SECONDS)) {
-                fetchEmails.shutdownNow();
+                fetchEmails.shutdownNow(); //se entro 5 secondi non termina, interrompe l'esecuzione dei thread
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { //se awaitTermination viene interrotto
             clientFX.shutdownNow();
             fetchEmails.shutdownNow();
         }
-        Platform.exit();
+        Platform.exit(); //termina la piattaforma JavaFX e chiude ccompletamente l'applicazione
     }
 
     public static void main(String[] args) {
         launch();
-    }
+    } //avvia l'applicazione
 }
