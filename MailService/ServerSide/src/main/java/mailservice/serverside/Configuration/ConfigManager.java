@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class ConfigManager {
-    /* SPIEGAZIONE CONFIGMANAGER
+    /* SPIEGAZIONE CONFIG MANAGER
     Questa Classe è usata per inizializzare e leggere le proprietà del ServerSide
     Creo un file di configurazione se non esiste, altrimenti leggo le proprietà dal file
     Volendo solo un istanza di questa classe, ho usato il Singleton Pattern mettendo il costruttore privato e usando un getInstance per ottenere l'istanza

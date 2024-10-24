@@ -4,11 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="" />
+    <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/ConfigManager.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -26,15 +34,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/LucaDLC/Documents/GitHub/MailService/MailService",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/LucaDLC/Documents/GitHub/MailService/MailService&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -45,6 +55,8 @@
       <updated>1729619462621</updated>
       <workItem from="1729619467209" duration="103000" />
       <workItem from="1729620045764" duration="67000" />
+      <workItem from="1729762190341" duration="277000" />
+      <workItem from="1729762485245" duration="156000" />
     </task>
     <servers />
   </component>
