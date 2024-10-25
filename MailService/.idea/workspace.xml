@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
+      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/resources/mailservice/clientside/Main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/resources/mailservice/clientside/Main.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.css" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,12 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.ServerApp">
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="mailservice.clientside.Controller" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.ClientApp">
     <configuration name="ClientApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="mailservice.clientside.ClientApp" />
       <module name="ClientSide" />
@@ -94,8 +99,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ServerApp" />
         <item itemvalue="Application.ClientApp" />
+        <item itemvalue="Application.ServerApp" />
       </list>
     </recent_temporary>
   </component>
@@ -116,6 +121,8 @@
       <workItem from="1729845378114" duration="106000" />
       <workItem from="1729845501646" duration="1068000" />
       <workItem from="1729858758579" duration="828000" />
+      <workItem from="1729859854330" duration="861000" />
+      <workItem from="1729860978484" duration="806000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

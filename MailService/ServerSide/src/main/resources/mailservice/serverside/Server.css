@@ -7,11 +7,11 @@
     -fx-background-color: black;
 }
 
-.normal_Log {
+.info_Log {
     -fx-text-fill: white;
 }
 
-.sys_Log {
+.system_Log {
     -fx-text-fill: green;
 }
 

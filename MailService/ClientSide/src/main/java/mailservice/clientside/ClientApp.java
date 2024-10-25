@@ -39,11 +39,11 @@ public class ClientApp extends Application {
         clientFX.shutdown();
         fetchEmails.shutdown();
         try {
-            if (!clientFX.awaitTermination(5, TimeUnit.SECONDS)) {
-                clientFX.shutdownNow(); //se entro 5 secondi non termina, interrompe l'esecuzione dei thread
+            if (!clientFX.awaitTermination(3, TimeUnit.SECONDS)) {
+                clientFX.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
             }
-            if (!fetchEmails.awaitTermination(5, TimeUnit.SECONDS)) {
-                fetchEmails.shutdownNow(); //se entro 5 secondi non termina, interrompe l'esecuzione dei thread
+            if (!fetchEmails.awaitTermination(3, TimeUnit.SECONDS)) {
+                fetchEmails.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
             }
         } catch (InterruptedException e) { //se awaitTermination viene interrotto
             clientFX.shutdownNow();
