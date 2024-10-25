@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +114,8 @@
       <workItem from="1729762695922" duration="1456000" />
       <workItem from="1729764555976" duration="1792000" />
       <workItem from="1729845378114" duration="106000" />
-      <workItem from="1729845501646" duration="929000" />
+      <workItem from="1729845501646" duration="1068000" />
+      <workItem from="1729858758579" duration="828000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />
@@ -141,5 +145,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Main Improved, but Not Working ..." />
     <option name="LAST_COMMIT_MESSAGE" value="Main Improved, but Not Working ..." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IllegalAccessException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

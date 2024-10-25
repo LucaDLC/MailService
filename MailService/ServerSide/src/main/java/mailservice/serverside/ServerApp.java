@@ -11,9 +11,9 @@ import java.io.IOException;
 public class ServerApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(mailservice.serverside.HelloApplication.class.getResource("ServerLog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(mailservice.serverside.ServerApp.class.getResource("ServerLog.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        stage.setTitle("ServerSide - Log");
         stage.setScene(scene);
         stage.show();
     }
