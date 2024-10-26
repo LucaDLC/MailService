@@ -1,16 +1,45 @@
 package mailservice.clientside.Controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.fxml.FXML; //importo la classe FXML
+import javafx.scene.control.Label;  //importo la classe Label
+import javafx.scene.web.WebView;    //importo la classe WebView, che visualizza contenuti web
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
     @FXML   // questa annotazione indica che la variabile o il metodo è associato a un file .fxml
-    private Label welcomeText; //Label è un componente grafico che visualizza un testo non modificabile
-
-    //gestione del bottone tramite l'annotazione @FXML
+    private Label fromLbl;  //serve a visualizzare il mittente dell'email
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!"); //quando il bottone viene premuto, il testo della Label welcometext viene cambiato in "Welcome to JavaFX Application!"
-    } //metodo che viene chiamato quando si preme il bottone
+    private Label subjectLabel; //serve a visualizzare l'oggetto dell'email
+    @FXML
+    private Label toLbl; //serve a visualizzare il destinatario dell'email
+    @FXML
+    private Label subjectLbl; //serve a visualizzare l'oggetto dell'email
+    @FXML
+    private Label DateLbl; //serve a visualizzare la data dell'email
+    @FXML
+    private WebView emailContentTxt; //serve a visualizzare il contenuto dell'email
+
+    //implementazione delle azioni da eseguire quando si preme il bottone
+    @FXML
+    //metodo che viene chiamato quando si preme il bottone
+    protected void onComposeButtonClick() {
+
+    }
+    @FXML
+    protected void onDeleteButtonClick() {
+
+    }
+    @FXML
+    protected void onForwardButtonClick() {
+
+    }
+    @FXML
+    protected void onReplyButtonClick() {
+
+    }
+    @FXML
+    protected void onReplyAllButtonClick() {
+
+    }
+
 }
