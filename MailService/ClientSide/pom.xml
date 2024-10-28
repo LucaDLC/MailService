@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.example</groupId>
+  <groupId>MailService</groupId>
   <artifactId>ClientSide</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>ClientSide</name>
@@ -23,11 +23,6 @@
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
       <version>18.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.dlsc.formsfx</groupId>
-      <artifactId>formsfx-core</artifactId>
-      <version>11.4.2</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -74,7 +69,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.example.ClientSide/mailservice.clientside.ClientApp</mainClass>
+              <mainClass>mailservice.clientside.ClientApp</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

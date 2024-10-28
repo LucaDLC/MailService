@@ -5,6 +5,6 @@ module mailservice.clientside { //modulo che contiene le classi per il client
 
     requires org.kordamp.bootstrapfx.core; //modulo richiesto per l'interfaccia utente
 
-    opens mailservice.clientside to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
+    opens mailservice.clientside.Controller to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
     exports mailservice.clientside; //esporta il package per l'utilizzo da parte di altri moduli
 }
