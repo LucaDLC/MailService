@@ -26,19 +26,41 @@ public class MainController {
 
     }
     @FXML
+    protected void onComposeButtonAction() {
+
+    }
+    @FXML
     protected void onDeleteButtonClick() {
 
     }
+
+    @FXML
+    protected void onDeleteButtonAction() {
+
+    }
+
     @FXML
     protected void onForwardButtonClick() {
 
     }
+
+    @FXML
+    protected void onForwardButtonAction() {
+
+    }
+
     @FXML
     protected void onReplyButtonClick() {
 
     }
+
     @FXML
-    protected void onReplyAllButtonClick() {
+    protected void onReplyButtonAction() {
+
+    }
+
+    @FXML
+    protected void onReplyAllButtonAction() {
 
     }
 
