@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit; //classe che fornisce metodi per convertir
 
 public class ClientApp extends Application {
 
-    private static ExecutorService clientFX; //pool di thread per l'interfaccia utente
+
     private static ScheduledExecutorService fetchEmails; //pool di thread per il fetch delle email
 
     @Override
@@ -26,8 +26,7 @@ public class ClientApp extends Application {
         stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra
         stage.show();
 
-        // Initialize services
-        clientFX = Executors.newSingleThreadExecutor(); //crea un pool di thread con un solo thread
+        // Initialize service
         fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
         fetchEmails.scheduleAtFixedRate(() -> {
             // Fetch emails logic
@@ -36,17 +35,12 @@ public class ClientApp extends Application {
 
     @Override
     public void stop() {
-        clientFX.shutdown();
         fetchEmails.shutdown();
         try {
-            if (!clientFX.awaitTermination(3, TimeUnit.SECONDS)) {
-                clientFX.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
-            }
             if (!fetchEmails.awaitTermination(3, TimeUnit.SECONDS)) {
                 fetchEmails.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
             }
         } catch (InterruptedException e) { //se awaitTermination viene interrotto
-            clientFX.shutdownNow();
             fetchEmails.shutdownNow();
         }
         Platform.exit(); //termina la piattaforma JavaFX e chiude ccompletamente l'applicazione

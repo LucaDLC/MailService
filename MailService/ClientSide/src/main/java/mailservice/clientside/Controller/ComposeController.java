@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 
-public class ComposeController {
+public class ComposeController{
     //collegamento con la GUI tramite l'annotazione @FXML
     @FXML
     private Label SenderFieldID; //serve a visualizzare il mittente dell'email
@@ -20,6 +20,10 @@ public class ComposeController {
     private Button CancelFieldButton; //serve a visualizzare il bottone per cancellare i campi della email
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
+    @FXML
+    private TextFlow DangerAlert;
+    @FXML
+    private TextFlow SuccessAlert;
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
@@ -45,4 +49,11 @@ public class ComposeController {
 
     }
 
+    public TextFlow getSuccessAlert() {
+        return null;
+    }
+
+    public TextFlow getDangerAlert() {
+        return null;
+    }
 }

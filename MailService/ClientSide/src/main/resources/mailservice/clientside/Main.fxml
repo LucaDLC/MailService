@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="722.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="722.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
    <top>
       <HBox prefHeight="71.0" prefWidth="722.0" BorderPane.alignment="CENTER">
          <ImageView fitHeight="51.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
@@ -37,7 +37,7 @@
                <Insets left="50.0" />
             </HBox.margin>
             <children>
-               <TextFlow fx:id="dangerAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
+               <TextFlow fx:id="DangerAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" />
                </TextFlow>
                <TextFlow fx:id="successAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
