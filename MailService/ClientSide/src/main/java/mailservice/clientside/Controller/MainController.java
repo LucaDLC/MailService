@@ -1,9 +1,15 @@
 package mailservice.clientside.Controller;
 
 import javafx.fxml.FXML; //importo la classe FXML
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
 import javafx.scene.web.WebView;    //importo la classe WebView, che visualizza contenuti web
+import javafx.stage.Stage;
+import mailservice.clientside.ClientApp;
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -24,8 +30,8 @@ public class MainController {
 
 
     //implementazione delle azioni da eseguire quando si preme il bottone
-    @FXML
     //metodo che viene chiamato quando si preme il bottone
+    @FXML
     protected void onComposeButtonClick() {
 
     }
@@ -37,32 +43,26 @@ public class MainController {
     protected void onDeleteButtonClick() {
 
     }
-
     @FXML
     protected void onDeleteButtonAction() {
 
     }
-
     @FXML
     protected void onForwardButtonClick() {
 
     }
-
     @FXML
     protected void onForwardButtonAction() {
 
     }
-
     @FXML
     protected void onReplyButtonClick() {
 
     }
-
     @FXML
     protected void onReplyButtonAction() {
 
     }
-
     @FXML
     protected void onReplyAllButtonAction() {
 
