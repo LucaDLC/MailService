@@ -1,16 +1,48 @@
 package mailservice.clientside.Controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.TextFlow;
+import javafx.scene.web.HTMLEditor;
 
 public class ComposeController {
     //collegamento con la GUI tramite l'annotazione @FXML
-    @FXML   // questa annotazione indica che la variabile o il metodo è associato a un file .fxml
-    private Label welcomeText; //Label è un componente grafico che visualizza un testo non modificabile
-
-    //gestione del bottone tramite l'annotazione @FXML
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!"); //quando il bottone viene premuto, il testo della Label welcometext viene cambiato in "Welcome to JavaFX Application!"
-    } //metodo che viene chiamato quando si preme il bottone
+    private Label SenderFieldID; //serve a visualizzare il mittente dell'email
+    @FXML
+    private Label RecipientFieldID; //serve a visualizzare il destinatario dell'email
+    @FXML
+    private Label ObjectFieldID; //serve a visualizzare l'oggetto dell'email
+    @FXML
+    private Button SendMailButton; //serve a visualizzare il bottone per inviare l'email
+    @FXML
+    private Button CancelFieldButton; //serve a visualizzare il bottone per cancellare i campi della email
+    @FXML
+    private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
+
+    @FXML
+    //metodo che viene chiamato quando si preme il bottone
+    protected void onSendMailButtonClick() {
+
+    }
+
+    @FXML
+    //metodo che viene chiamato quando si preme il bottone
+    protected void onSendMailButtonAction() {
+
+    }
+
+    @FXML
+    //metodo che viene chiamato quando si preme il bottone
+    protected void onCancelFieldButtonClick() {
+
+    }
+
+    @FXML
+    //metodo che viene chiamato quando si preme il bottone
+    protected void onCancelFieldButtonAction() {
+
+    }
+
 }

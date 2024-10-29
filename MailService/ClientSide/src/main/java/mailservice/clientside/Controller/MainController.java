@@ -22,6 +22,7 @@ public class MainController {
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
 
+
     //implementazione delle azioni da eseguire quando si preme il bottone
     @FXML
     //metodo che viene chiamato quando si preme il bottone
