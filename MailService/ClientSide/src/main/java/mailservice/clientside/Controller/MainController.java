@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;    //importo la classe WebView, che visualizza contenuti web
 import javafx.stage.Modality;
 import javafx.stage.Stage;
