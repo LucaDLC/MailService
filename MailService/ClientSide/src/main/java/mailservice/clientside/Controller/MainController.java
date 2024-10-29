@@ -7,11 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;    //importo la classe WebView, che visualizza contenuti web
 import javafx.stage.Stage;
 import mailservice.clientside.ClientApp;
 
-public class MainController {
+public class MainController{
     //collegamento con la GUI tramite l'annotazione @FXML
     @FXML   // questa annotazione indica che la variabile o il metodo è associato a un file .fxml
     private Label SenderLabel;  //serve a visualizzare il mittente dell'email
@@ -27,6 +28,10 @@ public class MainController {
     private ListView MailList; //serve a visualizzare la lista delle email
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
+    @FXML
+    private TextFlow DangerAlert;
+    @FXML
+    private TextFlow SuccessAlert;
 
 
     //implementazione delle azioni da eseguire quando si preme il bottone
@@ -68,4 +73,11 @@ public class MainController {
 
     }
 
+    public TextFlow getSuccessAlert() {
+        return null;
+    }
+
+    public TextFlow getDangerAlert() {
+        return null;
+    }
 }
