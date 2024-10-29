@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="722.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="722.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
    <top>
       <HBox prefHeight="71.0" prefWidth="722.0" BorderPane.alignment="CENTER">
          <ImageView fitHeight="51.0" fitWidth="52.0" pickOnBounds="true" preserveRatio="true">
@@ -62,7 +62,7 @@
                   </Button>
                </children>
             </HBox>
-            <ListView fx:id="emailsLst" prefHeight="432.0" prefWidth="261.0" />
+            <ListView fx:id="MailLIst" prefHeight="432.0" prefWidth="261.0" />
             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="77.0" prefWidth="261.0">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
@@ -119,13 +119,13 @@
                   <Label text="To:" GridPane.rowIndex="1" />
                   <Label text="Object:" GridPane.rowIndex="2" />
                   <Label text="Date: " GridPane.rowIndex="3" />
-                  <Label fx:id="fromLbl" text="Sender" GridPane.columnIndex="1" />
-                  <Label fx:id="toLbl" text="Receiver/s" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label fx:id="subjectLbl" text="Object" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label fx:id="DateLbl" text="Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label fx:id="SenderLabel" text="Sender" GridPane.columnIndex="1" />
+                  <Label fx:id="ReceiverLabel" text="Receiver/s" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="ObjectLabel" text="Object" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="DateLabel" text="Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </GridPane>
                <AnchorPane>
-                  <WebView fx:id="emailContentTxt" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0" />
+                  <WebView fx:id="MailContent" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0" />
                </AnchorPane>
             </VBox>
          </StackPane>
