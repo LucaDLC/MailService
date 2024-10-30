@@ -94,11 +94,17 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        SenderFieldID.clear(); //pulisco il campo mittente
-        RecipientFieldID.clear(); //pulisco il campo destinatario
-        ObjectFieldID.clear(); //pulisco il campo oggetto
-        MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email
-        showSuccessAlert("Fields cleared successfully");
+        if(sender.isEmpty() && recipient.isEmpty()&&object.isEmpty()&&mailBody.isEmpty()){
+            //se tutti i campi sono vuoti mostro un messaggio di errore
+            showDangerAlert("Fields are already empty");
+        } else {
+            //altrimenti pulisco i campi e mostro un messaggio di successo
+            SenderFieldID.clear(); //pulisco il campo mittente
+            RecipientFieldID.clear(); //pulisco il campo destinatario
+            ObjectFieldID.clear(); //pulisco il campo oggetto
+            MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email
+            showSuccessAlert("Fields cleared successfully");
+        }
     }
 
     @FXML
