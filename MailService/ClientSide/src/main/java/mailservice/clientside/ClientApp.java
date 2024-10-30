@@ -50,3 +50,7 @@ public class ClientApp extends Application {
         launch();
     } //avvia l'applicazione
 }
+
+
+
+//MANCA STRUTTURA DI FETCH EMAILS
