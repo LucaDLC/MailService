@@ -2,17 +2,15 @@ package mailservice.clientside.Controller;
 
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.web.WebView;    //importo la classe WebView, che visualizza contenuti web
+import javafx.scene.web.WebView;//importo la classe WebView, che visualizza contenuti web
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mailservice.clientside.ClientApp;
-
 import java.io.IOException;
 
 public class MainController {
@@ -31,8 +29,7 @@ public class MainController {
     private ListView<String> MailList; //serve a visualizzare la lista delle email
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
-    @FXML
-    private Button ComposeButton;
+
 
     //implementazione delle azioni da eseguire quando si preme il bottone
     //metodo che viene chiamato quando si preme il bottone
@@ -52,6 +49,7 @@ public class MainController {
         }catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     @FXML
     //handler per l'azione del bottone Compose
@@ -69,11 +67,32 @@ public class MainController {
             System.out.println("No Email selected to delete");
         }
     }
-    //handler per l'azione del bottone Delete
     @FXML
+    //handler per l'azione del bottone Delete
     protected void onDeleteButtonAction() {
         System.out.println("Delete button action triggered.");
         onDeleteButtonClick();
+
+    }
+    @FXML
+    protected void onForwardButtonClick() {
+
+    }
+    @FXML
+    protected void onForwardButtonAction() {
+
+    }
+    @FXML
+    protected void onReplyButtonClick() {
+
+    }
+    @FXML
+    protected void onReplyButtonAction() {
+
+    }
+    @FXML
+    protected void onReplyAllButtonAction() {
+
     }
 
 }
