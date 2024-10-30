@@ -3,17 +3,18 @@ package mailservice.clientside.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 
 public class ComposeController{
     //collegamento con la GUI tramite l'annotazione @FXML
     @FXML
-    private Label SenderFieldID; //serve a visualizzare il mittente dell'email
+    private TextField SenderFieldID; //serve a visualizzare il mittente dell'email
     @FXML
-    private Label RecipientFieldID; //serve a visualizzare il destinatario dell'email
+    private TextField RecipientFieldID; //serve a visualizzare il destinatario dell'email
     @FXML
-    private Label ObjectFieldID; //serve a visualizzare l'oggetto dell'email
+    private TextField ObjectFieldID; //serve a visualizzare l'oggetto dell'email
     @FXML
     private Button SendMailButton; //serve a visualizzare il bottone per inviare l'email
     @FXML

@@ -1,5 +1,6 @@
 package mailservice.clientside.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -37,16 +38,17 @@ public class MainController {
     protected void onComposeButtonClick() {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
-            Parent composeView = loader.load();
-            Scene composeScene = new Scene(composeView);
-            Stage composeStage = new Stage();
+            Parent composeView = loader.load(); //carico il file FXML
+            Scene composeScene = new Scene(composeView); //creo una nuova scena
+            Stage composeStage = new Stage(); //creo una nuova finestra
 
-            composeStage.setScene(composeScene);
+            composeStage.setScene(composeScene); //imposto la scena nella finestra
             composeStage.setTitle("Compose your Email");
             composeStage.initModality(Modality.APPLICATION_MODAL); //serve per permettere all'utente di interagire con questa finestra prima di tornare alla finestra principale
             composeStage.show();
 
         }catch (IOException e) {
+            System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -59,19 +61,11 @@ public class MainController {
     }
     @FXML
     protected void onDeleteButtonClick() {
-        int selectedIndex =MailList.getSelectionModel().getSelectedIndex(); //
-        if(selectedIndex>=0){//se >=0 vuol dire che la mail è stata selezionata
-            MailList.getItems().remove(selectedIndex);
-            System.out.println("Email deleted from the list");
-        }else{
-            System.out.println("No Email selected to delete");
-        }
+
     }
     @FXML
     //handler per l'azione del bottone Delete
     protected void onDeleteButtonAction() {
-        System.out.println("Delete button action triggered.");
-        onDeleteButtonClick();
 
     }
     @FXML
