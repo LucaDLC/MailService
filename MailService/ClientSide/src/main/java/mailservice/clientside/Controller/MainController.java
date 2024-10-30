@@ -1,5 +1,6 @@
 package mailservice.clientside.Controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
@@ -61,12 +62,21 @@ public class MainController {
     }
     @FXML
     protected void onDeleteButtonClick() {
-
+        ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
+        //An ObservableList is a special type of list that allows listeners to track changes to the list, such as additions, removals, or updates to its elements
+        if(!selectedMails.isEmpty()) {
+            MailList.getItems().removeAll(selectedMails);
+            System.out.println("Emails deleted successfully");
+        }
+        else{
+            System.out.println("No email selected");
+        }
     }
     @FXML
     //handler per l'azione del bottone Delete
     protected void onDeleteButtonAction() {
-
+        System.out.println("Deleting Email...");
+        onDeleteButtonClick();
     }
     @FXML
     protected void onForwardButtonClick() {
