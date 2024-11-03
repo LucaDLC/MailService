@@ -94,7 +94,7 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(sender.isEmpty() && recipient.isEmpty()&&object.isEmpty()&&mailBody.isEmpty()){
+        if(sender.isEmpty() && recipient.isEmpty() && object.isEmpty() && mailBody.isEmpty()){
             //se tutti i campi sono vuoti mostro un messaggio di errore
             showDangerAlert("Fields are already empty");
         } else {

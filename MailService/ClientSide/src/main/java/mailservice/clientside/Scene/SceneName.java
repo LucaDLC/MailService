@@ -1,4 +1,4 @@
-package com.projprogiii.clientmail.Scene;
+package mailservice.clientside.Scene;
 
 public enum SceneName {
     MAIN,
