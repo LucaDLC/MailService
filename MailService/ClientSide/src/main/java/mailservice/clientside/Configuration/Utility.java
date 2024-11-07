@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class Utility {
 
     public static boolean validateEmail(String email){
-        return Pattern.matches("^(.+?)@rama.it", email);
+        return Pattern.matches("^[a-zA-Z0-9._%+-]+@rama.it$", email);
     }
 
     public static String formatDate(Date date){

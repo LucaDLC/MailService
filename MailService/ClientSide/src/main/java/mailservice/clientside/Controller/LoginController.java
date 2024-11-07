@@ -3,6 +3,7 @@ package mailservice.clientside.Controller;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -33,7 +34,14 @@ public class LoginController {
     @FXML
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText();
-        if (Utility.validateEmail(login) && !login.isEmpty()) {
+
+        if(login.contains("@rama.it")){
+            //se l'email contiene @rama.it la sostituisco con stringa vuota
+            login = login.replace("@rama.it", "").trim(); //trim() rimuove  il dominio se è presente
+        }
+        login += "@rama.it"; //aggiungo il dominio se manca
+
+        if (Utility.validateEmail(login)) {
             showSuccessAlert("Login successful");
             try{
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
@@ -42,13 +50,17 @@ public class LoginController {
 
                 composeStage.setScene(composeScene); //imposto la scena nella finestra
                 composeStage.setTitle("Compose your Email");
-                composeStage.initModality(Modality.APPLICATION_MODAL); //serve per permettere all'utente di interagire con questa finestra prima di tornare alla finestra principale
                 composeStage.show();
+
+                Stage actualStage = (Stage) LoginButton.getScene().getWindow(); //crea un oggetto Stage per la finestra attuale
+                actualStage.close(); //chiude la finestra attuale
 
             }catch (IOException e) {
                 System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
                 e.printStackTrace();
+                showDangerAlert("Error loading the Main.fxml file");
             }
+
         } else {
             showDangerAlert("Invalid email");
         }

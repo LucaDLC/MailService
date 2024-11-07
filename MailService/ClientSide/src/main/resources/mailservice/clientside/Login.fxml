@@ -23,7 +23,7 @@
          <Text text="" wrappingWidth="249.82421875" />
       </children>
    </TextFlow>
-   <TextFlow fx:id="successAlertLogin" layoutX="22.0" layoutY="97.0" prefHeight="26.0" prefWidth="184.0" textAlignment="CENTER" visible="false">
+   <TextFlow fx:id="successAlert" layoutX="22.0" layoutY="97.0" prefHeight="26.0" prefWidth="184.0" textAlignment="CENTER" visible="false">
       <children>
          <Text text="" wrappingWidth="249.82421875" />
       </children>

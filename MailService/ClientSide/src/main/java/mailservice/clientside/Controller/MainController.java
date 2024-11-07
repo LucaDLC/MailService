@@ -45,7 +45,7 @@ public class MainController {
 
             composeStage.setScene(composeScene); //imposto la scena nella finestra
             composeStage.setTitle("Compose your Email");
-            composeStage.initModality(Modality.APPLICATION_MODAL); //serve per permettere all'utente di interagire con questa finestra prima di tornare alla finestra principale
+            composeStage.initModality(Modality.NONE); //consente di interagire con entrambe le finestre
             composeStage.show();
 
         }catch (IOException e) {
@@ -59,6 +59,7 @@ public class MainController {
     protected void onComposeButtonAction() {
         System.out.println("Composing a new Email...");
     }
+
     @FXML
     protected void onDeleteButtonClick() {
         ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
