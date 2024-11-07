@@ -5,15 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
+      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/Utility.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/resources/mailservice/clientside/Main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/resources/mailservice/clientside/Main.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -42,12 +52,16 @@
   &quot;associatedIndex&quot;: 6
 }</component>
   <component name="ProjectId" id="2nnqzUrrFsdMPbLUDysQw7y6ma9" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.ClientApp.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -55,7 +69,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/LucaDLC/Documents/GitHub/MailService/MailService",
+    "last_opened_file_path": "C:/Users/LucaDLC/Desktop/MailService/MailService",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -132,6 +146,7 @@
       <workItem from="1729859854330" duration="861000" />
       <workItem from="1729860978484" duration="806000" />
       <workItem from="1730217732486" duration="4345000" />
+      <workItem from="1730990760632" duration="9465000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />
@@ -168,6 +183,10 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.IllegalAccessException" package="java.lang" />
           <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.RuntimeException" package="java.lang" />
+          <option name="timeStamp" value="2" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader; //carica file FXML, che descrivono l'interfaccia 
 import javafx.scene.Scene; //contenitore per tutti i contenuti di un'interfaccia utente JavaFX
 import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazione JavaFX
 
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService; //interfaccia che fornisce metodi per gestire un pool di thread
 import java.util.concurrent.Executors; //classe che fornisce metodi per creare pool di thread
@@ -20,8 +21,8 @@ public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         //start(Stage stage) è il metodo principale di un'applicazione JavaFX, che viene chiamato quando l'applicazione viene avviata
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("/mailservice/clientside/Main.fxml")); //crea un oggetto per carica il file FXML
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 640); //crea la scena con il contenuto del file FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("/mailservice/clientside/Login.fxml")); //crea un oggetto per carica il file FXML
+        Scene scene = new Scene(fxmlLoader.load()); //crea la scena con il contenuto del file FXML
         stage.setTitle("ClientSide - App"); //imposta il titolo della finestra
         stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra
         stage.show();

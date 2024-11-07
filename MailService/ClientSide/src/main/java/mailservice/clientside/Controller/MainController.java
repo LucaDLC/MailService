@@ -58,7 +58,6 @@ public class MainController {
     //handler per l'azione del bottone Compose
     protected void onComposeButtonAction() {
         System.out.println("Composing a new Email...");
-        onComposeButtonClick();
     }
     @FXML
     protected void onDeleteButtonClick() {
@@ -76,7 +75,6 @@ public class MainController {
     //handler per l'azione del bottone Delete
     protected void onDeleteButtonAction() {
         System.out.println("Deleting Email...");
-        onDeleteButtonClick();
     }
     @FXML
     protected void onForwardButtonClick() {

@@ -83,7 +83,6 @@ public class ComposeController{
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonAction() {
         System.out.println("Sending Email...");
-        onSendMailButtonClick();
     }
 
     @FXML
@@ -94,7 +93,7 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(sender.isEmpty() && recipient.isEmpty() && object.isEmpty() && mailBody.isEmpty()){
+        if(sender.isEmpty() && recipient.isEmpty() && object.isEmpty() && mailBody.equals("<html dir=\"ltr\"><head></head><body contenteditable=\"true\"></body></html>")){
             //se tutti i campi sono vuoti mostro un messaggio di errore
             showDangerAlert("Fields are already empty");
         } else {
@@ -111,7 +110,6 @@ public class ComposeController{
     //metodo che viene chiamato quando si preme il bottone
     protected void onCancelFieldButtonAction() {
         System.out.println("Deleting fields...");
-        onCancelFieldButtonClick();
     }
 
     public TextFlow getSuccessAlert() {
