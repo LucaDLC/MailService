@@ -35,11 +35,7 @@ public class LoginController {
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText();
 
-        if(login.contains("@rama.it")){
-            //se l'email contiene @rama.it la sostituisco con stringa vuota
-            login = login.replace("@rama.it", "").trim(); //trim() rimuove  il dominio se è presente
-        }
-        login += "@rama.it"; //aggiungo il dominio se manca
+        login += "@rama.it"; //aggiungo il dominio
 
         if (Utility.validateEmail(login)) {
             showSuccessAlert("Login successful");
@@ -58,7 +54,6 @@ public class LoginController {
             }catch (IOException e) {
                 System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
                 e.printStackTrace();
-                showDangerAlert("Error loading the Main.fxml file");
             }
 
         } else {
