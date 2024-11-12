@@ -28,6 +28,8 @@ public class ConfigManager {
                 //crea il file e salvare le proprietà
                 prop.store(new FileOutputStream(path),  null);
             } else {
+                prop.setProperty("Client.Email", Mail);
+                prop.store(new FileOutputStream(path),  null);
                 prop.load(new FileInputStream(path));   //se esiste, viene letto il file di configurazione per recuperare le impostazioni già salvate
             }
         } catch (IOException e){
@@ -44,7 +46,7 @@ public class ConfigManager {
     }   //restituisce la proprietà richiesta
 
     private File getDir() {
-        String uri = new File("").getAbsolutePath() + "/ClienSide/src/main/User.properties";    //ottengo il percorso del file
+        String uri = new File("").getAbsolutePath() + "/src/main/User.properties";    //ottengo il percorso del file
         return new File(uri);   //restituisco il persorso del file di configurazione
     }
 }
