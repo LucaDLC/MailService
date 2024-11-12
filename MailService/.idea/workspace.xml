@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
-      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/Utility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,13 +38,6 @@
       </UrlAndAccount>
     </option>
   </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -69,7 +60,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/LucaDLC/Desktop/MailService/MailService",
+    "last_opened_file_path": "C:/Users/LucaDLC/Documents/GitHub/MailService/MailService",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -147,6 +138,7 @@
       <workItem from="1729860978484" duration="806000" />
       <workItem from="1730217732486" duration="4345000" />
       <workItem from="1730990760632" duration="9465000" />
+      <workItem from="1731404297937" duration="1575000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

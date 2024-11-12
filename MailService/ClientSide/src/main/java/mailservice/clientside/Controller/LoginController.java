@@ -16,6 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.ClientApp;
+import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Configuration.Utility;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class LoginController {
 
         if (Utility.validateEmail(login)) {
             showSuccessAlert("Login successful");
+            ConfigManager.getInstance(login);
             try{
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
                 Scene composeScene = new Scene(fxmlLoader.load(), 1280, 640);
