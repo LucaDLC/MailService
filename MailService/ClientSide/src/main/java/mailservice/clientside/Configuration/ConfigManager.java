@@ -13,23 +13,17 @@ public class ConfigManager {
     */
     private final Properties prop; //proprietà del file di configurazione
 
-    private ConfigManager(String Mail) {
+    private ConfigManager() {
         prop = new Properties();    //inizializzo le proprietà
         final File path = getDir(); //ottengo il file di configurazione
 
         try{
             if (!path.exists()) { //se il file non esiste lo creo
-                //definisce alcune proprietà di default
-                prop.setProperty("Client.Email", Mail);   //imposto la mail
                 prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
                 prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
                 prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
-
-                //crea il file e salvare le proprietà
                 prop.store(new FileOutputStream(path),  null);
             } else {
-                prop.setProperty("Client.Email", Mail);
-                prop.store(new FileOutputStream(path),  null);
                 prop.load(new FileInputStream(path));   //se esiste, viene letto il file di configurazione per recuperare le impostazioni già salvate
             }
         } catch (IOException e){
@@ -37,8 +31,8 @@ public class ConfigManager {
         }
     }
 
-    public static ConfigManager getInstance(String Mail){
-        return new ConfigManager(Mail);
+    public static ConfigManager getInstance(){
+        return new ConfigManager();
     }   //restituisce un'unica istanza del ConfigManager, questo metodo è ciò che permette di usare il Singleton Pattern
 
     public String readProperty (String propName){
@@ -46,7 +40,7 @@ public class ConfigManager {
     }   //restituisce la proprietà richiesta
 
     private File getDir() {
-        String uri = new File("").getAbsolutePath() + "/src/main/User.properties";    //ottengo il percorso del file
-        return new File(uri);   //restituisco il persorso del file di configurazione
+        String url = new File("").getAbsolutePath() + "/src/main/User.properties";    //ottengo il percorso del file
+        return new File(url);   //restituisco il persorso del file di configurazione
     }
 }
