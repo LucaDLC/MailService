@@ -24,7 +24,7 @@
                <Font size="18.0" />
             </font>
          </Label>
-         <Label fx:id="MailLabel" alignment="CENTER" prefHeight="70.0" prefWidth="200.0" text=" account@example.com " textAlignment="CENTER">
+         <Label fx:id="MailLabel" prefHeight="70.0" prefWidth="255.0" text=" account@example.com ">
             <font>
                <Font size="18.0" />
             </font>
