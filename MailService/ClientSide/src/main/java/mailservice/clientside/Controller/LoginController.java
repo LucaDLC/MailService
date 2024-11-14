@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Configuration.Utility;
+import mailservice.clientside.Model.ClientModel;
 
 import java.io.IOException;
 
@@ -37,8 +37,9 @@ public class LoginController {
         String login = LoginFieldID.getText();
 
         login += "@rama.it"; //aggiungo il dominio
+        ClientModel clientModel = new ClientModel();
 
-        if (Utility.validateEmail(login)) {
+        if (clientModel.validateEmail(login)) {
             showSuccessAlert("Login successful");
             try{
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
@@ -46,7 +47,7 @@ public class LoginController {
                 Stage composeStage = new Stage(); //creo una nuova finestra
 
                 composeStage.setScene(composeScene); //imposto la scena nella finestra
-                composeStage.setTitle("Compose your Email");
+                composeStage.setTitle("ClientSide - App");
                 composeStage.show();
 
                 Stage actualStage = (Stage) LoginButton.getScene().getWindow(); //crea un oggetto Stage per la finestra attuale

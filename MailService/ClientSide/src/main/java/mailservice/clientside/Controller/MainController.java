@@ -44,7 +44,7 @@ public class MainController {
             Stage composeStage = new Stage(); //creo una nuova finestra
 
             composeStage.setScene(composeScene); //imposto la scena nella finestra
-            composeStage.setTitle("Compose your Email");
+            composeStage.setTitle("ClientSide - Mail Compose");
             composeStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
             composeStage.show();
 
