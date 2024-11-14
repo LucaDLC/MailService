@@ -1,4 +1,60 @@
 package mailservice.serverside.Controller;
 
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import mailservice.serverside.Model.ServerModel;
+
 public class ServerController {
+    @FXML
+    private ListView<String> ServerLog; //serve a visualizzare il log del server
+
+    private ServerModel serverModel;
+
+    //metodo per avviare il server
+    @FXML
+    public void startServer() {
+        serverModel = new ServerModel(this); //passiamo il ServerController al ServerModel
+        serverModel.startServer();
+
+        //aggiungiamo un messaggio di log per segnalare che il server è stato avviato
+        log("Server started on port " + serverModel.getPort());
+    }
+    @FXML
+    public void onStart() {
+        startServer();
+    }
+
+    //metodo per fermare il server
+    @FXML
+    public void stopServer() {
+        if(serverModel != null) {
+            serverModel.stopServer();
+
+            //aggiungiamo un messaggio di log per segnalare che il server è stato fermato
+            log("Server stopped");
+        }
+    }
+    @FXML
+    public void onStop() {
+        stopServer();
+    }
+
+    //metodo per aggiungere un messaggio al log del server
+    public void log(String message) {
+        ServerLog.getItems().add(message);
+    }
+
+    //metodo per mostrare un alert in caso di errore
+    public void showErrorAlert(String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
 }

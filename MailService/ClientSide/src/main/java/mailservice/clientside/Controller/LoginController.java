@@ -34,31 +34,38 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
-        String login = LoginFieldID.getText();
+        String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
 
-        login += "@rama.it"; //aggiungo il dominio
         ClientModel clientModel = ClientModel.getInstance();
 
-        if (clientModel.validateEmail(login)) {
-            showSuccessAlert("Login successful");
-            try{
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
-                Scene composeScene = new Scene(fxmlLoader.load(), 1280, 640);
-                Stage composeStage = new Stage(); //creo una nuova finestra
+        if(clientModel.validateEmail(login))
+        {
+            if(clientModel.connectToServer()){
+                showSuccessAlert("Login successful");
 
-                composeStage.setScene(composeScene); //imposto la scena nella finestra
-                composeStage.setTitle("ClientSide - App");
-                composeStage.show();
+                //carica la scena principale
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
+                    Parent mainView = loader.load(); //carico il file FXML
+                    Scene mainScene = new Scene(mainView); //creo una nuova scena
+                    Stage mainStage = new Stage(); //creo una nuova finestra
 
-                Stage actualStage = (Stage) LoginButton.getScene().getWindow(); //crea un oggetto Stage per la finestra attuale
-                actualStage.close(); //chiude la finestra attuale
+                    mainStage.setScene(mainScene); //imposto la scena nella finestra
+                    mainStage.setTitle("ClientSide - Main");
+                    mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+                    mainStage.show();
 
-            }catch (IOException e) {
-                System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
-                e.printStackTrace();
+                    //chiudo la finestra di login
+                    Stage stage = (Stage) LoginButton.getScene().getWindow();
+                    stage.close();
+                }catch(IOException e){
+                    System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
+                    showDangerAlert("Unable to load Main.fxml");
+                }
+            }else{
+                showDangerAlert("Unable to connect to the server");
             }
-
-        } else {
+        }else{
             showDangerAlert("Invalid email");
         }
     }

@@ -40,7 +40,7 @@ public class ConfigManager {
     }   //restituisce la proprietà richiesta
 
     private File getDir() {
-        String url = new File("").getAbsolutePath() + "\\ClientSide\\src\\main\\User.properties";    //ottengo il percorso del file
+        String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "User.properties"; //ottengo il percorso del file
         return new File(url);   //restituisco il persorso del file di configurazione
     }
 }

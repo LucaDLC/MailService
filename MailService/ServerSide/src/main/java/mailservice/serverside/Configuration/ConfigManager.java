@@ -33,8 +33,12 @@ public class ConfigManager {
         }
     }
 
+    private static ConfigManager instance;
     public static ConfigManager getInstance(){
-        return new ConfigManager();
+        if(instance == null){
+            instance = new ConfigManager();
+        }
+        return instance;
     }
 
     public String readProperty (String propName){
@@ -42,7 +46,7 @@ public class ConfigManager {
     }
 
     private File getDir() {
-        String uri = new File("").getAbsolutePath() + "/ServerSide/src/main/Server.properties";
+        String uri = new File("").getAbsolutePath() +  File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "Server.properties";
         return new File(uri);
     }
 }
