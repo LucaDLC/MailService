@@ -4,6 +4,6 @@ module mailservice.serverside {
 
     requires org.kordamp.bootstrapfx.core;
 
-    opens mailservice.serverside to javafx.fxml;
+    opens mailservice.serverside.Controller to javafx.fxml;
     exports mailservice.serverside;
 }
