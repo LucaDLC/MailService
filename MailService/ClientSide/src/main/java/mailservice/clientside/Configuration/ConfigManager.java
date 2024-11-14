@@ -41,7 +41,6 @@ public class ConfigManager {
 
     private File getDir() {
         String url = new File("").getAbsolutePath() + "\\ClientSide\\src\\main\\User.properties";    //ottengo il percorso del file
-        System.out.println(url);
         return new File(url);   //restituisco il persorso del file di configurazione
     }
 }
