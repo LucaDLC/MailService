@@ -37,7 +37,7 @@ public class LoginController {
         String login = LoginFieldID.getText();
 
         login += "@rama.it"; //aggiungo il dominio
-        ClientModel clientModel = new ClientModel();
+        ClientModel clientModel = ClientModel.getInstance();
 
         if (clientModel.validateEmail(login)) {
             showSuccessAlert("Login successful");
