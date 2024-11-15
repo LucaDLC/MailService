@@ -39,10 +39,6 @@ public class ConfigManager {
         return prop.getProperty(propName);
     }   //restituisce la proprietà richiesta
 
-    public void setProperty (String propName, String propValue){
-        prop.setProperty(propName, propValue);
-    }
-
     private File getDir() {
         String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "User.properties"; //ottengo il percorso del file
         return new File(url);   //restituisco il persorso del file di configurazione

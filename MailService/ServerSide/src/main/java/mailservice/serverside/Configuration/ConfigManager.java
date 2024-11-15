@@ -12,11 +12,10 @@ public class ConfigManager {
     Essendo un Singleton, le proprietà vengono caricate una sola volta e poi restano in memoria e ConfigManager.getInstance() restituisce sempre la stessa istanza
     */
     private final Properties prop;
-    final File path;
 
     private ConfigManager() {
         prop = new Properties();
-        path = getDir();
+        final File path = getDir();
 
         try{
             if (!path.exists()) {
@@ -34,38 +33,16 @@ public class ConfigManager {
         }
     }
 
+    private static ConfigManager instance;
     public static ConfigManager getInstance(){
-        return new ConfigManager();
+        if(instance == null){
+            instance = new ConfigManager();
+        }
+        return instance;
     }
 
     public String readProperty (String propName){
         return prop.getProperty(propName);
-    }
-
-    public synchronized void setProperty (String propName, String propValue) {
-        prop.setProperty(propName, propValue);
-        try{
-            if (!path.exists()) {
-
-                prop.setProperty("Server.Timeout", "2000");
-                prop.setProperty("Server.Threads", "5");
-                prop.setProperty("Server.Port", "42069");
-
-            }
-
-            if (propName.equals("Server.Port")) {
-                prop.setProperty("Server.Port", propValue);
-            }
-            else if (propName.equals("Server.Threads")) {
-                prop.setProperty("Server.Threads", propValue);
-            }
-            else if (propName.equals("Server.Timeout")) {
-                prop.setProperty("Server.Timeout", propValue);
-            }
-            prop.store(new FileOutputStream(path),  null);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     private File getDir() {
