@@ -37,7 +37,10 @@ public class ServerModel {
                     controller.log("Client connected from: " + clientSocket.getInetAddress()); //aggiunge un messaggio di log per segnalare che un client si è connesso
                     new Thread(() -> handleClient(clientSocket)).start(); //crea un nuovo thread per gestire il client
                 }
-            }catch(IOException e) {
+            } catch (BindException e) {
+                controller.showErrorAlert("Port " + port + " is already in use.");
+                controller.log("Port " + port + " is already in use.");
+            } catch (IOException e) {
                 controller.showErrorAlert("Error starting server: " + e.getMessage());
                 controller.log("Error starting server: " + e.getMessage());
                 e.printStackTrace();
@@ -59,9 +62,8 @@ public class ServerModel {
     }
 
     private void handleClient(Socket clientSocket) {
-        try{
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //legge i messaggi inviati dal client
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);    //invia messaggi al client
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {    //invia messaggi al client
 
             String clientMessage;
             while ((clientMessage = in.readLine()) != null) {

@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/Server.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/ConfigManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/ServerApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/Server.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +141,7 @@
       <workItem from="1731404297937" duration="1575000" />
       <workItem from="1731490972710" duration="1906000" />
       <workItem from="1731580441257" duration="2628000" />
-      <workItem from="1731663240324" duration="428000" />
+      <workItem from="1731663240324" duration="750000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />
