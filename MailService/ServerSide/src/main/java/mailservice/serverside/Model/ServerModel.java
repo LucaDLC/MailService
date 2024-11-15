@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ServerModel {
     private int port;
     private ServerSocket serverSocket;
-    private boolean running;
+    private volatile boolean running; //volatile is used to indicate that a variable's value will be modified by different threads
     private ServerController controller;
 
     public ServerModel(ServerController serverController) {
@@ -19,21 +19,20 @@ public class ServerModel {
         this.port = Integer.parseInt(ConfigManager.getInstance().readProperty("Server.Port"));
     }
 
-    public static ServerModel getInstance(ServerController serverController){
-        return new ServerModel(serverController);
-    }
-    public void startServer() {
-        if(running) {
-            controller.log("Server is already running on port " + port);
-            return; //se il server è già in esecuzione, non fare nulla
-        }
 
+    public void startServer() {
+        synchronized (this) { // Sincronizzazione per prevenire avvii multipli
+            if (running) {
+                controller.log("Server is already running on port " + port);
+                return; // se il server è già in esecuzione, non fare nulla
+            }
+            running = true; // imposta running su true per indicare che il server è in avvio
+        }
 
        //avvia il server in un nuovo thread
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);  //crea un nuovo server socket
-                running = true; //il server è in esecuzione
                 controller.log("Server started on port " + port); //aggiunge un messaggio di log per segnalare che il server è stato avviato
                 System.out.println("Server started on port " + port);
 
@@ -50,16 +49,25 @@ public class ServerModel {
                 controller.showErrorAlert("Error starting server: " + e.getMessage());
                 controller.log("Error starting server: " + e.getMessage());
                 e.printStackTrace();
+            }finally{
+                stopServer(); //garantisce che il server venga fermato in caso di eccezione
             }
         }).start();
     }
 
     public void stopServer() {
+        synchronized (this) { // sincronizza per prevenire problemi di concorrenza
+            if (!running) {
+                return; // se il server non è in esecuzione, non fare nulla
+            }
+            running = false; // imposta running su false per segnalare la chiusura
+        }
+
         try {
-            running = false;
             if(serverSocket != null && !serverSocket.isClosed()) {
                 System.out.println("Closing server...");
                 serverSocket.close();
+                controller.log("Server stopped on port " + port);
             }
         } catch (IOException e) {
             System.out.println("Error stopping server: " + e.getMessage());

@@ -12,12 +12,19 @@ public class ServerController {
     private ListView<String> ServerLog; //serve a visualizzare il log del server
 
     private ServerModel serverModel;
+    private boolean isServerRunning = false; //stato per monitorare se il server è avviato
 
     //metodo per avviare il server
     @FXML
     public void startServer() {
+        if (isServerRunning) {  // controllo se il server è già avviato
+            log("Server is already running.");
+            return;
+        }
+
         serverModel = new ServerModel(this); //passiamo il ServerController al ServerModel
         serverModel.startServer();
+        isServerRunning = true;
 
         //aggiungiamo un messaggio di log per segnalare che il server è stato avviato
         log("Server started on port " + serverModel.getPort());
@@ -30,11 +37,15 @@ public class ServerController {
     //metodo per fermare il server
     @FXML
     public void stopServer() {
-        if(serverModel != null) {
+        if(serverModel != null && isServerRunning) {
             serverModel.stopServer();
+            isServerRunning = false; //aggiorna lo stato del server
 
             //aggiungiamo un messaggio di log per segnalare che il server è stato fermato
             log("Server stopped");
+        }
+        else {
+            log("Server is not running");
         }
     }
     @FXML
