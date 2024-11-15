@@ -2,11 +2,13 @@ package mailservice.serverside;
 
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ServerApp extends Application {
     @Override
@@ -16,6 +18,10 @@ public class ServerApp extends Application {
         stage.setTitle("ServerSide - Log");
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void stop() {
+        Platform.exit(); //termina la piattaforma JavaFX e chiude ccompletamente l'applicazione
     }
 
     public static void main(String[] args) {

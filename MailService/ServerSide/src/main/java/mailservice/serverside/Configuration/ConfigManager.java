@@ -46,7 +46,7 @@ public class ConfigManager {
     }
 
     private File getDir() {
-        String uri = new File("").getAbsolutePath() +  File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "Server.properties";
+        String uri = new File("").getAbsolutePath() +  File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "Server.properties";
         return new File(uri);
     }
 }
