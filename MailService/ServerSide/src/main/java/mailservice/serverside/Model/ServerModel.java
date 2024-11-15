@@ -23,29 +23,33 @@ public class ServerModel {
         return new ServerModel(serverController);
     }
     public void startServer() {
-        if(running) {
+        if (running) {
             controller.log("Server is already running on port " + port);
-            return; //se il server è già in esecuzione, non fare nulla
+            return; // Server is already running
         }
 
-
-       //avvia il server in un nuovo thread
         new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(port);  //crea un nuovo server socket
-                running = true; //il server è in esecuzione
-                controller.log("Server started on port " + port); //aggiunge un messaggio di log per segnalare che il server è stato avviato
+                while (true) {
+                    try {
+                        serverSocket = new ServerSocket(port);
+                        break;  // Successfully bound, exit loop
+                    } catch (BindException e) {
+                        // If the port is already in use, try a different one
+                        port++;
+                        controller.log("Port " + (port - 1) + " is already in use. Trying port " + port);
+                        ConfigManager.getInstance().setProperty("Server.Port", String.valueOf(port));
+                    }
+                }
+                running = true;
+                controller.log("Server started on port " + port);
                 System.out.println("Server started on port " + port);
 
                 while (running) {
-                    Socket clientSocket = serverSocket.accept(); //accetta una connessione da un client
-                    controller.log("Client connected from: " + clientSocket.getInetAddress()); //aggiunge un messaggio di log per segnalare che un client si è connesso
-                    new Thread(() -> handleClient(clientSocket)).start(); //crea un nuovo thread per gestire il client
+                    Socket clientSocket = serverSocket.accept();
+                    controller.log("Client connected from: " + clientSocket.getInetAddress());
+                    new Thread(() -> handleClient(clientSocket)).start();
                 }
-            } catch (BindException e) {
-                controller.showErrorAlert("Port " + port + " is already in use.");
-                controller.log("Port " + port + " is already in use.");
-                e.printStackTrace();
             } catch (IOException e) {
                 controller.showErrorAlert("Error starting server: " + e.getMessage());
                 controller.log("Error starting server: " + e.getMessage());
@@ -53,6 +57,7 @@ public class ServerModel {
             }
         }).start();
     }
+
 
     public void stopServer() {
         try {
