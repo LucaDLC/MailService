@@ -13,6 +13,9 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mailservice.clientside.ClientApp;
+import mailservice.clientside.Configuration.ConfigManager;
+import mailservice.clientside.Model.ClientModel;
+
 import java.io.IOException;
 
 public class MainController {
@@ -32,6 +35,12 @@ public class MainController {
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
 
+    @FXML
+    public void initialize() {
+        // Impostiamo il testo della MailLabel all'apertura della UI
+        ConfigManager configManager = ConfigManager.getInstance();
+        MailLabel.setText(configManager.readProperty("Client.Mail"));
+    }
 
     //implementazione delle azioni da eseguire quando si preme il bottone
     //metodo che viene chiamato quando si preme il bottone

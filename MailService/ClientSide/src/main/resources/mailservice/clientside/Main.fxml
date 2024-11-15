@@ -17,7 +17,7 @@
             </HBox.margin>
             <Image url="@logo.png" />
          </ImageView>
-         <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="70.0" prefWidth="100.0" text="Welcome, " textAlignment="JUSTIFY">
+         <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="70.0" prefWidth="100.0" text="Welcome:  " textAlignment="JUSTIFY">
             <HBox.margin>
                <Insets left="20.0" />
             </HBox.margin>
