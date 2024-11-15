@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane prefHeight="615.0" prefWidth="617.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.ComposeController">
-    <Label layoutX="5.0" layoutY="23.0" text="Sender:" AnchorPane.leftAnchor="5.0" />
-    <Label layoutX="5.0" layoutY="65.0" text="Recipient:" AnchorPane.leftAnchor="5.0" />
-    <Label layoutX="5.0" layoutY="111.0" prefHeight="17.0" prefWidth="46.0" text="Object:" AnchorPane.leftAnchor="5.0" />
-    <TextField fx:id="SenderFieldID" layoutX="63.0" layoutY="18.0" prefHeight="25.0" prefWidth="450.0" promptText="Sender@Domain" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="105.0" />
-    <TextField fx:id="RecipientFieldID" layoutX="62.0" layoutY="61.0" prefHeight="25.0" prefWidth="450.0" promptText="Recipient@Domain" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="105.0" />
-    <TextField fx:id="ObjectFieldID" layoutX="62.0" layoutY="107.0" prefHeight="25.0" prefWidth="450.0" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="105.0" />
-    <HTMLEditor fx:id="MailBodyID" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body                         contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="10.0" layoutY="149.0" prefHeight="395.0" prefWidth="597.0" AnchorPane.bottomAnchor="71.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="149.0" />
-    <Button fx:id="CancelFieldButton" layoutX="527.0" layoutY="87.0" mnemonicParsing="false" onAction="#onCancelFieldButtonAction" onMouseClicked="#onCancelFieldButtonClick" prefHeight="41.0" prefWidth="72.0" text="Cancel" AnchorPane.bottomAnchor="487.0">
+<AnchorPane prefHeight="615.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.ComposeController">
+    <Label layoutX="5.0" layoutY="26.0" text="Recipient:" AnchorPane.leftAnchor="5.0" />
+    <Label layoutX="5.0" layoutY="69.0" prefHeight="17.0" prefWidth="46.0" text="Object:" AnchorPane.leftAnchor="5.0" />
+    <TextField fx:id="RecipientFieldID" layoutX="62.0" layoutY="22.0" prefHeight="25.0" prefWidth="450.0" promptText="Recipient@Domain" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="105.0">
+      <cursor>
+         <Cursor fx:constant="TEXT" />
+      </cursor></TextField>
+    <TextField fx:id="ObjectFieldID" layoutX="62.0" layoutY="65.0" prefHeight="25.0" prefWidth="450.0" AnchorPane.leftAnchor="62.0" AnchorPane.rightAnchor="105.0">
+      <cursor>
+         <Cursor fx:constant="TEXT" />
+      </cursor></TextField>
+    <HTMLEditor fx:id="MailBodyID" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body                         contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="10.0" layoutY="114.0" prefHeight="395.0" prefWidth="597.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="114.0" />
+    <Button fx:id="CancelFieldButton" layoutX="527.0" layoutY="67.0" mnemonicParsing="false" onAction="#onCancelFieldButtonAction" onMouseClicked="#onCancelFieldButtonClick" prefHeight="34.0" prefWidth="72.0" text="Cancel">
         <tooltip>
             <Tooltip styleClass="tooltip-danger" text="Cancel and back to the main screen" />
         </tooltip>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
     </Button>
-    <Button fx:id="SendMailButton" layoutX="527.0" layoutY="20.0" mnemonicParsing="false" onAction="#onSendMailButtonAction" onMouseClicked="#onSendMailButtonClick" prefHeight="41.0" prefWidth="72.0" text="Send" textFill="#42804e" AnchorPane.bottomAnchor="554.0">
+    <Button fx:id="SendMailButton" layoutX="527.0" layoutY="12.0" mnemonicParsing="false" onAction="#onSendMailButtonAction" onMouseClicked="#onSendMailButtonClick" prefHeight="46.0" prefWidth="72.0" text="Send" textFill="#4ba15b">
         <tooltip>
             <Tooltip styleClass="tooltip-success" text="Send email" />
         </tooltip>
       <font>
          <Font size="14.0" />
       </font>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
     </Button>
-   <TextFlow fx:id="dangerAlert" layoutX="371.0" layoutY="566.0" prefHeight="26.0" prefWidth="184.0" textAlignment="CENTER" visible="false">
-      <children>
-         <Text text="" wrappingWidth="249.82421875" />
-      </children>
-   </TextFlow>
-   <TextFlow fx:id="successAlert" layoutX="371.0" layoutY="569.0" prefHeight="26.0" prefWidth="184.0" textAlignment="CENTER" visible="false">
-      <children>
-         <Text text="" wrappingWidth="249.82421875" />
-      </children>
-   </TextFlow>
 
 </AnchorPane>
