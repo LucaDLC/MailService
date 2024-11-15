@@ -1,4 +1,4 @@
-package mailservice.clientside.Configuration;
+package mailservice.serverside.Configuration;
 
 import java.io.*;
 import java.util.Properties;

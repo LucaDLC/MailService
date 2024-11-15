@@ -1,6 +1,6 @@
 package mailservice.serverside.Model;
 
-import mailservice.clientside.Configuration.ConfigManager;
+import mailservice.serverside.Configuration.ConfigManager;
 import mailservice.serverside.Controller.ServerController;
 
 import java.io.*;
