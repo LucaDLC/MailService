@@ -11,12 +11,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.util.Duration;
+import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 
 public class ComposeController{
     //collegamento con la GUI tramite l'annotazione @FXML
-    @FXML
-    private TextField SenderFieldID; //serve a visualizzare il mittente dell'email
+
     @FXML
     private TextField RecipientFieldID; //serve a visualizzare il destinatario dell'email
     @FXML
@@ -35,7 +35,7 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
-        String sender = SenderFieldID.getText(); //prendo il mittente
+        String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
@@ -83,17 +83,15 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onCancelFieldButtonClick() {
-        String sender = SenderFieldID.getText(); //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(sender.isEmpty() && recipient.isEmpty() && object.isEmpty() && mailBody.equals("<html dir=\"ltr\"><head></head><body contenteditable=\"true\"></body></html>")){
+        if(recipient.isEmpty() && object.isEmpty() && mailBody.equals("<html dir=\"ltr\"><head></head><body contenteditable=\"true\"></body></html>")){
             //se tutti i campi sono vuoti mostro un messaggio di errore
             showDangerAlert("Fields are already empty");
         } else {
             //altrimenti pulisco i campi e mostro un messaggio di successo
-            SenderFieldID.clear(); //pulisco il campo mittente
             RecipientFieldID.clear(); //pulisco il campo destinatario
             ObjectFieldID.clear(); //pulisco il campo oggetto
             MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email

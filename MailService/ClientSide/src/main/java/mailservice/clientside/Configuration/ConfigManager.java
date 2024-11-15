@@ -12,13 +12,14 @@ public class ConfigManager {
     Essendo un Singleton, le proprietà vengono caricate una sola volta e poi restano in memoria e ConfigManager.getInstance() restituisce sempre la stessa istanza
     */
     private final Properties prop; //proprietà del file di configurazione
+    final File path = getDir(); //ottengo il file di configurazione
 
     private ConfigManager() {
         prop = new Properties();    //inizializzo le proprietà
-        final File path = getDir(); //ottengo il file di configurazione
 
         try{
             if (!path.exists()) { //se il file non esiste lo creo
+                prop.setProperty("Client.Mail", "Example@Rama.it"); //imposto l'email di default
                 prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
                 prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
                 prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
@@ -38,6 +39,23 @@ public class ConfigManager {
     public String readProperty (String propName){
         return prop.getProperty(propName);
     }   //restituisce la proprietà richiesta
+
+    public synchronized void setProperty (String propName, String propValue){
+        try{
+            if (!path.exists()) { //se il file non esiste lo creo
+                prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
+                prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
+                prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
+            }
+            if (propName.equals("Client.Mail")) {
+                prop.setProperty("Client.Mail", propValue);
+            }
+            prop.store(new FileOutputStream(path), null);
+
+        } catch (IOException e){
+            e.printStackTrace();    //stampo errore se qualcosa va storto
+        }
+    }
 
     private File getDir() {
         String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "User.properties"; //ottengo il percorso del file

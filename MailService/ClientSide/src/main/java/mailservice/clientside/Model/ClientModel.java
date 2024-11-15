@@ -59,6 +59,7 @@ public class ClientModel {
         boolean checkMail = Pattern.matches("^[a-zA-Z0-9._%+-]+@rama.it$", email);
         if (checkMail)
         {
+
             this.userLogged = email;
             sendLogicRequest(email);
         }
