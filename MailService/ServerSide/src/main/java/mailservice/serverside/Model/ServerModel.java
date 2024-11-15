@@ -19,11 +19,16 @@ public class ServerModel {
         this.port = Integer.parseInt(ConfigManager.getInstance().readProperty("Server.Port"));
     }
 
+    public static ServerModel getInstance(ServerController serverController){
+        return new ServerModel(serverController);
+    }
     public void startServer() {
         if(running) {
             controller.log("Server is already running on port " + port);
             return; //se il server è già in esecuzione, non fare nulla
         }
+
+
        //avvia il server in un nuovo thread
         new Thread(() -> {
             try {
@@ -40,6 +45,7 @@ public class ServerModel {
             } catch (BindException e) {
                 controller.showErrorAlert("Port " + port + " is already in use.");
                 controller.log("Port " + port + " is already in use.");
+                e.printStackTrace();
             } catch (IOException e) {
                 controller.showErrorAlert("Error starting server: " + e.getMessage());
                 controller.log("Error starting server: " + e.getMessage());
