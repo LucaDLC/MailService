@@ -27,10 +27,6 @@ public class ComposeController{
     private Button CancelFieldButton; //serve a visualizzare il bottone per cancellare i campi della email
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
-    @FXML
-    private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
-    @FXML
-    private TextFlow successAlert; //serve a visualizzare un messaggio di successo
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
@@ -39,12 +35,15 @@ public class ComposeController{
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
+        ClientModel clientModel = ClientModel.getInstance();
 
         if(sender.isEmpty() || recipient.isEmpty()||object.isEmpty()||mailBody.isEmpty()){
             //se uno dei campi è vuoto mostro un messaggio di errore
             showDangerAlert("Please fill all the fields");
+        } else if(clientModel.connectToServer()){
+            //altrimenti se la connessione al server è attiva
+            showDangerAlert("Error connecting to server");
         } else {
-            ClientModel clientModel = ClientModel.getInstance();
             boolean success = clientModel.sendEmail(sender, recipient, object, mailBody); //invio l'email
             if(success){
                 //se l'email è stata inviata con successo mostro un messaggio di successo
@@ -105,13 +104,4 @@ public class ComposeController{
         System.out.println("Deleting fields...");
     }
 
-    public TextFlow getSuccessAlert() {
-        successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
-        return successAlert;
-    }
-
-    public TextFlow getDangerAlert() {
-        dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
-        return dangerAlert;
-    }
 }

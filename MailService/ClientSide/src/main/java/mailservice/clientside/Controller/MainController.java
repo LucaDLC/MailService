@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;//importo la classe WebView, che visualizza contenuti web
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -34,6 +35,10 @@ public class MainController {
     private ListView<String> MailList; //serve a visualizzare la lista delle email
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
+    @FXML
+    private TextFlow dangerAlert; //serve a visualizzare se il server è offline (tramite apertura socket -> ping -> chiusura socket del server NON con mantenimento della connessione)
+    @FXML
+    private TextFlow successAlert; //serve a visualizzare se il server è online (tramite apertura socket -> ping -> chiusura socket del server con mantenimento della connessione)
 
     @FXML
     public void initialize() {
@@ -105,6 +110,15 @@ public class MainController {
     @FXML
     protected void onReplyAllButtonAction() {
 
+    }
+    public TextFlow getSuccessAlert() {
+        successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
+        return successAlert;
+    }
+
+    public TextFlow getDangerAlert() {
+        dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
+        return dangerAlert;
     }
 
 }
