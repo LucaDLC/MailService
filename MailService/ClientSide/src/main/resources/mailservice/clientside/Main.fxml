@@ -53,20 +53,20 @@
          <VBox prefHeight="200.0" prefWidth="200.0">
             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="77.0" prefWidth="261.0">
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                </padding>
-               <children>
-                  <Button fx:id="ComposeButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#onComposeButtonAction" onMouseClicked="#onComposeButtonClick" prefHeight="30.0" prefWidth="105.0" text="Compose" textAlignment="CENTER">
-                     <tooltip>
-                        <Tooltip text="Compose a new email" />
-                     </tooltip>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children>
+               <Button fx:id="ComposeButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false"
+                       onAction="#onComposeButtonAction" onMouseClicked="#onComposeButtonClick" prefHeight="30.0"
+                       prefWidth="105.0" text="Compose" textAlignment="CENTER">
+                  <tooltip>
+                     <Tooltip text="Compose a new email"/>
+                  </tooltip>
+                  <cursor>
+                     <Cursor fx:constant="HAND"/>
+                  </cursor>
+               </Button>
             </HBox>
-            <ListView fx:id="MailLIst" prefHeight="432.0" prefWidth="261.0" />
+            <ListView fx:id="MailList" prefHeight="432.0" prefWidth="261.0" />
             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="77.0" prefWidth="261.0">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />

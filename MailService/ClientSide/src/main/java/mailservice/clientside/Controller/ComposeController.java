@@ -28,6 +28,12 @@ public class ComposeController{
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
+
+    private  boolean isFormValid(String recipient, String object, String mailBody){
+        return !(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty());
+
+    }
+
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
@@ -35,40 +41,50 @@ public class ComposeController{
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
-        ClientModel clientModel = ClientModel.getInstance();
 
-        if(sender.isEmpty() || recipient.isEmpty()||object.isEmpty()||mailBody.isEmpty()){
-            //se uno dei campi è vuoto mostro un messaggio di errore
+        if(!isFormValid(recipient, object, mailBody)){
+            //se i campi non sono validi mostro un messaggio di errore
             showDangerAlert("Please fill all the fields");
-        } else if(clientModel.connectToServer()){
-            //altrimenti se la connessione al server è attiva
-            showDangerAlert("Error connecting to server");
+            return;
+        }
+
+        ClientModel clientModel = ClientModel.getInstance();
+        boolean success = clientModel.sendEmail(sender, recipient, object, mailBody); //invio l'email
+        if(success){
+            //se l'email è stata inviata con successo mostro un messaggio di successo
+            showSuccessAlert("Email sent successfully");
         } else {
-            boolean success = clientModel.sendEmail(sender, recipient, object, mailBody); //invio l'email
-            if(success){
-                //se l'email è stata inviata con successo mostro un messaggio di successo
-                showSuccessAlert("Email sent successfully");
-            } else {
-                //altrimenti mostro un messaggio di errore
-                showDangerAlert("Error sending email");
-            }
+            //altrimenti mostro un messaggio di errore
+            showDangerAlert("Error sending email");
         }
     }
 
     private void showDangerAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);  // Tipo di alert per errore
-        alert.setTitle("Errore");
+        alert.setTitle("Error");
         alert.setHeaderText(null);  // Nessun testo di intestazione
         alert.setContentText(message);  // Messaggio di errore
+
+        //crea una transizione per chiudere l'alert dopo 2 secondi
+        PauseTransition pause= new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(event -> alert.close());
+        pause.play();
+
         alert.showAndWait();  // Mostra l'alert e aspetta che l'utente lo chiuda
         //aggiungo il messaggio di errore al campo dangerAlert
     }
 
     private void showSuccessAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);  // Tipo di alert per successo
-        alert.setTitle("Successo");
+        alert.setTitle("Success");
         alert.setHeaderText(null);  // Nessun testo di intestazione
         alert.setContentText(message);  // Messaggio di successo
+
+        //crea una transizione per chiudere l'alert dopo 2 secondi
+        PauseTransition pause= new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(event -> alert.close());
+        pause.play();
+
         alert.showAndWait();  // Mostra l'alert e aspetta che l'utente lo chiuda
         //aggiungo il messaggio di successo al campo successAlert
     }
@@ -86,7 +102,7 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(recipient.isEmpty() && object.isEmpty() && mailBody.equals("<html dir=\"ltr\"><head></head><body contenteditable=\"true\"></body></html>")){
+        if(recipient.isEmpty() && object.isEmpty() && mailBody.trim().isEmpty()){
             //se tutti i campi sono vuoti mostro un messaggio di errore
             showDangerAlert("Fields are already empty");
         } else {
