@@ -8,9 +8,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ServerApp extends Application {
+
+    private static ExecutorService GUI;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(mailservice.serverside.ServerApp.class.getResource("ServerLog.fxml"));
@@ -21,10 +26,18 @@ public class ServerApp extends Application {
     }
 
     public void stop() {
-        Platform.exit(); //termina la piattaforma JavaFX e chiude ccompletamente l'applicazione
+        GUI.shutdown();
+        try {
+            if (!GUI.awaitTermination(3, TimeUnit.SECONDS)) {
+                GUI.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            GUI.shutdownNow();
+        }
     }
 
     public static void main(String[] args) {
-        launch();
+        GUI = Executors.newSingleThreadExecutor();
+        GUI.execute(Application::launch);
     }
 }

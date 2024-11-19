@@ -17,6 +17,7 @@ public class ClientApp extends Application {
 
 
     private static ScheduledExecutorService fetchEmails; //pool di thread per il fetch delle email
+    private static ExecutorService GUI;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -37,6 +38,7 @@ public class ClientApp extends Application {
     @Override
     public void stop() {
         fetchEmails.shutdown();
+        GUI.shutdown();
         try {
             if (!fetchEmails.awaitTermination(3, TimeUnit.SECONDS)) {
                 fetchEmails.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
@@ -44,11 +46,18 @@ public class ClientApp extends Application {
         } catch (InterruptedException e) { //se awaitTermination viene interrotto
             fetchEmails.shutdownNow();
         }
-        Platform.exit(); //termina la piattaforma JavaFX e chiude ccompletamente l'applicazione
+        try {
+            if (!GUI.awaitTermination(3, TimeUnit.SECONDS)) {
+                GUI.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            GUI.shutdownNow();
+        }
     }
 
     public static void main(String[] args) {
-        launch();
+        GUI = Executors.newSingleThreadExecutor();
+        GUI.execute(Application::launch);
     } //avvia l'applicazione
 }
 
