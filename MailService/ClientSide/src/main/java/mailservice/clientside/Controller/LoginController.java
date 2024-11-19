@@ -34,7 +34,7 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
-        String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
+        String login = LoginFieldID.getText()+ "@Rama.it"; //aggiungo il dominio
 
         ClientModel clientModel = ClientModel.getInstance();
 

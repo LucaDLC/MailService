@@ -5,8 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="164.0" maxWidth="425.0" minWidth="425.0" prefHeight="164.0" prefWidth="425.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.LoginController">
-    <Label layoutX="213.0" layoutY="62.0" prefHeight="17.0" prefWidth="72.0" text="\@rama.it" AnchorPane.leftAnchor="213.0">
+<AnchorPane maxHeight="164.0" maxWidth="425.0" minWidth="425.0" prefHeight="164.0" prefWidth="425.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.LoginController">
+    <Label layoutX="213.0" layoutY="62.0" prefHeight="17.0" prefWidth="72.0" text="\@Rama.it" AnchorPane.leftAnchor="213.0">
       <font>
          <Font size="15.0" />
       </font></Label>
