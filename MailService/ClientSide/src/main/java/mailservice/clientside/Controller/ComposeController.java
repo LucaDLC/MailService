@@ -29,11 +29,6 @@ public class ComposeController{
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
 
-    private  boolean isFormValid(String recipient, String object, String mailBody){
-        return !(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty());
-
-    }
-
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
@@ -42,7 +37,7 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(!isFormValid(recipient, object, mailBody)){
+        if(!(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty())){
             //se i campi non sono validi mostro un messaggio di errore
             showDangerAlert("Please fill all the fields");
             return;
