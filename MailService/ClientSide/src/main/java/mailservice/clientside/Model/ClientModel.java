@@ -1,6 +1,7 @@
 package mailservice.clientside.Model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -70,6 +71,7 @@ public class ClientModel {
         {
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
+            CartellaCreazione(email);
             sendLogicRequest(email);
         }
         return checkMail;
@@ -157,4 +159,23 @@ public class ClientModel {
         fetchThread.setDaemon(true); //permette al thread di twerminate quando il programma principale termina
         fetchThread.start();
     }
+    private void CartellaCreazione (String email) {
+
+            // Percorso in cui cercare la cartella
+        String path = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "java" + File.separator + "mailservice" + File.separator + "clientside" + File.separator + "Customers" + File.separator + email;
+        File cartella = new File(path);
+
+        if (!cartella.exists()) {
+                // Se la cartella non esiste, la crea
+            if (cartella.mkdir()) {
+                System.out.println("Cartella creata con successo: " + email);
+            } else {
+                System.out.println("Errore nella creazione della cartella.");
+            }
+        } else {
+            System.out.println("La cartella esiste già: " + email);
+        }
+
+    }
+
 }

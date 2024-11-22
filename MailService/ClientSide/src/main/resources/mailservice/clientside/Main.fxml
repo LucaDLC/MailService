@@ -38,10 +38,7 @@
                <Insets left="50.0" />
             </HBox.margin>
             <children>
-               <TextFlow fx:id="DangerAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" />
-               </TextFlow>
-               <TextFlow fx:id="successAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
+               <TextFlow fx:id="dangerAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" />
                </TextFlow>
             </children>
@@ -53,16 +50,14 @@
          <VBox prefHeight="200.0" prefWidth="200.0">
             <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="77.0" prefWidth="261.0">
                <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <Button fx:id="ComposeButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false"
-                       onAction="#onComposeButtonAction" onMouseClicked="#onComposeButtonClick" prefHeight="30.0"
-                       prefWidth="105.0" text="Compose" textAlignment="CENTER">
+               <Button fx:id="ComposeButton" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#onComposeButtonAction" onMouseClicked="#onComposeButtonClick" prefHeight="30.0" prefWidth="105.0" text="Compose" textAlignment="CENTER">
                   <tooltip>
-                     <Tooltip text="Compose a new email"/>
+                     <Tooltip text="Compose a new email" />
                   </tooltip>
                   <cursor>
-                     <Cursor fx:constant="HAND"/>
+                     <Cursor fx:constant="HAND" />
                   </cursor>
                </Button>
             </HBox>

@@ -1,5 +1,6 @@
 package mailservice.clientside.Controller;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,10 +11,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;  //importo la classe Label
 import javafx.scene.control.ListView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;//importo la classe WebView, che visualizza contenuti web
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
@@ -41,6 +45,8 @@ public class MainController {
     private ListView<String> MailList; //serve a visualizzare la lista delle email
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
+    @FXML
+    private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
 
     private ScheduledExecutorService scheduler;
     private Timer emailRefreshTimer;
@@ -183,5 +189,30 @@ public class MainController {
             System.err.println("Error loadind FXML file: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    @FXML
+    private void showDangerAlert(String message) {
+        getDangerAlert();
+        Text dangerText = new Text(message);
+        dangerText.setFill(Color.RED);
+        dangerAlert.getChildren().add(dangerText);
+        dangerAlert.setVisible(true);
+        hideAlerts();
+        //aggiungo il messaggio di errore al campo dangerAlert
+    }
+
+    @FXML
+    private void hideAlerts() {
+        // Nascondere gli alert dopo 3 secondi
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> {
+            dangerAlert.setVisible(false);
+        });
+        pause.play();
+    }
+
+    public TextFlow getDangerAlert() {
+        dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
+        return dangerAlert;
     }
 }

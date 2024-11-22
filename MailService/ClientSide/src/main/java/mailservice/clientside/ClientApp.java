@@ -31,7 +31,6 @@ public class ClientApp extends Application {
         // Initialize service
         fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
         fetchEmails.scheduleAtFixedRate(() -> {
-            // Fetch emails logic
         }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
     }
 
