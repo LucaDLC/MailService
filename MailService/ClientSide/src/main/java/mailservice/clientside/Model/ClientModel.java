@@ -156,7 +156,7 @@ public class ClientModel {
                 }
             }
         });
-        fetchThread.setDaemon(true); //permette al thread di twerminate quando il programma principale termina
+        fetchThread.setDaemon(true); //permette al thread di terminate quando il programma principale termina
         fetchThread.start();
     }
     private void CartellaCreazione (String email) {
