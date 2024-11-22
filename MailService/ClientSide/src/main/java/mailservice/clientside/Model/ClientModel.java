@@ -7,10 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
+
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Controller.MainController;
-import mailservice.lib.Object.Email;
 
 public class ClientModel {
 

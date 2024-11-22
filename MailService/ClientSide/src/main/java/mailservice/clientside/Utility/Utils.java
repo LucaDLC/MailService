@@ -1,4 +1,4 @@
-package mailservice.lib.Utility;
+package mailservice.clientside.Utility;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

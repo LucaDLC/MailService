@@ -6,13 +6,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
+import mailservice.clientside.Model.Email;
+import mailservice.clientside.Utility.Utils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ComposeController{
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -37,21 +42,57 @@ public class ComposeController{
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(!(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty())){
+        if(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty()){
             //se i campi non sono validi mostro un messaggio di errore
             showDangerAlert("Please fill all the fields");
             return;
         }
 
-        ClientModel clientModel = ClientModel.getInstance();
-        boolean success = clientModel.sendEmail(sender, recipient, object, mailBody); //invio l'email
-        if(success){
-            //se l'email è stata inviata con successo mostro un messaggio di successo
-            showSuccessAlert("Email sent successfully");
-        } else {
-            //altrimenti mostro un messaggio di errore
-            showDangerAlert("Error sending email");
+        //validazione dei destinatari separati da virgola
+        String[] recipientsArray = recipient.split("\\s*,\\s*");
+        if(!Arrays.stream(recipientsArray).allMatch(Utils::validateEmail)){
+            //se i destinatari non sono validi mostro un messaggio di errore
+            showDangerAlert("Invalid recipients. Please check the email addresses ");
+            return;
+
         }
+
+        //creo un oggetto email
+        Email email = new Email(sender, new ArrayList<>(List.of(recipientsArray)), object, mailBody);
+
+        //invio l'email
+        send(email);
+
+        //pulizia dei campi dell'interfaccia utente
+        RecipientFieldID.clear(); //pulisco il campo destinatario
+        ObjectFieldID.clear(); //pulisco il campo oggetto
+        MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email
+
+        //messaggio di conferma invio email
+        showSuccessAlert("Email sent successfully");
+
+    }
+
+    private void send(Object email){
+        ClientModel clientModel = ClientModel.getInstance(); //otteniamo l'istanza del singleton
+
+        //se l'oggetto email è una email valisa, inviamo l'email al server
+        if(email instanceof Email){
+            Email emailObject = (Email) email;
+            boolean success = clientModel.sendEmail(emailObject.getSender(), String.join(",", emailObject.getReceivers()), emailObject.getSubject(), emailObject.getText());
+
+            if(success){
+                System.out.println("Email sent successfully to the server");
+                showSuccessAlert("Email sent successfully to the server");
+            } else {
+                System.out.println("Error sending email to the server");
+                showDangerAlert("Error sending email to the server");
+            }
+        } else {
+            System.out.println("The object is not an email");
+            showDangerAlert("The object is not an email");
+        }
+
     }
 
     private void showDangerAlert(String message) {
