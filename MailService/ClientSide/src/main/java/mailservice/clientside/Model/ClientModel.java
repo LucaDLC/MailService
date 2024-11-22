@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Controller.MainController;
+import mailservice.lib.Object.Email;
 
 public class ClientModel {
 
@@ -63,18 +64,6 @@ public class ClientModel {
             System.out.println("Error closing connection to server"+ e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public boolean validateEmail(String email){
-        boolean checkMail = Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
-        if (checkMail)
-        {
-            configManager.setProperty("Client.Mail", email);
-            this.userLogged = email;
-            CartellaCreazione(email);
-            sendLogicRequest(email);
-        }
-        return checkMail;
     }
 
     private void sendLogicRequest(String email) {
