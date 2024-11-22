@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Working on SendMailButton">
-      <change afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/Email.java" afterDir="false" />
+    <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lib/src/main/java/mailservice/lib/Object/Email.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lib/src/main/java/mailservice/lib/Utility/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Utility/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Scene/SceneName.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +56,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/alexa/OneDrive/Documenti/GitHub/MailService/MailService/MailService&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/LucaDLC/Desktop/email-service-main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -71,7 +68,6 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\alexa\OneDrive\Documenti\GitHub\MailService\MailService\MailService\Lib\src\main\java\mailservice\lib\Object" />
       <recent name="C:\Users\alexa\OneDrive\Documenti\GitHub\MailService\MailService\MailService\ClientSide\src\main\resources\mailservice\clientside" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -158,7 +154,7 @@
       <workItem from="1732014930395" duration="359000" />
       <workItem from="1732267897963" duration="599000" />
       <workItem from="1732268649845" duration="4798000" />
-      <workItem from="1732275371390" duration="4782000" />
+      <workItem from="1732281232558" duration="2689000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />
@@ -168,15 +164,7 @@
       <option name="project" value="LOCAL" />
       <updated>1729763971617</updated>
     </task>
-    <task id="LOCAL-00002" summary="Working on SendMailButton">
-      <option name="closed" value="true" />
-      <created>1732276454319</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1732276454319</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,8 +183,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Main Improved, but Not Working ..." />
-    <MESSAGE value="Working on SendMailButton" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on SendMailButton" />
+    <option name="LAST_COMMIT_MESSAGE" value="Main Improved, but Not Working ..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

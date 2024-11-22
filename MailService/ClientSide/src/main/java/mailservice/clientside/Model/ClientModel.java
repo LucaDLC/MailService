@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,19 +44,26 @@ public class ClientModel {
             this.socket = new Socket(this.serverHost, this.serverPort);
             this.out = new PrintWriter(socket.getOutputStream(), true);
             this.in = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
+            out.flush();
             System.out.println("Connected to server" + this.serverHost + " on port " + this.serverPort);
             return true;
-        } catch (Exception e) {
+        } catch (SocketException ignored) {
+            System.out.println("Error connecting to server" + ignored.getMessage());
+            return false;
+        } catch (IOException e) {
             System.out.println("Error connecting to server" + e.getMessage());
-            e.printStackTrace();;
+            e.printStackTrace();
             return false;
         }
+
     }
 
     //metodo per chiudere la connessione al server
     public void disconnectFromServer() {
         try {
             if(this.socket != null && !this.socket.isClosed()) {
+                this.out.close();
+                this.in.close();
                 this.socket.close();
                 System.out.println("Disconnected from server");
             }
