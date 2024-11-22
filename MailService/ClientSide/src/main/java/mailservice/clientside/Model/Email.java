@@ -1,6 +1,5 @@
 package mailservice.clientside.Model;
 
-import mailservice.clientside.Utility.Utils;
 import java.util.*;
 
 public class Email {
@@ -74,11 +73,11 @@ public class Email {
     @Override
     public String toString() { return sender + " - " + subject; }
     public  String dateToString() {
-        return (this.date == null) ? "" : Utils.formatDate(this.date);
+        return (this.date == null) ? "" : ClientModel.formatDate(this.date);
     }
 
-    @Override
-    public int compareTo(Email email) {
-        return email.getDate().compareTo(this.date);
-    }
+    //@Override
+   // public int compareTo(Email email) {
+        //return email.getDate().compareTo(this.date);
+   // }
 }

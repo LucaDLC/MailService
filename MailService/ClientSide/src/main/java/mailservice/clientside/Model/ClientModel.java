@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Controller.MainController;
@@ -36,6 +39,11 @@ public class ClientModel {
         if(instance ==null )
             instance = new ClientModel();
         return instance;
+    }
+
+    public static String formatDate(Date date) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return dateFormatter.format(date);
     }
 
     //metodo per connettersi al server
@@ -71,6 +79,18 @@ public class ClientModel {
             System.out.println("Error closing connection to server"+ e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public boolean validateEmail(String email){
+        boolean checkMail = Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
+        if (checkMail)
+        {
+            configManager.setProperty("Client.Mail", email);
+            this.userLogged = email;
+            CartellaCreazione(email);
+            sendLogicRequest(email);
+        }
+        return checkMail;
     }
 
     private void sendLogicRequest(String email) {
@@ -157,12 +177,12 @@ public class ClientModel {
     }
     private void CartellaCreazione (String email) {
 
-            // Percorso in cui cercare la cartella
+        // Percorso in cui cercare la cartella
         String path = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "java" + File.separator + "mailservice" + File.separator + "clientside" + File.separator + "Customers" + File.separator + email;
         File cartella = new File(path);
 
         if (!cartella.exists()) {
-                // Se la cartella non esiste, la crea
+            // Se la cartella non esiste, la crea
             if (cartella.mkdir()) {
                 System.out.println("Cartella creata con successo: " + email);
             } else {
