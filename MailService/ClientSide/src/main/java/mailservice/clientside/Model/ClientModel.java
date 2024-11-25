@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
@@ -88,15 +89,17 @@ public class ClientModel {
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
             CartellaCreazione(email);
-            sendLogicRequest(email);
+            sendLogicRequest("CheckMail",email);
         }
         return checkMail;
     }
 
-    private void sendLogicRequest(String email) {  //usiamolo anche per ii comandi di sistema
-        if(out != null) {
-            out.println("USER_LOGIN " + email); //invio la richiesta di login al server
-            System.out.println("Login request sent for email: " + email);
+    private void sendLogicRequest(String commandname, String arg) {  //usiamolo anche per ii comandi di sistema
+        if(out != null && Objects.equals(commandname, "CheckMail")) {
+            out.println("USER_LOGIN " + arg); //invio la richiesta di login al server
+        }
+        if(out != null && Objects.equals(commandname, "Fetch")) {
+            out.println("FETCH " + arg); //invio la richiesta di login al server
         }
     }
 
@@ -109,7 +112,7 @@ public class ClientModel {
         }
 
         try{
-            out.println("FETCH"); //chiede al server di inviare le email
+            sendLogicRequest("Fetch", this.userLogged);
             String response;
             List<String> emails =new ArrayList<>();
             while((response = in.readLine()) != null) {
