@@ -8,6 +8,7 @@ import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazio
 
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.ExecutorService; //interfaccia che fornisce metodi per gestire un pool di thread
 import java.util.concurrent.Executors; //classe che fornisce metodi per creare pool di thread
 import java.util.concurrent.ScheduledExecutorService; //interfaccia che estende ExecutorService e fornisce metodi per eseguire attività in modo periodico
@@ -18,6 +19,7 @@ public class ClientApp extends Application {
 
     private static ScheduledExecutorService fetchEmails; //pool di thread per il fetch delle email
     private static ExecutorService GUI;
+    private static Date lastFetch = new Date(Long.MIN_VALUE);
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -28,10 +30,6 @@ public class ClientApp extends Application {
         stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra
         stage.show();
 
-        // Initialize service
-        fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
-        fetchEmails.scheduleAtFixedRate(() -> {
-        }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
     }
 
     @Override
@@ -56,6 +54,9 @@ public class ClientApp extends Application {
 
     public static void main(String[] args) {
         GUI = Executors.newSingleThreadExecutor();
+        fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
+        fetchEmails.scheduleAtFixedRate(() -> {
+        }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
         GUI.execute(Application::launch);
     } //avvia l'applicazione
 }
