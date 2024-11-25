@@ -55,7 +55,7 @@ public class ClientApp extends Application {
     public static void main(String[] args) {
         GUI = Executors.newSingleThreadExecutor();
         fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
-        fetchEmails.scheduleAtFixedRate(() -> {
+        fetchEmails.scheduleAtFixedRate(() -> { //inserire la funzione di fetch
         }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
         GUI.execute(Application::launch);
     } //avvia l'applicazione

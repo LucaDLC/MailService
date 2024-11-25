@@ -93,7 +93,7 @@ public class ClientModel {
         return checkMail;
     }
 
-    private void sendLogicRequest(String email) {
+    private void sendLogicRequest(String email) {  //usiamolo anche per ii comandi di sistema
         if(out != null) {
             out.println("USER_LOGIN " + email); //invio la richiesta di login al server
             System.out.println("Login request sent for email: " + email);
@@ -102,7 +102,7 @@ public class ClientModel {
 
     //metodo per ottenere le email dal server
     public String[] fetchEmails(){
-        startReconnection(); //controlla se la connessione è attiva, altrimenti prova a riconnettersi
+        connectToServer(); //controlla se la connessione è attiva, altrimenti prova a riconnettersi
         if(this.socket == null || this.socket.isClosed()) {
             System.out.println("Socket is closed. cannot fetch emails");
             return new String[0];
@@ -131,7 +131,10 @@ public class ClientModel {
             System.out.println("Error fetching email: "+e.getMessage());
             e.printStackTrace();
             return new String[0];
+        }finally {
+            disconnectFromServer();
         }
+
     }
 
     public boolean sendEmail(String sender, String receiver, String object, String content) {
@@ -144,37 +147,6 @@ public class ClientModel {
         return false;
     }
 
-    //riconnessione automatica al server in caso di disconnessione
-    public void startReconnection(){
-        if(this.socket == null || this.socket.isClosed()){
-            System.out.println("Socket is closed. Attempting reconnection...");
-            while(!connectToServer()){
-                try{
-                    Thread.sleep(5000); //attendi 5 secondi prima di tentare di riconnettersi
-                }catch(InterruptedException e){
-                    System.out.println("Error in reconnection thread: "+e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    //metodo principale per gestire i cicli di fetch delle email
-    public void startFetchingEmails(MainController controller){
-        Thread fetchThread = new Thread(() ->{
-            while(true){
-                fetchEmails();
-                try{
-                    Thread.sleep(fetchPeriod * 1000); //attendi per il periodo di fetch
-                }catch(InterruptedException e){
-                    System.out.println("Error in fetching emails: "+e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
-        fetchThread.setDaemon(true); //permette al thread di terminate quando il programma principale termina
-        fetchThread.start();
-    }
     private void CartellaCreazione (String email) {
 
         // Percorso in cui cercare la cartella
