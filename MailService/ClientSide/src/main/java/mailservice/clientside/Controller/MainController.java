@@ -197,7 +197,7 @@ public class MainController {
         dangerText.setFill(Color.RED);
         dangerAlert.getChildren().add(dangerText);
         dangerAlert.setVisible(true);
-        hideAlerts();
+        //hideAlerts();
         //aggiungo il messaggio di errore al campo dangerAlert
     }
 

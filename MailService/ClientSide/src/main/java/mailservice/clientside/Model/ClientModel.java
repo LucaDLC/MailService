@@ -53,7 +53,6 @@ public class ClientModel {
             this.socket = new Socket(this.serverHost, this.serverPort);
             this.out = new PrintWriter(socket.getOutputStream(), true);
             this.in = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-            out.flush();
             System.out.println("Connected to server" + this.serverHost + " on port " + this.serverPort);
             return true;
         } catch (SocketException ignored) {
@@ -94,11 +93,11 @@ public class ClientModel {
         return checkMail;
     }
 
-    private void sendLogicRequest(String commandname, String arg) {  //usiamolo anche per ii comandi di sistema
-        if(out != null && Objects.equals(commandname, "CheckMail")) {
+    private void sendLogicRequest(String commandName, String arg) {  //usiamolo anche per ii comandi di sistema
+        if(out != null && Objects.equals(commandName, "CheckMail")) {
             out.println("USER_LOGIN " + arg); //invio la richiesta di login al server
         }
-        if(out != null && Objects.equals(commandname, "Fetch")) {
+        if(out != null && Objects.equals(commandName, "Fetch")) {
             out.println("FETCH " + arg); //invio la richiesta di login al server
         }
     }
