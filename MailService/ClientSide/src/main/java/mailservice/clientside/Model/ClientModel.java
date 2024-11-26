@@ -1,19 +1,13 @@
 package mailservice.clientside.Model;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Controller.MainController;
+import mailservice.clientside.Network.NetworkManager;
 
 public class ClientModel {
 
@@ -29,6 +23,9 @@ public class ClientModel {
 
     ConfigManager configManager = ConfigManager.getInstance();
 
+    //creiamo un'istanza del NetworkManager per la connessione al server
+    private NetworkManager networkManager = NetworkManager.getInstance();
+
     private ClientModel() {
         this.serverHost = configManager.readProperty("Client.ServerHost");
         this.serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
@@ -39,45 +36,6 @@ public class ClientModel {
         if(instance ==null )
             instance = new ClientModel();
         return instance;
-    }
-
-    public static String formatDate(Date date) {
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return dateFormatter.format(date);
-    }
-
-    //metodo per connettersi al server
-    public boolean connectToServer() {
-        try {
-            this.socket = new Socket(this.serverHost, this.serverPort);
-            this.out = new PrintWriter(socket.getOutputStream(), true);
-            this.in = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
-            System.out.println("Connected to server" + this.serverHost + " on port " + this.serverPort);
-            return true;
-        } catch (SocketException ignored) {
-            System.out.println("Error connecting to server" + ignored.getMessage());
-            return false;
-        } catch (IOException e) {
-            System.out.println("Error connecting to server" + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
-    //metodo per chiudere la connessione al server
-    public void disconnectFromServer() {
-        try {
-            if(this.socket != null && !this.socket.isClosed()) {
-                this.out.close();
-                this.in.close();
-                this.socket.close();
-                System.out.println("Disconnected from server");
-            }
-        } catch (Exception e) {
-            System.out.println("Error closing connection to server"+ e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public boolean validateEmail(String email){
@@ -100,43 +58,6 @@ public class ClientModel {
         }
     }
 
-    //metodo per ottenere le email dal server
-    public String[] fetchEmails(){
-        connectToServer(); //controlla se la connessione è attiva, altrimenti prova a riconnettersi
-        if(this.socket == null || this.socket.isClosed()) {
-            System.out.println("Socket is closed. cannot fetch emails");
-            return new String[0];
-        }
-
-        try{
-            sendLogicRequest("Fetch", this.userLogged);
-            String response;
-            List<String> emails =new ArrayList<>();
-            while((response = in.readLine()) != null) {
-                if ("END".equals(response)) {
-                    break;
-                }
-                String[] parts = response.split(";");
-                if(parts.length >= 3) {
-                    String sender = parts[0];
-                    String subject = parts[1];
-                    String date = parts[2];
-                    String emailPreview = ("From: "+ sender + " | Subject: " + subject + " | Date " + date);
-                    emails.add(emailPreview); //aggiungo l'email alla lista
-                }
-            }
-
-            return emails.toArray(new String[0]);
-        }catch(IOException e){
-            System.out.println("Error fetching email: "+e.getMessage());
-            e.printStackTrace();
-            return new String[0];
-        }finally {
-            disconnectFromServer();
-        }
-
-    }
-
     public boolean sendEmail(String sender, String receiver, String object, String content) {
         if(out != null) {
             out.println("SEND_EMAIL From " + sender + " to " + receiver + " object " + object + " content " + content); //invio la richiesta di invio email al server
@@ -147,4 +68,32 @@ public class ClientModel {
         return false;
     }
 
+    // Metodo per il fetch delle email
+    public String[] fetchEmails() {
+
+        String[] emails = new String[10];
+
+        if (networkManager.connectToServer()) {
+            sendLogicRequest("Fetch", userLogged); // Invia la richiesta di fetch delle email
+            try {
+                String response;
+                int i = 0;
+                while ((response = networkManager.receiveMessage()) != null) {
+                    emails[i] = response; // Gestisci la risposta del server
+                    i++;
+                    // Gestisci la risposta del server
+                    System.out.println("Received: " + response); // Esempio di gestione della risposta
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                closeConnection();
+            }
+        }
+        return emails;
+    }
+
+    public void closeConnection() {
+        networkManager.disconnectFromServer();
+    }
 }

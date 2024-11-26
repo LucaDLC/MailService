@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
+import mailservice.clientside.Network.NetworkManager;
 
 import java.io.IOException;
 
@@ -36,11 +37,12 @@ public class LoginController {
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText()+ "@Rama.it"; //aggiungo il dominio
 
+        NetworkManager networkManager = NetworkManager.getInstance();
         ClientModel clientModel = ClientModel.getInstance();
 
         if(clientModel.validateEmail(login))
         {
-            if(clientModel.connectToServer()){
+            if(networkManager.connectToServer()){
                 showSuccessAlert("Login successful");
 
                 //carica la scena principale

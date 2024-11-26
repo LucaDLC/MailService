@@ -14,6 +14,8 @@ public class ConfigManager {
     private final Properties prop; //proprietà del file di configurazione
     final File path = getDir(); //ottengo il file di configurazione
 
+    private static ConfigManager instance;
+
     private ConfigManager() {
         prop = new Properties();    //inizializzo le proprietà
 
@@ -33,7 +35,10 @@ public class ConfigManager {
     }
 
     public static ConfigManager getInstance(){
-        return new ConfigManager();
+        if(instance ==null )
+            instance = new ConfigManager();
+
+        return instance;
     }   //restituisce un'unica istanza del ConfigManager, questo metodo è ciò che permette di usare il Singleton Pattern
 
     public String readProperty (String propName){

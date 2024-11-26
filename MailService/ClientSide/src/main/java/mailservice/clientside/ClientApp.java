@@ -5,6 +5,7 @@ import javafx.application.Platform; //permette di accedere a metodi di utilità 
 import javafx.fxml.FXMLLoader; //carica file FXML, che descrivono l'interfaccia utente di un'applicazione JavaFX
 import javafx.scene.Scene; //contenitore per tutti i contenuti di un'interfaccia utente JavaFX
 import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazione JavaFX
+import mailservice.clientside.Model.ClientModel;
 
 
 import java.io.IOException;
@@ -34,8 +35,10 @@ public class ClientApp extends Application {
 
     @Override
     public void stop() {
+        ClientModel.getInstance().closeConnection(); //chiama il metodo per chiudere la connessione al server
         fetchEmails.shutdown();
         GUI.shutdown();
+
         try {
             if (!fetchEmails.awaitTermination(3, TimeUnit.SECONDS)) {
                 fetchEmails.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
@@ -43,6 +46,7 @@ public class ClientApp extends Application {
         } catch (InterruptedException e) { //se awaitTermination viene interrotto
             fetchEmails.shutdownNow();
         }
+
         try {
             if (!GUI.awaitTermination(3, TimeUnit.SECONDS)) {
                 GUI.shutdownNow();
@@ -60,7 +64,3 @@ public class ClientApp extends Application {
         GUI.execute(Application::launch);
     } //avvia l'applicazione
 }
-
-
-
-//MANCA STRUTTURA DI FETCH EMAILS

@@ -1,12 +1,9 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;  //importo la classe Label
@@ -18,16 +15,16 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
+import mailservice.clientside.Network.NetworkManager;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -48,7 +45,6 @@ public class MainController {
     @FXML
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
 
-    private ScheduledExecutorService scheduler;
     private Timer emailRefreshTimer;
     private static final long REFRESH_INTERVAL = 10000; //10 secondi di intervallo tra i refresh
 
@@ -73,16 +69,17 @@ public class MainController {
                 refreshEmails();
             }
         }, 0, REFRESH_INTERVAL);
+
     }
 
     private void refreshEmails(){
-        ClientModel clientModel = ClientModel.getInstance();
-        if(clientModel.connectToServer()){
+        NetworkManager networkManager = NetworkManager.getInstance();
+        if(networkManager.connectToServer()){
             System.out.println("Fetching emails automatically...");
-            String[] emails = clientModel.fetchEmails(); //la logica per recuperare le email dal server va nel model
+            String[] emails = ClientModel.getInstance().fetchEmails(); //la logica per recuperare le email dal server va nel model
             //serve per aggiornare la GUI in modo sicuro (JavaFX richiede che le modifiche alla GUI vengano eseguite nel thread dell'interfaccia utente)
             javafx.application.Platform.runLater(()->updateEmailList(emails));
-            clientModel.disconnectFromServer();
+            networkManager.disconnectFromServer();
         }else{
             System.out.println("Unable to connect to server for automatic fetch");
         }
