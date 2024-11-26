@@ -5,6 +5,7 @@ import mailservice.clientside.Configuration.ConfigManager;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Objects;
 
 public class NetworkManager {
     private Socket socket;
@@ -69,9 +70,12 @@ public class NetworkManager {
     }
 
     // Metodo per inviare i messaggi
-    public void sendMessage(String message) {
-        if (out != null) {
-            out.println(message); // Invio del messaggio al server
+    public void sendMessage(String commandName, String arg) {
+        if(out != null && Objects.equals(commandName, "CheckMail")) {
+            out.println("USER_LOGIN " + arg); //invio la richiesta di login al server
+        }
+        if(out != null && Objects.equals(commandName, "Fetch")) {
+            out.println("FETCH " + arg); //invio la richiesta di login al server
         }
     }
 
@@ -84,5 +88,6 @@ public class NetworkManager {
             return null;
         }
     }
+
 
 }

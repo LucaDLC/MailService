@@ -8,16 +8,12 @@ import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Network.NetworkManager;
+import mailservice.stdlib.CommandRequest;
+import mailservice.stdlib.CommandResponse;
 
 public class ClientModel {
 
     private String userLogged;
-    private String serverHost;
-    private int serverPort;
-    private int fetchPeriod;
-    private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
 
     private static ClientModel instance;
 
@@ -27,9 +23,6 @@ public class ClientModel {
     private NetworkManager networkManager = NetworkManager.getInstance();
 
     private ClientModel() {
-        this.serverHost = configManager.readProperty("Client.ServerHost");
-        this.serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
-        this.fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
     }
 
     public static ClientModel getInstance(){
@@ -44,18 +37,9 @@ public class ClientModel {
         {
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
-            sendLogicRequest("CheckMail",email);
+            NetworkManager.getInstance().sendMessage("CheckMail",email);
         }
         return checkMail;
-    }
-
-    private void sendLogicRequest(String commandName, String arg) {  //usiamolo anche per ii comandi di sistema
-        if(out != null && Objects.equals(commandName, "CheckMail")) {
-            out.println("USER_LOGIN " + arg); //invio la richiesta di login al server
-        }
-        if(out != null && Objects.equals(commandName, "Fetch")) {
-            out.println("FETCH " + arg); //invio la richiesta di login al server
-        }
     }
 
     public boolean sendEmail(String sender, String receiver, String object, String content) {
@@ -68,17 +52,16 @@ public class ClientModel {
         return false;
     }
 
-    // Metodo per il fetch delle email
-    public String[] fetchEmails() {
+    public String[] fetchEmails(String userLogged) {
 
         String[] emails = new String[10];
 
-        if (networkManager.connectToServer()) {
-            sendLogicRequest("Fetch", userLogged); // Invia la richiesta di fetch delle email
+        if (NetworkManager.getInstance().connectToServer()) {
+            NetworkManager.getInstance().sendMessage("Fetch", userLogged); // Invia la richiesta di fetch delle email
             try {
                 String response;
                 int i = 0;
-                while ((response = networkManager.receiveMessage()) != null) {
+                while ((response = NetworkManager.getInstance().receiveMessage()) != null) {
                     emails[i] = response; // Gestisci la risposta del server
                     i++;
                     // Gestisci la risposta del server
@@ -87,13 +70,10 @@ public class ClientModel {
             } catch (Exception e) {
                 e.printStackTrace();
             }finally {
-                closeConnection();
+                NetworkManager.getInstance().disconnectFromServer();
             }
         }
         return emails;
     }
 
-    public void closeConnection() {
-        networkManager.disconnectFromServer();
-    }
 }

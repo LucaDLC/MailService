@@ -7,13 +7,9 @@
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/ConfigManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/User.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/User.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Network/NetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Network/NetworkManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +64,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -80,7 +76,7 @@
       <recent name="mailservice.clientside.Controller" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ClientApp">
+  <component name="RunManager" selected="Application.ServerApp">
     <configuration name="ClientApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="mailservice.clientside.ClientApp" />
       <module name="ClientSide" />
@@ -109,8 +105,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ClientApp" />
         <item itemvalue="Application.ServerApp" />
+        <item itemvalue="Application.ClientApp" />
       </list>
     </recent_temporary>
   </component>
@@ -168,6 +164,7 @@
       <workItem from="1732614143057" duration="1000" />
       <workItem from="1732614917188" duration="20000" />
       <workItem from="1732618832423" duration="33000" />
+      <workItem from="1732619995750" duration="1407000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />
