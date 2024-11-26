@@ -1,4 +1,4 @@
-package mailservice.clientside.Model;
+package mailservice.stdlib;
 
 import java.util.*;
 
