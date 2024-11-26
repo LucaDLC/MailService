@@ -51,6 +51,7 @@ public class MainController {
     private ScheduledExecutorService scheduler;
     private Timer emailRefreshTimer;
     private static final long REFRESH_INTERVAL = 10000; //10 secondi di intervallo tra i refresh
+    ClientModel clientModel = ClientModel.getInstance();
 
     @FXML
     public void initialize() {
@@ -76,7 +77,6 @@ public class MainController {
     }
 
     private void refreshEmails(){
-        ClientModel clientModel = ClientModel.getInstance();
         if(clientModel.connectToServer()){
             System.out.println("Fetching emails automatically...");
             String[] emails = clientModel.fetchEmails(); //la logica per recuperare le email dal server va nel model
@@ -190,6 +190,15 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    public void isConnected(boolean Check) {
+        if (Check) {
+            hideAlerts();
+        } else {
+            showDangerAlert("Server Unreachable");
+        }
+    }
+
     @FXML
     private void showDangerAlert(String message) {
         getDangerAlert();
@@ -197,8 +206,6 @@ public class MainController {
         dangerText.setFill(Color.RED);
         dangerAlert.getChildren().add(dangerText);
         dangerAlert.setVisible(true);
-        //hideAlerts();
-        //aggiungo il messaggio di errore al campo dangerAlert
     }
 
     @FXML
