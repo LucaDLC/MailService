@@ -1,4 +1,4 @@
-package mailservice.stdlib;
+package mailservice.clientside.Configuration;
 
 import java.util.*;
 
@@ -72,9 +72,9 @@ public class Email {
 
     @Override
     public String toString() { return sender + " - " + subject; }
-    public  String dateToString() {
+    /*public  String dateToString() {
         return (this.date == null) ? "" : ClientModel.formatDate(this.date);
-    }
+    }*/
 
     //@Override
    // public int compareTo(Email email) {

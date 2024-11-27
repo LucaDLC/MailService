@@ -1,4 +1,4 @@
-package mailservice.stdlib;
+package mailservice.clientside.Configuration;
 import java.io.Serializable;
 
 public enum CommandRequest implements Serializable {
@@ -9,8 +9,3 @@ public enum CommandRequest implements Serializable {
 
 }
 
-public enum CommandResponse implements Serializable {
-    SUCCESS,
-    ILLEGAL_PARAMS,
-    GENERIC_ERROR;
-}

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader; //carica file FXML, che descrivono l'interfaccia 
 import javafx.scene.Scene; //contenitore per tutti i contenuti di un'interfaccia utente JavaFX
 import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazione JavaFX
 import mailservice.clientside.Model.ClientModel;
+import mailservice.clientside.Network.NetworkManager;
 
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ClientApp extends Application {
 
     @Override
     public void stop() {
-        ClientModel.getInstance().closeConnection(); //chiama il metodo per chiudere la connessione al server
+        NetworkManager.getInstance().disconnectFromServer(); //chiama il metodo per chiudere la connessione al server
         fetchEmails.shutdown();
         GUI.shutdown();
 

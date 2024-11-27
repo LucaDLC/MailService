@@ -8,8 +8,7 @@ import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Network.NetworkManager;
-import mailservice.stdlib.CommandRequest;
-import mailservice.stdlib.CommandResponse;
+//import mailservice.clientside.Configuration.CommandName;
 
 public class ClientModel {
 
@@ -42,15 +41,6 @@ public class ClientModel {
         return checkMail;
     }
 
-    public boolean sendEmail(String sender, String receiver, String object, String content) {
-        if(out != null) {
-            out.println("SEND_EMAIL From " + sender + " to " + receiver + " object " + object + " content " + content); //invio la richiesta di invio email al server
-            System.out.println("Email sent from " + sender + " to " + receiver + " with object " + object);
-            return true;
-        }
-        System.out.println("Error: Not connected to the server or output stream is null");
-        return false;
-    }
 
     public String[] fetchEmails(String userLogged) {
 

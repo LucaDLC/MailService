@@ -89,5 +89,14 @@ public class NetworkManager {
         }
     }
 
+    public boolean sendEmail(String sender, String receiver, String object, String content) {
+        if(connectToServer()) {
+            out.println("SEND_EMAIL From " + sender + " to " + receiver + " object " + object + " content " + content); //invio la richiesta di invio email al server
+            System.out.println("Email sent from " + sender + " to " + receiver + " with object " + object);
+            return true;
+        }
+        System.out.println("Error: Not connected to the server or output stream is null");
+        return false;
+    }
 
 }
