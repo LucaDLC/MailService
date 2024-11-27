@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Network.NetworkManager;
-//import mailservice.clientside.Configuration.CommandName;
+import mailservice.clientside.Configuration.CommandRequest;
+import mailservice.clientside.Configuration.CommandResponse;
+
 
 public class ClientModel {
 

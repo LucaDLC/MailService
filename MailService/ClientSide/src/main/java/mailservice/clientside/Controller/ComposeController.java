@@ -12,7 +12,8 @@ import javafx.scene.web.HTMLEditor;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
-import mailservice.clientside.Model.Email;
+import mailservice.clientside.Configuration.Email;
+import mailservice.clientside.Network.NetworkManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,17 +45,19 @@ public class ComposeController{
         if(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty()){
             //se i campi non sono validi mostro un messaggio di errore
             showDangerAlert("Please fill all the fields");
-            return;
-        }
 
-        ClientModel clientModel = ClientModel.getInstance();
-        boolean success = clientModel.sendEmail(sender, recipient, object, mailBody); //invio l'email
-        if(success) {
-            //se l'email è stata inviata con successo mostro un messaggio di successo
-            showSuccessAlert("Email sent successfully");
-        } else {
-            //altrimenti mostro un messaggio di errore
-            showDangerAlert("Error sending email");
+        }
+        else{
+            NetworkManager networkManager = NetworkManager.getInstance();
+
+            boolean success = networkManager.sendEmail(sender, recipient, object, mailBody); //invio l'email
+            if(success) {
+                //se l'email è stata inviata con successo mostro un messaggio di successo
+                showSuccessAlert("Email sent successfully");
+            } else {
+                //altrimenti mostro un messaggio di errore
+                showDangerAlert("Error sending email");
+            }
         }
     }
 
