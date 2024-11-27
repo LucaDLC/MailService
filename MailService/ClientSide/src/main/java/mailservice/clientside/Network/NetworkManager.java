@@ -1,10 +1,12 @@
 package mailservice.clientside.Network;
 
 import mailservice.clientside.Configuration.ConfigManager;
+import mailservice.clientside.Configuration.Email;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.List;
 import java.util.Objects;
 
 public class NetworkManager {
@@ -89,12 +91,18 @@ public class NetworkManager {
         }
     }
 
-    public boolean sendEmail(String sender, String receiver, String object, String content) {
+    public boolean sendEmail(List<String> receivers, String object, String content) {
         try {
             if (connectToServer()) {
-                out.println("SEND_EMAIL From " + sender + " to " + receiver + " object " + object + " content " + content); // invio la richiesta di invio email al server
-                System.out.println("Email sent from " + sender + " to " + receiver + " with object " + object);
-                return true;
+                String sender = configManager.readProperty("Client.Mail");
+                Email email = new Email(sender, receivers, object, content);
+
+                // Serialize the Email object (assuming Email class has a suitable toString method or use a JSON library)
+                String serializedEmail = email.toString();
+
+                // Send the serialized Email object
+                out.println(serializedEmail);
+                System.out.println("Email sent: " + serializedEmail);return true;
             } else {
                 System.out.println("Error: Not connected to the server");
                 return false;
