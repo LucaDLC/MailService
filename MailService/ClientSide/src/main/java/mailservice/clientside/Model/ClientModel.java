@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Network.NetworkManager;
-import mailservice.clientside.Configuration.CommandRequest;
-import mailservice.clientside.Configuration.CommandResponse;
+import static mailservice.clientside.Configuration.CommandRequest.*;
+import static mailservice.clientside.Configuration.CommandResponse.*;
 
 
 public class ClientModel {
@@ -34,26 +34,28 @@ public class ClientModel {
 
     public boolean validateEmail(String email){
         boolean checkMail = Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
-        if (checkMail)
+        if (checkMail && NetworkManager.getInstance().sendMessage(LOGIN_CHECK,email))
         {
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
-            NetworkManager.getInstance().sendMessage("CheckMail",email);
+            return true;
         }
-        return checkMail;
+        else {
+            return false;
+        }
     }
 
 
-    public String[] fetchEmails(String userLogged) {
+    public String[] fetchEmails() {
 
         String[] emails = new String[10];
 
         if (NetworkManager.getInstance().connectToServer()) {
-            NetworkManager.getInstance().sendMessage("Fetch", userLogged); // Invia la richiesta di fetch delle email
+            NetworkManager.getInstance().sendMessage(FETCH_EMAIL, userLogged); // Invia la richiesta di fetch delle email
             try {
                 String response;
                 int i = 0;
-                while ((response = NetworkManager.getInstance().receiveMessage()) != null) {
+                while ((response = String.valueOf(NetworkManager.getInstance().receiveMessage())) != null) {
                     emails[i] = response; // Gestisci la risposta del server
                     i++;
                     // Gestisci la risposta del server

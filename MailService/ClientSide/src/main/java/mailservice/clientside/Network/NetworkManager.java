@@ -1,5 +1,7 @@
 package mailservice.clientside.Network;
 
+import mailservice.clientside.Configuration.CommandRequest;
+import mailservice.clientside.Configuration.CommandResponse;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Configuration.Email;
 
@@ -7,7 +9,9 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.List;
-import java.util.Objects;
+
+import static mailservice.clientside.Configuration.CommandResponse.*;
+import static mailservice.clientside.Configuration.CommandRequest.*;
 
 public class NetworkManager {
     private Socket socket;
@@ -72,23 +76,41 @@ public class NetworkManager {
     }
 
     // Metodo per inviare i messaggi
-    public void sendMessage(String commandName, String arg) {
-        if(out != null && Objects.equals(commandName, "CheckMail")) {
-            out.println("USER_LOGIN " + arg); //invio la richiesta di login al server
+    public boolean sendMessage(CommandRequest commandName, String arg) {
+        if(out != null && commandName.equals(LOGIN_CHECK)) {
+            out.println(LOGIN_CHECK + "|" + arg); //invio la richiesta di login al server
+            if (receiveMessage().equals(SUCCESS)) {
+                System.out.println("User logged in");
+                return true;
+            }
+            else{
+                System.out.println("User not logged in " + receiveMessage());
+                return false;
+            }
         }
-        if(out != null && Objects.equals(commandName, "Fetch")) {
-            out.println("FETCH " + arg); //invio la richiesta di login al server
+        if(out != null && commandName.equals(FETCH_EMAIL)) {
+            out.println(FETCH_EMAIL + "|" + arg); //invio la richiesta di login al server
+            if (receiveMessage().equals(SUCCESS)) {
+                System.out.println("User logged in");
+                return true;
+            }
+            else{
+                System.out.println("User not logged in " + receiveMessage());
+                return false;
+            }
         }
+        return false;
     }
 
     // Metodo per ricevere i messaggi dal server
-    public String receiveMessage() {
-        try {
+    public CommandResponse receiveMessage() {
+        /*try {
             return in.readLine(); // Legge una linea dal server
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
+        }*/
+        return SUCCESS;
     }
 
     public boolean sendEmail(List<String> receivers, String object, String content) {

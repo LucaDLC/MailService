@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/ComposeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Network/NetworkManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Network/NetworkManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -170,6 +172,7 @@
       <workItem from="1732700183120" duration="2150000" />
       <workItem from="1732703435862" duration="2346000" />
       <workItem from="1732707699240" duration="904000" />
+      <workItem from="1732789501800" duration="3128000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

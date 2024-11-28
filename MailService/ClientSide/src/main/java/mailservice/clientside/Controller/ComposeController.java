@@ -37,8 +37,8 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
-        String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
+        List<String> recipients = Arrays.asList(recipient.split(","));
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
@@ -50,7 +50,7 @@ public class ComposeController{
         else{
             NetworkManager networkManager = NetworkManager.getInstance();
 
-            boolean success = networkManager.sendEmail(sender, recipient, object, mailBody); //invio l'email
+            boolean success = networkManager.sendEmail(recipients, object, mailBody); //invio l'email
             if(success) {
                 //se l'email è stata inviata con successo mostro un messaggio di successo
                 showSuccessAlert("Email sent successfully");
