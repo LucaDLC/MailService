@@ -3,11 +3,9 @@ package mailservice.clientside.Controller;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -15,8 +13,6 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.ClientApp;
-import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 
@@ -35,16 +31,19 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
-        String login = LoginFieldID.getText()+ "@Rama.it"; //aggiungo il dominio
+        System.out.println("Attempting Login...");
+        String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
+        System.out.println("Email: " + login);
 
-        NetworkManager networkManager = NetworkManager.getInstance();
         ClientModel clientModel = ClientModel.getInstance();
+        NetworkManager networkManager = NetworkManager.getInstance();
 
         if(clientModel.validateEmail(login))
         {
+            System.out.println("Email is valid");
             if(networkManager.connectToServer()){
-                showSuccessAlert("Login successful");
-
+                System.out.println("Connected to server");
+                showSuccessAlert();
                 //carica la scena principale
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
@@ -65,9 +64,11 @@ public class LoginController {
                     showDangerAlert("Unable to load Main.fxml");
                 }
             }else{
+                System.err.println("Unable to connect to the server");
                 showDangerAlert("Unable to connect to the server");
             }
         }else{
+            System.err.println("Invalid email");
             showDangerAlert("Invalid email");
         }
     }
@@ -90,10 +91,10 @@ public class LoginController {
     }
 
     @FXML
-    private void showSuccessAlert(String message) {
+    private void showSuccessAlert() {
         dangerAlert.setVisible(false); //nascondo il messaggio di errore
         getSuccessAlert();
-        Text successText = new Text(message);
+        Text successText = new Text("Login successful");
         successText.setFill(Color.GREEN);
         successAlert.getChildren().add(successText);
         successAlert.setVisible(true);
@@ -112,13 +113,11 @@ public class LoginController {
         pause.play();
     }
 
-    public TextFlow getSuccessAlert() {
+    public void getSuccessAlert() {
         successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
-        return successAlert;
     }
 
-    public TextFlow getDangerAlert() {
+    public void getDangerAlert() {
         dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
-        return dangerAlert;
     }
 }

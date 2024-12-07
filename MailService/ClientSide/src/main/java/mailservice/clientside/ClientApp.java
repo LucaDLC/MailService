@@ -19,6 +19,8 @@ public class ClientApp extends Application {
     private static ScheduledExecutorService fetchEmails;
     private static Date lastFetch = new Date(Long.MIN_VALUE);
 
+    NetworkManager networkManager = NetworkManager.getInstance();
+
     @Override
     public void start(Stage stage) throws IOException {
         // Caricamento dell'interfaccia utente tramite FXML
@@ -39,17 +41,17 @@ public class ClientApp extends Application {
         stage.setOnCloseRequest(event -> stopFetchingEmails());
     }
 
-    public static void startFetchingEmails() {
+    public void startFetchingEmails() {
         fetchEmails = Executors.newSingleThreadScheduledExecutor();
         fetchEmails.scheduleAtFixedRate(() -> {
             try {
-                if (!NetworkManager.isConnected() && !NetworkManager.connectToServer()) {
+                if (!networkManager.isConnected() && !networkManager.connectToServer()) {
                     System.out.println("[ERROR] Unable to reconnect to server.");
                     return;
                 }
 
                 // Invio del comando FETCH_EMAIL con il timestamp dell'ultimo fetch
-                if (NetworkManager.sendMessage(CommandRequest.FETCH_EMAIL, lastFetch.toString())) {
+                if (networkManager.sendMessage(CommandRequest.FETCH_EMAIL, lastFetch.toString())) {
                     lastFetch = new Date();
                     System.out.println("[INFO] Emails fetched successfully at: " + lastFetch);
                 } else {
@@ -63,7 +65,7 @@ public class ClientApp extends Application {
 
     @Override
     public void stop() {
-        NetworkManager.disconnectFromServer();
+        networkManager.disconnectFromServer();
         stopFetchingEmails();
     }
 

@@ -41,6 +41,9 @@
                <TextFlow fx:id="dangerAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" />
                </TextFlow>
+               <TextFlow fx:id="successAlert" prefHeight="40.0" prefWidth="205.0" visible="false" AnchorPane.topAnchor="15.0">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+               </TextFlow>
             </children>
          </AnchorPane>
       </HBox>

@@ -1,7 +1,9 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,12 +11,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Configuration.Email;
 import mailservice.clientside.Network.NetworkManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,31 +38,32 @@ public class ComposeController{
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
+    private Runnable updateCallback;
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
+        String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         List<String> recipients = Arrays.asList(recipient.split(","));
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        if(recipient.isEmpty() || object.isEmpty() || mailBody.isEmpty()){
-            //se i campi non sono validi mostro un messaggio di errore
-            showDangerAlert("Please fill all the fields");
+        NetworkManager networkManager = NetworkManager.getInstance();
+            boolean sent = networkManager.sendEmail(sender, Arrays.asList(recipients.toString()), object, mailBody);
+        if (sent) {
+            System.out.println("Email sent successfully!");
 
-        }
-        else{
-            NetworkManager networkManager = NetworkManager.getInstance();
+            // Chiudi la finestra di composizione
+            Stage stage = (Stage) SendMailButton.getScene().getWindow();
+            stage.close();
 
-            boolean success = networkManager.sendEmail(recipients, object, mailBody); //invio l'email
-            if(success) {
-                //se l'email è stata inviata con successo mostro un messaggio di successo
-                showSuccessAlert("Email sent successfully");
-            } else {
-                //altrimenti mostro un messaggio di errore
-                showDangerAlert("Error sending email");
+            // Chiama il callback per aggiornare la lista delle email
+            if (updateCallback != null) {
+                updateCallback.run();
             }
+        } else {
+            System.out.println("Failed to send email.");
         }
     }
 
@@ -123,4 +129,7 @@ public class ComposeController{
         System.out.println("Deleting fields...");
     }
 
+    public void setUpdateCallback(Runnable callBack) {
+        this.updateCallback = callBack;
+    }
 }

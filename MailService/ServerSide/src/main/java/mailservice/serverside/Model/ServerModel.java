@@ -1,5 +1,7 @@
 package mailservice.serverside.Model;
 
+import mailservice.serverside.Configuration.CommandRequest;
+import mailservice.serverside.Configuration.CommandResponse;
 import mailservice.serverside.Configuration.ConfigManager;
 import mailservice.serverside.Controller.ServerController;
 
@@ -74,75 +76,293 @@ public class ServerModel {
     }
 
     private void handleClient(Socket clientSocket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {    //invia messaggi al client
+        try (
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))
+        ) {
+            controller.log("Client connected: " + clientSocket.getInetAddress());
 
             String clientMessage;
-            String currentUser=null; //serve per tenere traccia dell'utente corrente
 
             while ((clientMessage = in.readLine()) != null) {
-                //aggiungiamo log ogni volta che un client invia un messaggio
-                controller.log("Received message from client: " + clientMessage);
+                // Log del comando ricevuto
+                controller.log("Received message: " + clientMessage);
 
-                //gestione del comando di
-                if(clientMessage.startsWith("USER_LOGIN")) {
-                    currentUser = clientMessage.split(" ")[1];
-                    createUserFolder(currentUser); //crea una cartella per l'utente
-                    out.println("User folder created or verified: "+currentUser); //invia una risposta al client
+                String[] parts = clientMessage.split("\\|");
+                String command = parts[0];
+                String argument = parts.length > 1 ? parts[1] : "";
+
+                CommandResponse response;
+                switch (command) {
+                    case "LOGIN_CHECK":
+                        response = handleLoginCheck(argument, out);
+                        break;
+
+                    case "FETCH_EMAIL":
+                        response = handleFetchEmail(argument, out);
+                        break;
+
+                    case "SEND_EMAIL":
+                        response = handleSendEmail(argument, out);
+                        break;
+
+                    case "DELETE_EMAIL":
+                        response = handleDeleteEmail(argument, out);
+                    default:
+                        response = CommandResponse.ILLEGAL_PARAMS;
+                        controller.log("Unknown command received: " + command);
+                        out.write(response.name() + "\n");
+                        out.flush();
                 }
 
-                //salvataggio email inviata
-                if(clientMessage.startsWith("SEND_EMAIL")) {
-                    if(currentUser != null){
-                        String emailContent = clientMessage.substring(10); //rimuove il comando SEND_EMAIL
-                        saveEmailToFolders(currentUser, emailContent); //salva l'email nelle cartelle
-                        out.println("Email saved successfully for useer: "+currentUser); //invia una risposta al client
-                    }else{
-                        out.println("Error: No user logged in");
-                    }
-                    //invio risposta generica al client
-                    out.println("Server received message: " + clientMessage);
+                if (response != null) {
+                    controller.log("Response sent: " + response.name());
                 }
             }
         } catch (IOException e) {
-            controller.showErrorAlert("Error handling client: " + e.getMessage());
+            controller.log("Error handling client: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
-                controller.log("Client disconnected"+ clientSocket.getInetAddress());
+                controller.log("Client disconnected: " + clientSocket.getInetAddress());
             } catch (IOException e) {
-                controller.showErrorAlert("Error closing client socket: " + e.getMessage());
+                controller.log("Error closing client socket: " + e.getMessage());
             }
         }
+    }
 
+    private CommandResponse handleSendEmail(String emailData, BufferedWriter out) throws IOException {
+        controller.log("Processing email sending: " + emailData);
+
+        // Parsing dell'email
+        String[] parts = emailData.split("\\|", 4);
+        if (parts.length < 4) {
+            controller.log("Invalid email format: " + emailData);
+            out.write(CommandResponse.FAILURE.name() + "|Invalid email format\n");
+            out.flush();
+            return CommandResponse.FAILURE;
+        }
+
+        String sender = parts[0];
+        String[] receivers = parts[1].split(",");
+        String subject = parts[2];
+        String content = parts[3];
+
+        // Salva l'email per ogni destinatario
+        for (String receiver : receivers) {
+            saveEmailToFolders(receiver, "From: " + sender + "\nSubject: " + subject + "\nContent: " + content);
+        }
+
+        controller.log("Email sent successfully to: " + String.join(", ", receivers));
+        out.write(CommandResponse.SUCCESS.name() + "\n");
+        out.flush();
+        return CommandResponse.SUCCESS;
+    }
+
+
+    private CommandResponse handleDeleteEmail(String requestData, BufferedWriter out) {
+        controller.log("Processing email deletion request: " + requestData);
+
+        // Estrai username e email da eliminare
+        String[] parts = requestData.split("\\|", 2); // Dividi la stringa in username e email
+        if (parts.length < 2) {
+            controller.log("Invalid request format for email deletion.");
+            try {
+                out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid request format\n");
+                out.flush();
+            } catch (IOException e) {
+                controller.log("Error sending response: " + e.getMessage());
+            }
+            return CommandResponse.ILLEGAL_PARAMS;
+        }
+
+        String username = parts[0];
+        String[] emailsToDelete = parts[1].split(",");
+
+        File userFolder = new File("user_folders" + File.separator + username);
+        if (!userFolder.exists() || !userFolder.isDirectory()) {
+            controller.log("Folder for user " + username + " does not exist.");
+            try {
+                out.write(CommandResponse.FAILURE.name() + "|No folder found for user: " + username + "\n");
+                out.flush();
+            } catch (IOException e) {
+                controller.log("Error sending response: " + e.getMessage());
+            }
+            return CommandResponse.FAILURE;
+        }
+
+        File sentEmailsFile = new File(userFolder, "sent_emails.txt");
+        if (!sentEmailsFile.exists() || !sentEmailsFile.isFile()) {
+            controller.log("No email file found for user: " + username);
+            try {
+                out.write(CommandResponse.FAILURE.name() + "|No emails found for user: " + username + "\n");
+                out.flush();
+            } catch (IOException e) {
+                controller.log("Error sending response: " + e.getMessage());
+            }
+            return CommandResponse.FAILURE;
+        }
+
+        // Filtra le email e crea un nuovo file senza quelle selezionate
+        try {
+            File tempFile = new File(userFolder, "sent_emails_temp.txt");
+            try (BufferedReader reader = new BufferedReader(new FileReader(sentEmailsFile));
+                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+                String line;
+                boolean emailDeleted = false;
+                while ((line = reader.readLine()) != null) {
+                    if (!shouldDelete(line, emailsToDelete)) {
+                        writer.write(line);
+                        writer.newLine();
+                    } else {
+                        emailDeleted = true;
+                        controller.log("Email deleted for user " + username + ": " + line);
+                    }
+                }
+
+                if (!emailDeleted) {
+                    controller.log("No matching emails found for deletion.");
+                    out.write(CommandResponse.FAILURE.name() + "|No matching emails found for deletion\n");
+                    out.flush();
+                    return CommandResponse.FAILURE;
+                }
+            }
+
+            // Sostituisci il vecchio file con quello aggiornato
+            if (!sentEmailsFile.delete() || !tempFile.renameTo(sentEmailsFile)) {
+                controller.log("Error updating email file for user: " + username);
+                out.write(CommandResponse.FAILURE.name() + "|Failed to update email file\n");
+                out.flush();
+                return CommandResponse.FAILURE;
+            }
+
+            controller.log("Selected emails deleted successfully for user: " + username);
+            out.write(CommandResponse.SUCCESS.name() + "|Selected emails deleted successfully\n");
+            out.flush();
+            return CommandResponse.SUCCESS;
+        } catch (IOException e) {
+            controller.log("Error processing email deletion for user: " + username + ": " + e.getMessage());
+            try {
+                out.write(CommandResponse.FAILURE.name() + "|Error processing email deletion\n");
+                out.flush();
+            } catch (IOException ex) {
+                controller.log("Error sending response: " + ex.getMessage());
+            }
+            return CommandResponse.FAILURE;
+        }
+    }
+
+    //Verifica se un'email deve essere eliminata in base al contenuto.
+    private boolean shouldDelete(String email, String[] emailsToDelete) {
+        for (String emailToDelete : emailsToDelete) {
+            if (email.trim().equalsIgnoreCase(emailToDelete.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private CommandResponse handleLoginCheck(String email, BufferedWriter out) throws IOException {
+        controller.log("Checking login for email: " + email);
+
+        // Estrai il nome utente dalla email
+        String username = email.split("@")[0];
+
+        // Crea la cartella dell'utente
+        createUserFolder(username);
+
+        // Simula una validazione dell'email
+        if (email.matches("^[a-zA-Z0-9._%+-]+@rama.it$")) {
+            out.write(CommandResponse.SUCCESS.name() + "\n");
+            out.flush();
+            controller.log("Login successful for: " + email);
+            return CommandResponse.SUCCESS;
+        } else {
+            out.write(CommandResponse.FAILURE.name() + "\n");
+            out.flush();
+            controller.log("Invalid email: " + email);
+            return CommandResponse.FAILURE;
+        }
+    }
+
+    private CommandResponse handleFetchEmail(String username, BufferedWriter out) throws IOException {
+        controller.log("Fetching emails for user: " + username);
+
+        // Ottieni o crea la cartella dell'utente
+        File userFolder = createUserFolder(username);
+
+        // File contenente le email dell'utente
+        File emailFile = new File(userFolder, "sent_emails.txt");
+
+        if (!emailFile.exists() || emailFile.length() == 0) {
+            out.write(CommandResponse.FAILURE.name() + "|No emails found for user: " + username + "\n");
+            out.flush();
+            controller.log("No emails found for user: " + username);
+            return CommandResponse.FAILURE;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
+            StringBuilder emails = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                emails.append(line).append(",");
+            }
+
+            if (emails.length() > 0) {
+                emails.setLength(emails.length() - 1); // Rimuove l'ultima virgola
+            }
+
+            out.write(CommandResponse.SUCCESS.name() + "|" + emails + "\n");
+            out.flush();
+            controller.log("Emails sent to client for user: " + username);
+            return CommandResponse.SUCCESS;
+        }
     }
 
     private void saveEmailToFolders(String username, String emailContent) {
-        File userFolder = new File("user_folders"+ File.separator + username);
-        if(!userFolder.exists()){
-            controller.log("Error: Folder for user does not exist. Creating it...");
-            createUserFolder(username);
-        }
+        // Crea la cartella dell'utente (se non esiste)
+        File userFolder = createUserFolder(username);
 
-        File sentEmailsFile = new File(userFolder,"sent_emails.txt");
-        try(FileWriter writer = new FileWriter(sentEmailsFile, true)){ //true per appendere al file
-            writer.write(emailContent+"\n");
-            controller.log("Email saved for user: "+username);
-        }catch (IOException e){
-            controller.log("Error saving email for user: "+username+": "+e.getMessage());
+        // File per salvare le email
+        File emailFile = new File(userFolder, "sent_emails.txt");
+
+        try (FileWriter writer = new FileWriter(emailFile, true)) {
+            writer.write(emailContent + "\n");
+            controller.log("Email saved successfully for user: " + username);
+        } catch (IOException e) {
+            controller.log("Error saving email for user: " + username + ": " + e.getMessage());
         }
     }
 
-    private void createUserFolder(String username) {
-        File userFolder = new File("user_folders"+ File.separator + username);
-        if(!userFolder.exists()){
-            boolean created = userFolder.mkdirs();
-            if(created){
-                controller.log("Created folder for user: "+username);
-            }else{
-                controller.log("Error creating folder for user: "+username);
+
+    private File createUserFolder(String username) {
+        // Ottieni il percorso della directory principale (base)
+        String baseDirectory = System.getProperty("user.dir") + File.separator + "UserFolders";
+        File baseDir = new File(baseDirectory);
+
+        if (!baseDir.exists()) {
+            boolean baseCreated = baseDir.mkdirs();
+            if (baseCreated) {
+                controller.log("Base directory created at: " + baseDir.getAbsolutePath());
+            } else {
+                controller.log("Failed to create base directory at: " + baseDir.getAbsolutePath());
             }
         }
+
+        // Ottieni il percorso della directory dell'utente
+        File userFolder = new File(baseDir, username);
+
+        if (!userFolder.exists()) {
+            boolean userCreated = userFolder.mkdirs();
+            if (userCreated) {
+                controller.log("User folder created at: " + userFolder.getAbsolutePath());
+            } else {
+                controller.log("Failed to create user folder for: " + username);
+            }
+        }
+
+        return userFolder;
     }
 
     public int getPort() {
