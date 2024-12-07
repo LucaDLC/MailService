@@ -33,23 +33,6 @@ public class ComposeController{
     private Runnable updateCallback;
 
     @FXML
-    public void initialize() {
-        // Ridimensiona i pulsanti della barra degli strumenti nel HTMLEditor
-        MailBodyID.lookupAll(".tool-bar .button").forEach(button -> {
-            button.setStyle("-fx-pref-width: 18px; -fx-pref-height: 18px; -fx-padding: 0;");
-        });
-
-        // Ridimensiona le icone all'interno dei pulsanti
-        MailBodyID.lookupAll(".tool-bar .button > .graphic").forEach(graphic -> {
-            graphic.setStyle("-fx-fit-width: 14px; -fx-fit-height: 14px;");
-        });
-
-        // Riduce la spaziatura tra i pulsanti della barra degli strumenti
-        MailBodyID.lookup(".tool-bar").setStyle("-fx-spacing: 1px;");
-    }
-
-
-    @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
         System.out.println("Sending Email...");

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.ComposeController">
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@style.css"
+            fx:controller="mailservice.clientside.Controller.ComposeController">
     <children>
-        <VBox spacing="5.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" style="-fx-padding: 10;">
+        <VBox spacing="10.0" style="-fx-padding: 10;">
             <Label text="Recipient:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
             <TextField fx:id="RecipientFieldID" promptText="Recipient@Domain" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
 
@@ -15,11 +17,11 @@
             <TextField fx:id="ObjectFieldID" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
 
             <Label text="Body:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
-            <HTMLEditor fx:id="MailBodyID" prefHeight="250.0" style="-fx-border-radius: 5px;" />
+            <HTMLEditor fx:id="MailBodyID" prefWidth="870.0" prefHeight="500.0" VBox.vgrow="ALWAYS" />
 
-            <HBox spacing="10.0" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
-                <Button fx:id="CancelFieldButton" text="Cancel" styleClass="button-secondary" prefHeight="30.0" prefWidth="80.0" onAction="#onCancelFieldButtonClick" />
-                <Button fx:id="SendMailButton" text="Send" styleClass="button-primary" prefHeight="30.0" prefWidth="80.0" onAction="#onSendMailButtonClick" />
+            <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                <Button fx:id="CancelFieldButton" text="Cancel" styleClass="button-secondary" onAction="#onCancelFieldButtonClick" />
+                <Button fx:id="SendMailButton" text="Send" styleClass="button-primary" onAction="#onSendMailButtonClick" />
             </HBox>
         </VBox>
     </children>
