@@ -1,0 +1,69 @@
+/* Impostazione dello sfondo della finestra principale */
+.root {
+    -fx-background-color: white; /* La finestra principale ha lo sfondo bianco */
+}
+
+/* Impostazioni di stile per il ListView (log) */
+.Server-Log {
+    -fx-background-color: black; /* Sfondo nero per il ListView */
+    -fx-text-fill: #00ff00; /* Testo verde */
+    -fx-font-family: "Courier New"; /* Font monospaziato */
+    -fx-font-size: 14px;
+    -fx-border-radius: 5px; /* Bordo arrotondato */
+    -fx-background-insets: 0;
+    -fx-padding: 10px; /* Padding per un aspetto più pulito */
+}
+
+/* Stile dei singoli elementi (celle) all'interno del ListView */
+.Server-Log .list-cell {
+    -fx-background-color: transparent; /* Sfondo trasparente per evitare problemi di colore */
+    -fx-text-fill: #00ff00; /* Testo verde per tutti i log */
+    -fx-font-family: "Courier New"; /* Font monospaziato */
+    -fx-font-size: 14px;
+}
+
+/* Stile quando un elemento della lista è selezionato */
+.Server-Log .list-cell:selected {
+    -fx-background-color: #333333; /* Sfondo scuro quando selezionato */
+    -fx-text-fill: #00ff00; /* Testo verde quando selezionato */
+}
+
+/* Personalizzazione del bottone Start Server (verde) */
+#startButton {
+    -fx-background-color: #27ae60; /* Verde per il bottone "Start" */
+    -fx-text-fill: white; /* Testo bianco */
+    -fx-font-size: 16px; /* Font più grande */
+    -fx-font-weight: bold; /* Font in grassetto */
+    -fx-border-radius: 5px; /* Bordo arrotondato */
+    -fx-padding: 10px 30px; /* Padding per aumentare la dimensione del bottone */
+    -fx-pref-width: 150px; /* Larghezza fissa per il bottone Start */
+}
+
+/* Personalizzazione del bottone Stop Server (rosso) */
+#stopButton {
+    -fx-background-color: #e74c3c; /* Rosso per il bottone "Stop" */
+    -fx-text-fill: white; /* Testo bianco */
+    -fx-font-size: 16px; /* Font più grande */
+    -fx-font-weight: bold; /* Font in grassetto */
+    -fx-border-radius: 5px; /* Bordo arrotondato */
+    -fx-padding: 10px 30px; /* Padding per aumentare la dimensione del bottone */
+    -fx-pref-width: 150px; /* Larghezza fissa per il bottone Stop */
+}
+
+/* Modifica del colore dei bottoni al passaggio del mouse */
+#startButton:hover {
+    -fx-background-color: rgba(39, 174, 96, 0.6); /* Verde trasparente per "Start" */
+    -fx-text-fill: white; /* Testo bianco */
+}
+
+#stopButton:hover {
+    -fx-background-color: rgba(231, 76, 60, 0.6); /* Rosso trasparente per "Stop" */
+    -fx-text-fill: white; /* Testo bianco */
+}
+
+/* Impostazioni per la scritta "Powered by:" */
+.label[alignment="CENTER_RIGHT"] {
+    -fx-font-size: 10px; /* Imposta una dimensione del font più piccola */
+    -fx-text-fill: #bfbfbf; /* Colore grigio per il testo */
+    -fx-font-family: "Arial"; /* Usa un font sans-serif */
+}

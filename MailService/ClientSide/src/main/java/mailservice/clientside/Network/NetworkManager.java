@@ -14,12 +14,12 @@ import static mailservice.clientside.Configuration.CommandResponse.*;
 import static mailservice.clientside.Configuration.CommandRequest.*;
 
 public class NetworkManager {
-    private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private static Socket socket;
+    private static PrintWriter out;
+    private static BufferedReader in;
 
-    private String serverHost;
-    private int serverPort;
+    private static String serverHost;
+    private static int serverPort;
 
     private static NetworkManager instance;
 
@@ -38,8 +38,12 @@ public class NetworkManager {
         return instance;
     }
 
+    public static boolean isConnected() {
+        return instance != null && instance.socket != null && instance.socket.isConnected();
+    }
+
     //connessione al server
-    public boolean connectToServer() {
+    public static boolean connectToServer() {
         try {
             socket = new Socket(serverHost, serverPort);
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -60,7 +64,7 @@ public class NetworkManager {
     }
 
     //disconnessione
-    public void disconnectFromServer() {
+    public static void disconnectFromServer() {
         try {
             if(socket != null && !socket.isClosed()) {
                 //chiude le risorse
@@ -76,7 +80,7 @@ public class NetworkManager {
     }
 
     // Metodo per inviare i messaggi
-    public boolean sendMessage(CommandRequest commandName, String arg) {
+    public static boolean sendMessage(CommandRequest commandName, String arg) {
         if(out != null && commandName.equals(LOGIN_CHECK)) {
             out.println(LOGIN_CHECK + "|" + arg); //invio la richiesta di login al server
             if (receiveMessage().equals(SUCCESS)) {
@@ -103,7 +107,7 @@ public class NetworkManager {
     }
 
     // Metodo per ricevere i messaggi dal server
-    public CommandResponse receiveMessage() {
+    public static CommandResponse receiveMessage() {
         /*try {
             return in.readLine(); // Legge una linea dal server
         } catch (Exception e) {

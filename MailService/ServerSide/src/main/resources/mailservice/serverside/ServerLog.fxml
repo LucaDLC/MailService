@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@Server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.ServerController">
+<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.ServerController">
    <ListView fx:id="ServerLog" layoutX="18.0" prefHeight="595.0" prefWidth="1042.0" styleClass="Server-Log" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0" />
    <Label layoutX="60.0" layoutY="12.0" text="ServerSide">
       <font>
@@ -18,8 +18,8 @@
    </ImageView>
    <HBox spacing="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" alignment="CENTER">
 
-      <Button fx:id="startServer" mnemonicParsing="false" onAction="#startServer" onMouseClicked="#onStart" prefHeight="34.0" prefWidth="88.0" text="Start Server" textFill="#0f842c" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"/>
-      <Button fx:id="stopServer" mnemonicParsing="false" onAction="#stopServer" onMouseClicked="#onStop" prefHeight="34.0" prefWidth="88.0" text="Stop Server" textFill="#941515" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"/>
+      <Button fx:id="startButton" mnemonicParsing="false" onAction="#startServer" onMouseClicked="#onStart" prefHeight="34.0" prefWidth="88.0" text="Start Server" textFill="#0f842c" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"/>
+      <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopServer" onMouseClicked="#onStop" prefHeight="34.0" prefWidth="88.0" text="Stop Server" textFill="#941515" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"/>
 
    </HBox>
 

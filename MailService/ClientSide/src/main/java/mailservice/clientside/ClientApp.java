@@ -1,67 +1,85 @@
-package mailservice.clientside; //package che contiene le classi per il client
+package mailservice.clientside;
 
-import javafx.application.Application; //classe base per tutte le applicazioni JavaFX
-import javafx.application.Platform; //permette di accedere a metodi di utilità per le applicazioni JavaFX
-import javafx.fxml.FXMLLoader; //carica file FXML, che descrivono l'interfaccia utente di un'applicazione JavaFX
-import javafx.scene.Scene; //contenitore per tutti i contenuti di un'interfaccia utente JavaFX
-import javafx.stage.Stage; //rappresenta la finestra principale di un'applicazione JavaFX
-import mailservice.clientside.Model.ClientModel;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import mailservice.clientside.Network.NetworkManager;
-
+import mailservice.clientside.Configuration.CommandRequest;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ExecutorService; //interfaccia che fornisce metodi per gestire un pool di thread
-import java.util.concurrent.Executors; //classe che fornisce metodi per creare pool di thread
-import java.util.concurrent.ScheduledExecutorService; //interfaccia che estende ExecutorService e fornisce metodi per eseguire attività in modo periodico
-import java.util.concurrent.TimeUnit; //classe che fornisce metodi per convertire il tempo da un'unità a un'altra
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientApp extends Application {
 
-
-    private static ScheduledExecutorService fetchEmails; //pool di thread per il fetch delle email
-    private static ExecutorService GUI;
+    private static ScheduledExecutorService fetchEmails;
     private static Date lastFetch = new Date(Long.MIN_VALUE);
 
     @Override
     public void start(Stage stage) throws IOException {
-        //start(Stage stage) è il metodo principale di un'applicazione JavaFX, che viene chiamato quando l'applicazione viene avviata
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientApp.class.getResource("/mailservice/clientside/Login.fxml")); //crea un oggetto per carica il file FXML
-        Scene scene = new Scene(fxmlLoader.load()); //crea la scena con il contenuto del file FXML
-        stage.setTitle("ClientSide - Login"); //imposta il titolo della finestra
-        stage.setScene(scene); //associa la scena(l'interfaccia utente) alla finestra
+        // Caricamento dell'interfaccia utente tramite FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+
+        // Aggiungere il file CSS alla scena
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/mailservice/clientside/style.css")).toExternalForm());
+
+        stage.setTitle("ClientSide - Login");
+        stage.setScene(scene);
         stage.show();
 
+        // Avvio del recupero periodico delle email
+        startFetchingEmails();
+
+        // Gestione della chiusura dell'applicazione
+        stage.setOnCloseRequest(event -> stopFetchingEmails());
+    }
+
+    public static void startFetchingEmails() {
+        fetchEmails = Executors.newSingleThreadScheduledExecutor();
+        fetchEmails.scheduleAtFixedRate(() -> {
+            try {
+                if (!NetworkManager.isConnected() && !NetworkManager.connectToServer()) {
+                    System.out.println("[ERROR] Unable to reconnect to server.");
+                    return;
+                }
+
+                // Invio del comando FETCH_EMAIL con il timestamp dell'ultimo fetch
+                if (NetworkManager.sendMessage(CommandRequest.FETCH_EMAIL, lastFetch.toString())) {
+                    lastFetch = new Date();
+                    System.out.println("[INFO] Emails fetched successfully at: " + lastFetch);
+                } else {
+                    System.out.println("[WARNING] Email fetch failed.");
+                }
+            } catch (Exception e) {
+                System.out.println("[ERROR] Exception during email fetch: " + e.getMessage());
+            }
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
     @Override
     public void stop() {
-        NetworkManager.getInstance().disconnectFromServer(); //chiama il metodo per chiudere la connessione al server
-        fetchEmails.shutdown();
-        GUI.shutdown();
+        NetworkManager.disconnectFromServer();
+        stopFetchingEmails();
+    }
 
-        try {
-            if (!fetchEmails.awaitTermination(3, TimeUnit.SECONDS)) {
-                fetchEmails.shutdownNow(); //se entro 3 secondi non termina, interrompe l'esecuzione dei thread
-            }
-        } catch (InterruptedException e) { //se awaitTermination viene interrotto
+    private void stopFetchingEmails() {
+        if (fetchEmails != null && !fetchEmails.isShutdown()) {
             fetchEmails.shutdownNow();
-        }
-
-        try {
-            if (!GUI.awaitTermination(3, TimeUnit.SECONDS)) {
-                GUI.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            GUI.shutdownNow();
+            System.out.println("[INFO] Stopped fetching emails.");
         }
     }
 
     public static void main(String[] args) {
-        GUI = Executors.newSingleThreadExecutor();
-        fetchEmails = Executors.newScheduledThreadPool(1); //crea un pool di thread con un solo thread che esegue attività in modo periodico
-        fetchEmails.scheduleAtFixedRate(() -> { //inserire la funzione di fetch
-        }, 0, 1, TimeUnit.MINUTES); //esegue l'attività ogni minuto
-        GUI.execute(Application::launch);
-    } //avvia l'applicazione
+        try {
+            // Avvio dell'applicazione JavaFX
+            Application.launch(ClientApp.class, args);
+        } catch (Exception e) {
+            System.out.println("Error initializing application: " + e.getMessage());
+        }
+    }
 }
