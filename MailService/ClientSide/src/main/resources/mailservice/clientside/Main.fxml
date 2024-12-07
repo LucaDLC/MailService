@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
+<BorderPane prefHeight="516.0" prefWidth="748.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.MainController">
    <top>
-      <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-background-color: #2E3B4E; -fx-padding: 10px;">
-         <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #2E3B4E; -fx-padding: 10px;">
+         <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@logo.png" />
          </ImageView>
-         <Label text="Welcome:" style="-fx-text-fill: white; -fx-font-size: 18px;" />
-         <Label fx:id="MailLabel" text="perz@rama.it" style="-fx-text-fill: white; -fx-font-size: 18px;" />
+         <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="Welcome:" />
+         <Label fx:id="MailLabel" style="-fx-text-fill: white; -fx-font-size: 18px;" text="perz@rama.it" />
+         <TextFlow fx:id="dangerAlert" prefHeight="38.0" prefWidth="436.0" style="-fx-background-color: #FFCDD2; -fx-padding: 5px; -fx-border-color: #D32F2F; -fx-border-radius: 5px;" textAlignment="RIGHT" visible="false">
+            <children>
+               <Text fx:id="dangerAlertText1" style="-fx-fill: #D32F2F;" text="Error message goes here." wrappingWidth="197.51756596565247" />
+            </children>
+         </TextFlow>
       </HBox>
    </top>
    <center>
-      <SplitPane dividerPositions="0.3">
+      <SplitPane dividerPositions="0.31963927855711416">
          <!-- Sinistra -->
-         <VBox spacing="10.0" alignment="CENTER" style="-fx-padding: 10px;">
-            <Button fx:id="ComposeButton" text="Compose" styleClass="button-primary" prefHeight="40.0" prefWidth="150.0" onAction="#onComposeButtonClick" />
+         <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
+            <Button fx:id="ComposeButton" onAction="#onComposeButtonClick" prefHeight="40.0" prefWidth="150.0" styleClass="button-primary" text="Compose" />
             <ListView fx:id="MailList" style="-fx-background-color: #FFFFFF; -fx-border-color: #E0E0E0;" />
-            <HBox spacing="10.0" alignment="CENTER" style="-fx-padding: 10px;">
-               <Button fx:id="DeleteButton" text="Delete" styleClass="button-danger" prefWidth="100.0" onAction="#onDeleteButtonClick" />
-               <Button fx:id="ForwardButton" text="Forward" styleClass="button-primary" prefWidth="100.0" onAction="#onForwardButtonClick" />
-               <Button fx:id="ReplyButton" text="Reply" styleClass="button-primary" prefWidth="100.0" onAction="#onReplyButtonClick" />
+            <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
+               <Button fx:id="ForwardButton" alignment="CENTER" onAction="#onForwardButtonClick" prefWidth="100.0" styleClass="button-primary" text="Forward" />
+               <Button fx:id="DeleteButton" alignment="CENTER" onAction="#onDeleteButtonClick" prefHeight="40.0" prefWidth="100.0" styleClass="button-danger" text="Delete" />
             </HBox>
          </VBox>
          <!-- Destra -->
-         <VBox spacing="10.0" style="-fx-padding: 10px;">
+         <VBox alignment="BOTTOM_CENTER" prefHeight="413.0" prefWidth="543.0" spacing="10.0" style="-fx-padding: 10px;">
             <GridPane hgap="10.0" vgap="10.0">
                <Label text="From:" />
                <Label fx:id="SenderLabel" text="Sender" GridPane.columnIndex="1" />
@@ -41,14 +43,24 @@
                <Label fx:id="ObjectLabel" text="Subject" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                <Label text="Date:" GridPane.rowIndex="3" />
                <Label fx:id="DateLabel" text="Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
             </GridPane>
-            <WebView fx:id="MailContent" prefHeight="400.0" />
-            <TextFlow fx:id="dangerAlert" visible="false" style="-fx-background-color: #FFCDD2; -fx-padding: 5px; -fx-border-color: #D32F2F; -fx-border-radius: 5px;">
-               <Text fx:id="dangerAlertText" text="Error message goes here." style="-fx-fill: #D32F2F;" />
-            </TextFlow>
-            <TextFlow fx:id="successAlert" visible="false" style="-fx-background-color: #C8E6C9; -fx-padding: 5px; -fx-border-color: #388E3C; -fx-border-radius: 5px;">
-               <Text fx:id="successAlertText" text="Success message goes here." style="-fx-fill: #388E3C;" />
-            </TextFlow>
+            <WebView fx:id="MailContent" prefHeight="303.0" prefWidth="469.0" />
+            <MenuButton fx:id="Reply" prefHeight="38.0" prefWidth="100.0" styleClass="button-primary" text="..." textAlignment="CENTER" textFill="WHITE">
+               <items>
+                  <MenuItem onAction="#onReplyButtonClick" text="Reply" />
+                  <MenuItem onAction="#onReplyAllButtonAction" text="Reply All" />
+               </items>
+            </MenuButton>
          </VBox>
       </SplitPane>
    </center>

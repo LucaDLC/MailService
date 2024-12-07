@@ -7,10 +7,7 @@ import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;  //importo la classe Label
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -51,6 +48,14 @@ public class MainController {
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
     @FXML
     private TextFlow successAlert; //serve a visualizzare un messaggio di successo
+    @FXML
+    public Button ComposeButton;
+    @FXML
+    public Button ForwardButton;
+    @FXML
+    public Button DeleteButton;
+    @FXML
+    public MenuButton Reply;
 
     private Timer emailRefreshTimer;
     private static final long REFRESH_INTERVAL = 10000; //10 secondi di intervallo tra i refresh
@@ -228,14 +233,11 @@ public class MainController {
     }
     @FXML
     protected void onReplyButtonClick() {
+        System.out.println("Replying Email...");
         ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Reply");
         }
-    }
-    @FXML
-    protected void onReplyButtonAction() {
-        System.out.println("Replying Email...");
     }
 
     @FXML

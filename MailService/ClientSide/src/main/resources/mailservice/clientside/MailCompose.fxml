@@ -4,24 +4,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1"
-            stylesheets="@style.css"
-            fx:controller="mailservice.clientside.Controller.ComposeController">
+<AnchorPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.ComposeController">
     <children>
         <VBox spacing="10.0" style="-fx-padding: 10;">
-            <Label text="Recipient:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
-            <TextField fx:id="RecipientFieldID" promptText="Recipient@Domain" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
+            <Label contentDisplay="RIGHT" style="-fx-font-size: 13px; -fx-font-weight: bold;" text="Recipient:" />
+            <TextField fx:id="RecipientFieldID" prefWidth="874.0" promptText="Recipient@Domain" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
 
-            <Label text="Subject:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
-            <TextField fx:id="ObjectFieldID" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
+            <Label contentDisplay="RIGHT" style="-fx-font-size: 13px; -fx-font-weight: bold;" text="Subject:" />
+            <TextField fx:id="ObjectFieldID" prefHeight="30.0" prefWidth="827.0" style="-fx-font-size: 13px; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
 
-            <Label text="Body:" style="-fx-font-size: 13px; -fx-font-weight: bold;" />
-            <HTMLEditor fx:id="MailBodyID" prefWidth="870.0" prefHeight="500.0" VBox.vgrow="ALWAYS" />
+            <Label style="-fx-font-size: 13px; -fx-font-weight: bold;" text="Body:" />
+            <HTMLEditor fx:id="MailBodyID" prefHeight="500.0" prefWidth="870.0" VBox.vgrow="ALWAYS" />
 
-            <HBox spacing="10.0" alignment="CENTER_RIGHT">
-                <Button fx:id="CancelFieldButton" text="Cancel" styleClass="button-secondary" onAction="#onCancelFieldButtonClick" />
-                <Button fx:id="SendMailButton" text="Send" styleClass="button-primary" onAction="#onSendMailButtonClick" />
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                <Button fx:id="CancelFieldButton" onAction="#onCancelFieldButtonClick" styleClass="button-secondary" text="Cancel" />
+                <Button fx:id="SendMailButton" onAction="#onSendMailButtonClick" styleClass="button-primary" text="Send" />
             </HBox>
         </VBox>
     </children>
