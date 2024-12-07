@@ -63,7 +63,7 @@ public class ConfigManager {
     }
 
     private File getDir() {
-        String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "User.properties"; //ottengo il percorso del file
+        String url = new File("").getAbsolutePath() + File.separator + "mailservice" + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "User.properties"; //ottengo il percorso del file
         return new File(url);   //restituisco il persorso del file di configurazione
     }
 }

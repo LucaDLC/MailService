@@ -6,21 +6,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Model.ClientModel;
-import mailservice.clientside.Configuration.Email;
 import mailservice.clientside.Network.NetworkManager;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +33,26 @@ public class ComposeController{
     private Runnable updateCallback;
 
     @FXML
+    public void initialize() {
+        // Ridimensiona i pulsanti della barra degli strumenti nel HTMLEditor
+        MailBodyID.lookupAll(".tool-bar .button").forEach(button -> {
+            button.setStyle("-fx-pref-width: 18px; -fx-pref-height: 18px; -fx-padding: 0;");
+        });
+
+        // Ridimensiona le icone all'interno dei pulsanti
+        MailBodyID.lookupAll(".tool-bar .button > .graphic").forEach(graphic -> {
+            graphic.setStyle("-fx-fit-width: 14px; -fx-fit-height: 14px;");
+        });
+
+        // Riduce la spaziatura tra i pulsanti della barra degli strumenti
+        MailBodyID.lookup(".tool-bar").setStyle("-fx-spacing: 1px;");
+    }
+
+
+    @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
+        System.out.println("Sending Email...");
         String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         List<String> recipients = Arrays.asList(recipient.split(","));
@@ -66,7 +76,6 @@ public class ComposeController{
             System.out.println("Failed to send email.");
         }
     }
-
 
     private void showDangerAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);  // Tipo di alert per errore
@@ -100,13 +109,9 @@ public class ComposeController{
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
-    protected void onSendMailButtonAction() {
-        System.out.println("Sending Email...");
-    }
-
-    @FXML
-    //metodo che viene chiamato quando si preme il bottone
     protected void onCancelFieldButtonClick() {
+        System.out.println("Deleting fields...");
+
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
@@ -121,12 +126,6 @@ public class ComposeController{
             MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email
             showSuccessAlert("Fields cleared successfully");
         }
-    }
-
-    @FXML
-    //metodo che viene chiamato quando si preme il bottone
-    protected void onCancelFieldButtonAction() {
-        System.out.println("Deleting fields...");
     }
 
     public void setUpdateCallback(Runnable callBack) {

@@ -25,8 +25,6 @@ import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 
 import java.util.Timer;
-import java.util.TimerTask;
-
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -157,6 +155,10 @@ public class MainController {
             composeStage.setScene(composeScene);
             composeStage.setTitle("ClientSide - Mail Compose");
             composeStage.initModality(Modality.APPLICATION_MODAL);
+
+            // Blocca il ridimensionamento
+            composeStage.setResizable(false);
+
             composeStage.show();
         } catch (IOException e) {
             System.err.println("Error loading FXML file: " + e.getMessage());

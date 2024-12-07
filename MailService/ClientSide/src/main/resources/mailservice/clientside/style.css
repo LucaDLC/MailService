@@ -1,184 +1,151 @@
 /* ======================================== */
-/*       CSS per il layout principale (top) */
+/*               Tema Generale              */
 /* ======================================== */
-#top {
-    -fx-background-color: #2E3B4E;
-    -fx-padding: 10;
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #F5F5F5;
 }
 
-#top Label {
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-}
-
-#top ImageView {
-    -fx-margin-left: 30px;
-}
-
-#MailLabel {
-    -fx-text-fill: #C6D0D8;
-}
-
-/* Styling dei bottoni nel layout principale */
-#ComposeButton, #DeleteButton, #ForwardButton, #ReplyButton {
-    -fx-background-color: #4BA15B;
+/* ======================================== */
+/*               Bottoni                    */
+/* ======================================== */
+.button {
+    -fx-background-color: #007ACC;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-cursor: hand;
-    -fx-padding: 10px;
+    -fx-padding: 8px 16px; /* Aumenta il padding per più spazio interno */
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
+    -fx-min-width: 100px; /* Imposta una larghezza minima per evitare il taglio del testo */
+}
+.button:hover {
+    -fx-background-color: #005A99;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
 }
 
-/* Hover effect per i bottoni */
-#ComposeButton:hover, #DeleteButton:hover, #ForwardButton:hover, #ReplyButton:hover {
-    -fx-background-color: #3B8B4A; /* Colore più scuro per il hover */
-}
-
-#DeleteButton {
+.button-danger {
     -fx-background-color: #C92D2D;
-}
-
-/* Hover effect specifico per il bottone Delete */
-#DeleteButton:hover {
-    -fx-background-color: #9E1C1C; /* Colore più scuro per il hover */
-}
-
-#ForwardButton, #ReplyButton {
-    -fx-background-color: #4BA15B;
-}
-
-/* Tooltip styles */
-.tooltip {
-    -fx-background-color: #333333;
     -fx-text-fill: white;
-}
-
-/* ListView e contenitori generali */
-#MailList {
-    -fx-background-color: #F3F3F3;
-    -fx-border-color: #E0E0E0;
-    -fx-border-radius: 10px;
-}
-
-/* Styling dell'alert di errore */
-#dangerAlert {
-    -fx-fill: #FF0000;
     -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-min-width: 100px; /* Larghezza minima per evitare il taglio del testo */
+    -fx-padding: 8px 16px;
+}
+.button-danger:hover {
+    -fx-background-color: #9E1C1C;
+}
+
+.button-secondary {
+    -fx-background-color: #D0D0D0;
+    -fx-text-fill: black;
+    -fx-background-radius: 5px;
+    -fx-min-width: 100px; /* Larghezza minima */
+    -fx-padding: 8px 16px;
+}
+.button-secondary:hover {
+    -fx-background-color: #B0B0B0;
+}
+
+/* Bottoni personalizzati */
+.button-primary {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+}
+.button-primary:hover {
+    -fx-background-color: #005A99;
+}
+
+/* ======================================== */
+/*               Etichette                  */
+/* ======================================== */
+.label {
+    -fx-text-fill: #CCCCCC;
     -fx-font-size: 14px;
 }
 
-/* ======================================== */
-/*       CSS per la composizione della mail */
-/* ======================================== */
-
-/* Contenitore principale */
-AnchorPane {
-    -fx-background-color: #FFFFFF;
-    -fx-padding: 20px;
+/* Email più scura */
+#MailLabel {
+    -fx-text-fill: #CCCCCC; /* Colore scuro */
+    -fx-font-weight: bold; /* Grassetto */
 }
 
-/* Styling dei TextField (Destinatario, Oggetto) */
+/* ======================================== */
+/*       Campi di testo e Editor            */
+/* ======================================== */
+.text-field, .text-area {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #007ACC;
+}
+
 #RecipientFieldID, #ObjectFieldID {
     -fx-font-size: 14px;
     -fx-padding: 5px;
     -fx-background-color: #F0F0F0;
-    -fx-border-color: #B0B0B0;
+    -fx-border-color: #BBBBBB;
     -fx-border-radius: 5px;
 }
 
-/* Styling dell'HTMLEditor */
 #MailBodyID {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #D0D0D0;
     -fx-border-radius: 5px;
 }
 
-/* Styling dei bottoni */
-#CancelFieldButton, #SendMailButton {
-    -fx-font-size: 14px;
-    -fx-padding: 10px 20px;
-    -fx-background-radius: 5px;
-    -fx-cursor: hand;
+/* Personalizzazione del HTMLEditor */
+.htmeditor .tool-bar .button {
+    -fx-padding: 0; /* Rimuove padding interno extra */
+    -fx-pref-width: 18px; /* Imposta una larghezza predefinita più piccola */
+    -fx-pref-height: 18px; /* Imposta un'altezza predefinita più piccola */
 }
 
-/* Hover effect per i bottoni */
-#SendMailButton:hover {
-    -fx-background-color: #3B8B4A; /* Colore più scuro per il hover */
+.htmeditor .tool-bar .button > .graphic {
+    -fx-fit-width: 12px; /* Ridimensiona la larghezza dell'icona */
+    -fx-fit-height: 12px; /* Ridimensiona l'altezza dell'icona */
 }
 
-#SendMailButton {
-    -fx-background-color: #4BA15B;
-    -fx-text-fill: white;
+.htmeditor .tool-bar {
+    -fx-spacing: 1px; /* Riduce lo spazio tra i pulsanti */
 }
 
-#CancelFieldButton {
-    -fx-background-color: #D0D0D0;
+/* Campi di testo compatti */
+.text-field {
+    -fx-padding: 4px; /* Riduce il padding interno */
+    -fx-font-size: 13px; /* Riduce la dimensione del testo */
 }
 
-/* Tooltip per il success e il danger */
-.tooltip-success {
-    -fx-background-color: #4BA15B;
-    -fx-text-fill: white;
-}
-
-.tooltip-danger {
-    -fx-background-color: #C92D2D;
-    -fx-text-fill: white;
+/* Etichette compatte */
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333333;
 }
 
 /* ======================================== */
-/*       CSS per la schermata di login      */
+/*               ListView                   */
 /* ======================================== */
-
-/* Contenitore principale */
-AnchorPane {
+.list-view {
     -fx-background-color: #FFFFFF;
-    -fx-padding: 20px;
-}
-
-/* Styling del TextField */
-#LoginFieldID {
-    -fx-font-size: 14px;
-    -fx-padding: 5px;
-    -fx-background-color: #F0F0F0;
-    -fx-border-color: #B0B0B0;
+    -fx-border-color: #D3D3D3;
     -fx-border-radius: 5px;
 }
 
-/* Styling del Login Button */
-#LoginButton {
-    -fx-background-color: #42804E;
+/* ======================================== */
+/*               Tooltip                    */
+/* ======================================== */
+.tooltip {
+    -fx-background-color: #333333;
     -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
-    -fx-cursor: hand;
-    -fx-background-radius: 5px;
+    -fx-font-size: 12px;
 }
 
-/* Hover effect per LoginButton */
-#LoginButton:hover {
-    -fx-background-color: #3B8B4A; /* Colore più scuro per il hover */
-}
-
-/* Styling per il messaggio di successo e errore */
-#successAlert {
-    -fx-fill: #4BA15B;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-text-alignment: center;
-}
-
-#dangerAlert {
-    -fx-fill: #FF0000;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-text-alignment: center;
-}
-
-/* Tooltip per success e danger */
 .tooltip-success {
     -fx-background-color: #4BA15B;
     -fx-text-fill: white;
@@ -189,19 +156,43 @@ AnchorPane {
     -fx-text-fill: white;
 }
 
+/* ======================================== */
+/*           Alert (TextFlow)               */
+/* ======================================== */
+#dangerAlert {
+    -fx-background-color: #FFCDD2; /* Sfondo rosso chiaro */
+    -fx-padding: 5px;
+    -fx-border-color: #D32F2F;
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
+}
+
+#successAlert {
+    -fx-background-color: #C8E6C9; /* Sfondo verde chiaro */
+    -fx-padding: 5px;
+    -fx-border-color: #388E3C;
+    -fx-border-radius: 5px;
+    -fx-font-size: 14px;
+}
+
+#dangerAlertText {
+    -fx-fill: #D32F2F; /* Testo rosso scuro */
+}
+
+#successAlertText {
+    -fx-fill: #388E3C; /* Testo verde scuro */
+}
 
 /* ======================================== */
-/*       CSS per miglioramenti generali      */
+/*       Miglioramenti generali             */
 /* ======================================== */
-
-/* Aggiunta un margine ai componenti */
 .input-field, .button, .text-field, .text-area {
     -fx-margin: 5px;
 }
 
 /* Cambia il colore del bordo quando il TextField è in focus */
 .input-field:focused, .button:focused {
-    -fx-border-color: #4BA15B;
+    -fx-border-color: #007ACC;
 }
 
 /* Border radius per bottoni */
@@ -215,8 +206,4 @@ AnchorPane {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 1);
 }
 
-/* Styling del Label */
-.label {
-    -fx-font-size: 16px;
-    -fx-text-fill: #2E3B4E;
-}
+/* ======================================== */
