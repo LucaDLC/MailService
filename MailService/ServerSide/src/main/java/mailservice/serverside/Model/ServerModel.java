@@ -337,29 +337,24 @@ public class ServerModel {
 
 
     private File createUserFolder(String username) {
-        // Ottieni il percorso della directory principale (base)
+        // Assicurati che il nome della cartella includa sempre "@rama.it"
+        if (!username.endsWith("@rama.it")) {
+            username += "@rama.it";
+        }
+
         String baseDirectory = System.getProperty("user.dir") + File.separator + "UserFolders";
         File baseDir = new File(baseDirectory);
 
         if (!baseDir.exists()) {
-            boolean baseCreated = baseDir.mkdirs();
-            if (baseCreated) {
-                controller.log("Base directory created at: " + baseDir.getAbsolutePath());
-            } else {
-                controller.log("Failed to create base directory at: " + baseDir.getAbsolutePath());
-            }
+            baseDir.mkdirs();
         }
 
-        // Ottieni il percorso della directory dell'utente
         File userFolder = new File(baseDir, username);
-
         if (!userFolder.exists()) {
-            boolean userCreated = userFolder.mkdirs();
-            if (userCreated) {
-                controller.log("User folder created at: " + userFolder.getAbsolutePath());
-            } else {
-                controller.log("Failed to create user folder for: " + username);
-            }
+            userFolder.mkdirs();
+            controller.log("User folder created for: " + username + " at: " + userFolder.getAbsolutePath());
+        } else {
+            controller.log("Folder already exists: " + username + " at: " + userFolder.getAbsolutePath());
         }
 
         return userFolder;
