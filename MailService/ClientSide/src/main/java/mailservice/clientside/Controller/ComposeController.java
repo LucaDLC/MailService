@@ -35,28 +35,31 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
-        System.out.println("Sending Email...");
+        System.out.println("[DEBUG] Sending Email...");
+
         String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         List<String> recipients = Arrays.asList(recipient.split(","));
         String object = ObjectFieldID.getText(); //prendo l'oggetto
         String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
 
-        NetworkManager networkManager = NetworkManager.getInstance();
-            boolean sent = networkManager.sendEmail(sender, Arrays.asList(recipients.toString()), object, mailBody);
-        if (sent) {
-            System.out.println("Email sent successfully!");
+        System.out.println("[DEBUG] Email data: Sender=" + sender + ", Recipients=" + recipients + ", Subject=" + object);
 
-            // Chiudi la finestra di composizione
+        NetworkManager networkManager = NetworkManager.getInstance();
+        boolean sent = networkManager.sendEmail(sender, recipients, object, mailBody);
+
+        if (sent) {
+            System.out.println("[INFO] Email sent successfully.");
             Stage stage = (Stage) SendMailButton.getScene().getWindow();
-            stage.close();
+            stage.close();;
 
             // Chiama il callback per aggiornare la lista delle email
             if (updateCallback != null) {
                 updateCallback.run();
             }
         } else {
-            System.out.println("Failed to send email.");
+            System.out.println("[ERROR] Failed to send email.");
+            showDangerAlert("Failed to send email. Please check your connection or try again.");
         }
     }
 

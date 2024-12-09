@@ -121,27 +121,26 @@ public class MainController {
         new Thread(() -> {
             NetworkManager networkManager = NetworkManager.getInstance();
             if (networkManager.connectToServer()) {
-                System.out.println("Fetching emails automatically...");
+                System.out.println("Fetching emails...");
                 String[] emails = ClientModel.getInstance().fetchEmails();
                 javafx.application.Platform.runLater(() -> updateEmailList(emails));
-                networkManager.disconnectFromServer();
             } else {
-                if (!networkManager.connectToServer()) {
-                    javafx.application.Platform.runLater(() -> showDangerAlert("Unable to connect to server for automatic fetch"));
-                }
-
-                System.out.println("Unable to connect to server for automatic fetch");
+                System.err.println("Failed to fetch emails: Not connected to server.");
             }
         }).start();
     }
 
-
     //metodo per aggiornare la ListView con le email ricevute
-    public void updateEmailList(String[] emails){
-        MailList.getItems().clear(); //pulisco la lista esistente
-        for(String email : emails){
-            MailList.getItems().add(email); //aggiungo l'email alla lista
-        }
+    public void updateEmailList(String[] emails) {
+        Platform.runLater(() -> {
+            MailList.getItems().clear(); // Pulisce la lista
+
+            if (emails == null || emails.length == 0 || (emails.length == 1 && emails[0].equals("No emails found"))) {
+                MailList.getItems().add("No emails found."); // Mostra un messaggio se non ci sono email
+            } else {
+                MailList.getItems().addAll(emails); // Aggiungi tutte le email alla lista
+            }
+        });
     }
 
     //implementazione delle azioni da eseguire quando si preme il bottone
@@ -311,37 +310,33 @@ public class MainController {
             return;
         }
 
-        // Ottieni il nome utente corrente
-        String username = ConfigManager.getInstance().readProperty("Client.Mail").split("@")[0];
+        // Ottieni l'email del client
+        String username = ConfigManager.getInstance().readProperty("Client.Mail");
 
-        // Invia il comando FETCH_EMAIL con il nome utente
+        // Invia il comando FETCH_EMAIL
         boolean success = networkManager.sendMessage(CommandRequest.FETCH_EMAIL, username);
         if (success) {
             String payload = networkManager.getLastPayload(); // Recupera le email dal server
             if (payload != null) {
-                // Controlla se il payload indica che non ci sono email
-                if (payload.startsWith("No emails found")) {
-                    System.out.println(payload);
-                    Platform.runLater(() -> {
-                        MailList.getItems().clear(); // Pulisci la lista
+                Platform.runLater(() -> {
+                    MailList.getItems().clear(); // Pulisce la lista
+
+                    if (payload.startsWith("No emails found")) {
+                        System.out.println("No emails found for user.");
                         MailList.getItems().add("No emails found."); // Mostra un messaggio informativo
-                    });
-                } else {
-                    // Dividi le email ricevute e aggiorna la lista
-                    String[] emails = payload.split(",");
-                    Platform.runLater(() -> {
-                        MailList.getItems().clear();
+                    } else {
+                        // Dividi le email ricevute e aggiorna la lista
+                        String[] emails = payload.split(",");
                         for (String email : emails) {
                             MailList.getItems().add(email);
                         }
-                    });
-                }
+                    }
+                });
             }
         } else {
             System.out.println("Failed to fetch emails.");
             showDangerAlert("Failed to fetch emails.");
         }
     }
-
 
 }

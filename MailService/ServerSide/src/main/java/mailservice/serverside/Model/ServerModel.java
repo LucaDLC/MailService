@@ -1,6 +1,5 @@
 package mailservice.serverside.Model;
 
-import mailservice.serverside.Configuration.CommandRequest;
 import mailservice.serverside.Configuration.CommandResponse;
 import mailservice.serverside.Configuration.ConfigManager;
 import mailservice.serverside.Controller.ServerController;
@@ -9,6 +8,7 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.stream.Collectors;
 
 public class ServerModel {
     private int port;
@@ -108,6 +108,10 @@ public class ServerModel {
 
                     case "DELETE_EMAIL":
                         response = handleDeleteEmail(argument, out);
+                        break;
+                    case "PING":
+                        response= handlePing(out);
+                        break;
                     default:
                         response = CommandResponse.ILLEGAL_PARAMS;
                         controller.log("Unknown command received: " + command);
@@ -132,33 +136,61 @@ public class ServerModel {
     }
 
     private CommandResponse handleSendEmail(String emailData, BufferedWriter out) throws IOException {
-        controller.log("Processing email sending: " + emailData);
+        controller.log("[DEBUG] Received SEND_EMAIL request: " + emailData);
 
-        // Parsing dell'email
+        // Dividi i dati in base al separatore "|"
         String[] parts = emailData.split("\\|", 4);
         if (parts.length < 4) {
-            controller.log("Invalid email format: " + emailData);
-            out.write(CommandResponse.FAILURE.name() + "|Invalid email format\n");
+            controller.log("[ERROR] Invalid email format: " + emailData);
+            out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid email format\n");
             out.flush();
-            return CommandResponse.FAILURE;
+            return CommandResponse.ILLEGAL_PARAMS;
         }
 
-        String sender = parts[0];
+        // Estrai i campi dall'email
+        String sender = parts[0].trim();
         String[] receivers = parts[1].split(",");
-        String subject = parts[2];
-        String content = parts[3];
+        String subject = parts[2].trim();
 
-        // Salva l'email per ogni destinatario
-        for (String receiver : receivers) {
-            saveEmailToFolders(receiver, "From: " + sender + "\nSubject: " + subject + "\nContent: " + content);
+        // Valida il mittente
+        if (!isValidEmail(sender)) {
+            controller.log("[ERROR] Invalid sender email: " + sender);
+            out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid sender email\n");
+            out.flush();
+            return CommandResponse.ILLEGAL_PARAMS;
         }
 
-        controller.log("Email sent successfully to: " + String.join(", ", receivers));
+        // Valida i destinatari
+        for (String receiver : receivers) {
+            if (!isValidEmail(receiver.trim())) {
+                controller.log("[ERROR] Invalid receiver email: " + receiver);
+                out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid receiver email\n");
+                out.flush();
+                return CommandResponse.ILLEGAL_PARAMS;
+            }
+        }
+
+        String content = parts[3];
+        controller.log("[INFO] Email content received: " + content);
+
+        // Email validata con successo
+        controller.log("[INFO] Email validated successfully.");
+        saveEmail(sender, receivers, subject, content);
         out.write(CommandResponse.SUCCESS.name() + "\n");
         out.flush();
+
+        saveEmailToFolders(sender, content);
         return CommandResponse.SUCCESS;
     }
 
+    private boolean isValidEmail(String email) {
+        return email.matches("^[a-zA-Z0-9._%+-]+@rama$");
+    }
+
+    private void saveEmail(String sender, String[] receivers, String subject, String content) {
+        // Logica di salvataggio dell'email
+        controller.log("[INFO] Email saved: From " + sender + " to " + String.join(",", receivers));
+    }
 
     private CommandResponse handleDeleteEmail(String requestData, BufferedWriter out) {
         controller.log("Processing email deletion request: " + requestData);
@@ -263,6 +295,19 @@ public class ServerModel {
         return false;
     }
 
+    private CommandResponse handlePing(BufferedWriter out) {
+        try {
+            controller.log("[DEBUG] Received PING request. Connection is alive.");
+            out.write(CommandResponse.SUCCESS.name() + "\n");
+            out.flush();
+            return CommandResponse.SUCCESS;
+        } catch (IOException e) {
+            controller.log("[ERROR] Error handling PING request: " + e.getMessage());
+            return CommandResponse.FAILURE;
+        }
+    }
+
+
     private CommandResponse handleLoginCheck(String email, BufferedWriter out) throws IOException {
         controller.log("Checking login for email: " + email);
 
@@ -286,52 +331,52 @@ public class ServerModel {
         }
     }
 
-    private CommandResponse handleFetchEmail(String username, BufferedWriter out) throws IOException {
-        controller.log("Fetching emails for user: " + username);
-
-        // Ottieni o crea la cartella dell'utente
-        File userFolder = createUserFolder(username);
-
-        // File contenente le email dell'utente
-        File emailFile = new File(userFolder, "sent_emails.txt");
-
-        if (!emailFile.exists() || emailFile.length() == 0) {
-            out.write(CommandResponse.FAILURE.name() + "|No emails found for user: " + username + "\n");
-            out.flush();
-            controller.log("No emails found for user: " + username);
-            return CommandResponse.FAILURE;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
-            StringBuilder emails = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                emails.append(line).append(",");
-            }
-
-            if (emails.length() > 0) {
-                emails.setLength(emails.length() - 1); // Rimuove l'ultima virgola
-            }
-
-            out.write(CommandResponse.SUCCESS.name() + "|" + emails + "\n");
-            out.flush();
-            controller.log("Emails sent to client for user: " + username);
+    private CommandResponse handleFetchEmail(String userEmail, BufferedWriter writer) {
+        try {
+            String emails = fetchEmailsForUser(userEmail);
+            writer.write("SUCCESS|" + emails + "\n"); // Risposta sempre valida
+            writer.flush();
             return CommandResponse.SUCCESS;
+        } catch (IOException e) {
+            System.err.println("[ERROR] Error sending email payload: " + e.getMessage());
+            return CommandResponse.FAILURE;
         }
     }
 
-    private void saveEmailToFolders(String username, String emailContent) {
-        // Crea la cartella dell'utente (se non esiste)
-        File userFolder = createUserFolder(username);
+    public String fetchEmailsForUser(String userEmail) {
+        File userFolder = createUserFolder(userEmail);
+        if (!userFolder.exists()) {
+            return "No emails found for user: " + userEmail; // Messaggio predefinito
+        }
 
-        // File per salvare le email
+        File emailFile = new File(userFolder, "sent_emails.txt");
+        if (!emailFile.exists() || emailFile.length() == 0) {
+            return "No emails found for user: " + userEmail; // Nessuna email trovata
+        }
+
+        StringBuilder emails = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                emails.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("[ERROR] Error reading emails for user: " + userEmail + " - " + e.getMessage());
+            return "No emails found for user: " + userEmail;
+        }
+
+        return emails.toString().trim(); // Elimina newline o spazi in eccesso
+    }
+
+    private void saveEmailToFolders(String username, String emailContent) {
+        File userFolder = createUserFolder(username);
         File emailFile = new File(userFolder, "sent_emails.txt");
 
         try (FileWriter writer = new FileWriter(emailFile, true)) {
             writer.write(emailContent + "\n");
-            controller.log("Email saved successfully for user: " + username);
+            System.out.println("[DEBUG] Email saved: " + emailContent);
         } catch (IOException e) {
-            controller.log("Error saving email for user: " + username + ": " + e.getMessage());
+            System.err.println("[ERROR] Failed to save email for user: " + username + " - " + e.getMessage());
         }
     }
 

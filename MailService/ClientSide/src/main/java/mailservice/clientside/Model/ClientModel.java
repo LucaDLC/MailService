@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import mailservice.clientside.Configuration.CommandRequest;
+import mailservice.clientside.Configuration.CommandResponse;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Network.NetworkManager;
 import static mailservice.clientside.Configuration.CommandRequest.*;
@@ -45,27 +47,25 @@ public class ClientModel {
     }
 
     public String[] fetchEmails() {
-
-        String[] emails = new String[10];
-
-        if (NetworkManager.getInstance().connectToServer()) {
-            NetworkManager.getInstance().sendMessage(FETCH_EMAIL, userLogged); // Invia la richiesta di fetch delle email
-            try {
-                String response;
-                int i = 0;
-                while ((response = String.valueOf(NetworkManager.getInstance().receiveMessage())) != null) {
-                    emails[i] = response; // Gestisci la risposta del server
-                    i++;
-                    // Gestisci la risposta del server
-                    System.out.println("Received: " + response); // Esempio di gestione della risposta
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }finally {
-                NetworkManager.getInstance().disconnectFromServer();
-            }
+        String userEmail = configManager.readProperty("Client.Mail").trim();
+        if (!networkManager.connectToServer()) {
+            System.out.println("[ERROR] Not connected to server.");
+            return new String[] { "Connection error" };
         }
-        return emails;
-    }
 
+        boolean success = networkManager.sendMessage(CommandRequest.FETCH_EMAIL, userEmail);
+        if (!success) {
+            System.out.println("[ERROR] Failed to send FETCH_EMAIL command.");
+            return new String[] { "Fetch email failed" };
+        }
+
+        String payload = networkManager.getLastPayload();
+        if (payload == null || payload.isEmpty() || payload.equals("No emails found for user: " + userEmail)) {
+            System.out.println("[INFO] No emails found for user: " + userEmail);
+            return new String[] { "No emails found" };
+        }
+
+        System.out.println("[DEBUG] Payload received: " + payload);
+        return payload.split("\n");
+    }
 }
