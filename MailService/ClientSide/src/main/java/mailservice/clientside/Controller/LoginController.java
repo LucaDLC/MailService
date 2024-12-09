@@ -31,6 +31,7 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
+        ClientModel.getInstance().logout(); //pulisce i dati della sessione
         System.out.println("Attempting Login...");
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
         System.out.println("Email: " + login);

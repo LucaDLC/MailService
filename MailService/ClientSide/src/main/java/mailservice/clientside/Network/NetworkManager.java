@@ -50,7 +50,7 @@ public class NetworkManager {
     }
 
     // Metodo per resettare i dati della sessione
-    private void clearSessionData() {
+    public void clearSessionData() {
         lastPayload = null;  // Esempio: azzera i dati ricevuti
         System.out.println("[DEBUG] Cleared session data.");
     }

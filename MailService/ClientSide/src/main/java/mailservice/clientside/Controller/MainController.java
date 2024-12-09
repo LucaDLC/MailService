@@ -65,7 +65,6 @@ public class MainController {
         // Impostiamo il testo della MailLabel all'apertura della UI
         ConfigManager configManager = ConfigManager.getInstance();
         MailLabel.setText(configManager.readProperty("Client.Mail"));
-
         startAutomaticRefresh(); //avvia il refresh automatico
 
         MailList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -80,19 +79,11 @@ public class MainController {
             // Supponiamo che i dettagli della email siano salvati in questo formato:
             // "From: sender@example.com|To: receiver1@example.com,receiver2@example.com|Object: Subject|Date: 2024-12-07"
             String[] parts = emailDetails.split("\\|");
-            String sender = parts[0].substring("From: ".length());
-            String receivers = parts[1].substring("To: ".length());
-            String object = parts[2].substring("Object: ".length());
-            String date = parts[3].substring("Date: ".length());
-
-            // Aggiorna i campi nella GUI
-            SenderLabel.setText(sender);
-            ReceiverLabel.setText(receivers);
-            ObjectLabel.setText(object);
-            DateLabel.setText(date);
-
-            // Mostra il contenuto nel WebView (se supportato)
-            MailContent.getEngine().loadContent("<p><strong>Oggetto:</strong> " + object + "</p><p>Contenuto non disponibile.</p>");
+            SenderLabel.setText(parts[0].substring("From: ".length()));
+            ReceiverLabel.setText(parts[1].substring("To: ".length()));
+            ObjectLabel.setText(parts[2].substring("Object: ".length()));
+            DateLabel.setText(parts[3].substring("Date: ".length()));
+            MailContent.getEngine().loadContent("<p><strong>Oggetto:</strong> " + parts[2].substring("Object: ".length()) + "</p><p>Contenuto non disponibile.</p>");
         } catch (Exception e) {
             System.err.println("Error parsing email details: " + e.getMessage());
             e.printStackTrace();
@@ -100,7 +91,7 @@ public class MainController {
     }
 
 
-    private ScheduledExecutorService emailRefreshScheduler;
+    private static ScheduledExecutorService emailRefreshScheduler;
 
     private void startAutomaticRefresh(){
         if (emailRefreshScheduler != null && !emailRefreshScheduler.isShutdown()) {
@@ -108,37 +99,34 @@ public class MainController {
         }
 
         emailRefreshScheduler = Executors.newSingleThreadScheduledExecutor();
-        emailRefreshScheduler.scheduleAtFixedRate(() -> refreshEmails(), 0, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+        emailRefreshScheduler.scheduleAtFixedRate(this::refreshEmails, 0, 10, TimeUnit.SECONDS);
     }
 
-    private void stopAutomaticRefresh() {
+    public static void stopAutomaticRefresh() {
         if (emailRefreshScheduler != null && !emailRefreshScheduler.isShutdown()) {
-            emailRefreshScheduler.shutdown();
+            emailRefreshScheduler.shutdownNow();
         }
     }
-
     private void refreshEmails() {
-        new Thread(() -> {
+        Platform.runLater(() -> {
             NetworkManager networkManager = NetworkManager.getInstance();
-            if (networkManager.connectToServer()) {
-                System.out.println("Fetching emails...");
+            if (networkManager.isConnected() || networkManager.connectToServer()) {
                 String[] emails = ClientModel.getInstance().fetchEmails();
-                javafx.application.Platform.runLater(() -> updateEmailList(emails));
+                updateEmailList(emails);
             } else {
-                System.err.println("Failed to fetch emails: Not connected to server.");
+                System.err.println("Failed to connect to server.");
             }
-        }).start();
+        });
     }
 
     //metodo per aggiornare la ListView con le email ricevute
     public void updateEmailList(String[] emails) {
         Platform.runLater(() -> {
-            MailList.getItems().clear(); // Pulisce la lista
-
-            if (emails == null || emails.length == 0 || (emails.length == 1 && emails[0].equals("No emails found"))) {
-                MailList.getItems().add("No emails found."); // Mostra un messaggio se non ci sono email
+            MailList.getItems().clear();
+            if (emails != null && emails.length > 0 && !emails[0].equals("No emails found")) {
+                MailList.getItems().addAll(emails);
             } else {
-                MailList.getItems().addAll(emails); // Aggiungi tutte le email alla lista
+                MailList.getItems().add("No emails found.");
             }
         });
     }
@@ -150,23 +138,14 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
             Parent composeView = loader.load();
-
-            ComposeController composeController = loader.getController();
-            composeController.setUpdateCallback(this::updateEmailList); // Passa il metodo di aggiornamento
-
             Scene composeScene = new Scene(composeView);
             Stage composeStage = new Stage();
             composeStage.setScene(composeScene);
             composeStage.setTitle("ClientSide - Mail Compose");
             composeStage.initModality(Modality.APPLICATION_MODAL);
-
-            // Blocca il ridimensionamento
-            composeStage.setResizable(false);
-
             composeStage.show();
         } catch (IOException e) {
             System.err.println("Error loading FXML file: " + e.getMessage());
-            showDangerAlert("Error loading compose window.");
         }
     }
 

@@ -8,7 +8,9 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ServerModel {
     private int port;
@@ -344,28 +346,22 @@ public class ServerModel {
     }
 
     public String fetchEmailsForUser(String userEmail) {
-        File userFolder = createUserFolder(userEmail);
-        if (!userFolder.exists()) {
-            return "No emails found for user: " + userEmail; // Messaggio predefinito
-        }
-
+        File userFolder = new File("user_folders", userEmail);
         File emailFile = new File(userFolder, "sent_emails.txt");
-        if (!emailFile.exists() || emailFile.length() == 0) {
-            return "No emails found for user: " + userEmail; // Nessuna email trovata
-        }
 
-        StringBuilder emails = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                emails.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            System.err.println("[ERROR] Error reading emails for user: " + userEmail + " - " + e.getMessage());
+        if (!emailFile.exists()) {
             return "No emails found for user: " + userEmail;
         }
 
-        return emails.toString().trim(); // Elimina newline o spazi in eccesso
+        try (Stream<String> stream = Files.lines(emailFile.toPath())) {
+            String emails = stream.collect(Collectors.joining(","));
+            if (emails.isEmpty()) {
+                return "No emails found for user: " + userEmail;
+            }
+            return "SUCCESS|" + emails;
+        } catch (IOException e) {
+            return "Error retrieving emails for user: " + userEmail;
+        }
     }
 
     private void saveEmailToFolders(String username, String emailContent) {
@@ -374,12 +370,12 @@ public class ServerModel {
 
         try (FileWriter writer = new FileWriter(emailFile, true)) {
             writer.write(emailContent + "\n");
+            writer.flush(); // Assicurati che i dati siano scritti su disco
             System.out.println("[DEBUG] Email saved: " + emailContent);
         } catch (IOException e) {
             System.err.println("[ERROR] Failed to save email for user: " + username + " - " + e.getMessage());
         }
     }
-
 
     private File createUserFolder(String username) {
         // Assicurati che il nome della cartella includa sempre "@rama.it"

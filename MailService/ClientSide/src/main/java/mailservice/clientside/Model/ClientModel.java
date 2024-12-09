@@ -48,6 +48,11 @@ public class ClientModel {
 
     public String[] fetchEmails() {
         String userEmail = configManager.readProperty("Client.Mail").trim();
+        if (userEmail.isEmpty()) {
+            System.out.println("[ERROR] User email not set.");
+            return new String[] { "User email not set" };
+        }
+
         if (!networkManager.connectToServer()) {
             System.out.println("[ERROR] Not connected to server.");
             return new String[] { "Connection error" };
@@ -68,4 +73,11 @@ public class ClientModel {
         System.out.println("[DEBUG] Payload received: " + payload);
         return payload.split("\n");
     }
+
+    public void logout() {
+        userLogged = null; // Reset dell'utente loggato
+        configManager.setProperty("Client.Mail", ""); // Rimuove l'email salvata
+        networkManager.clearSessionData(); // Pulisce i dati della sessione nel NetworkManager
+    }
+
 }

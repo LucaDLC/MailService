@@ -6,12 +6,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mailservice.clientside.Configuration.CommandResponse;
 import mailservice.clientside.Configuration.ConfigManager;
+import mailservice.clientside.Controller.MainController;
+import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 import mailservice.clientside.Configuration.CommandRequest;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,17 +20,14 @@ public class ClientApp extends Application {
 
     private static ScheduledExecutorService fetchEmails;
     private static ScheduledExecutorService keepAliveScheduler;
-    private static Date lastFetch = new Date(Long.MIN_VALUE);
 
     NetworkManager networkManager = NetworkManager.getInstance();
 
     @Override
     public void start(Stage stage) throws IOException {
+        resetUserPreferences();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/mailservice/clientside/style.css")).toExternalForm());
-
         stage.setTitle("ClientSide - Login");
         stage.setScene(scene);
         stage.show();
@@ -38,10 +35,12 @@ public class ClientApp extends Application {
         startFetchingEmails();
         startPingKeepAlive();
 
-        stage.setOnCloseRequest(event -> {
-            stopFetchingEmails();
-            stopPingKeepAlive();
-        });
+        stage.setOnCloseRequest(event -> stop());
+    }
+
+    private void resetUserPreferences() {
+        ConfigManager.getInstance().setProperty("Client.Mail", "");
+        ClientModel.getInstance().logout();
     }
 
     public void startFetchingEmails() {
@@ -103,6 +102,7 @@ public class ClientApp extends Application {
     @Override
     public void stop() {
         System.out.println("[INFO] Application is stopping...");
+        MainController.stopAutomaticRefresh();
         stopFetchingEmails();
         stopPingKeepAlive();
         networkManager.disconnectFromServer();
@@ -111,22 +111,16 @@ public class ClientApp extends Application {
     private void stopFetchingEmails() {
         if (fetchEmails != null && !fetchEmails.isShutdown()) {
             fetchEmails.shutdownNow();
-            System.out.println("[INFO] Stopped fetching emails.");
         }
     }
 
     private void stopPingKeepAlive() {
         if (keepAliveScheduler != null && !keepAliveScheduler.isShutdown()) {
             keepAliveScheduler.shutdownNow();
-            System.out.println("[INFO] Stopped PING keep-alive task.");
         }
     }
 
     public static void main(String[] args) {
-        try {
-            Application.launch(ClientApp.class, args);
-        } catch (Exception e) {
-            System.out.println("Error initializing application: " + e.getMessage());
-        }
+        launch(args);
     }
 }
