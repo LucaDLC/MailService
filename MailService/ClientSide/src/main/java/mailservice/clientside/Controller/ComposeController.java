@@ -57,6 +57,8 @@ public class ComposeController{
             if (updateCallback != null) {
                 updateCallback.run();
             }
+
+            showSuccessAlert("Email sent successfully.");
         } else {
             System.out.println("[ERROR] Failed to send email.");
             showDangerAlert("Failed to send email. Please check your connection or try again.");
