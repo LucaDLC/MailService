@@ -81,6 +81,7 @@ public class ServerController {
     public void log(String message) {
         Platform.runLater(() -> {
             ServerLog.getItems().add(message);
+            ServerLog.scrollTo(ServerLog.getItems().size() - 1);
         });
     }
 
