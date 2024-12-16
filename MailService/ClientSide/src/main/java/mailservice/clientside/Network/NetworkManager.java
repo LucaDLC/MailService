@@ -30,6 +30,7 @@ public class NetworkManager {
 
     public boolean connectToServer() {
         if (socket != null && !socket.isClosed()) {
+            System.out.println("[DEBUG] Already connected to server.");
             return true;
         }
 
@@ -75,10 +76,19 @@ public class NetworkManager {
             System.out.println("[ERROR] Not connected to the server.");
             return false;
         }
+        if (out == null) {
+            System.out.println("[ERROR] Output stream is null. Cannot send message.");
+            return false;
+        }
 
-        out.write(command.name() + "|" + data + "\n");
-        out.flush();
-        return true;
+        try {
+            out.write(command.name() + "|" + data + "\n");
+            out.flush();
+            return true;
+        } catch (Exception e) {
+            System.out.println("[ERROR] Exception while sending message: " + e.getMessage());
+            return false;
+        }
     }
 
     public CommandResponse receiveMessage() {

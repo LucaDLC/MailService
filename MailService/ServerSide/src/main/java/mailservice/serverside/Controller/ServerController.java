@@ -79,7 +79,9 @@ public class ServerController {
 
     //metodo per aggiungere un messaggio al log del server
     public void log(String message) {
-        ServerLog.getItems().add(message);
+        Platform.runLater(() -> {
+            ServerLog.getItems().add(message);
+        });
     }
 
     //metodo per mostrare un alert in caso di errore
