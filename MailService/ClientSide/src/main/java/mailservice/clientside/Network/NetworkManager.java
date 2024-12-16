@@ -2,6 +2,7 @@ package mailservice.clientside.Network;
 
 import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.CommandResponse;
+import mailservice.clientside.Configuration.ConfigManager;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -38,7 +39,7 @@ public class NetworkManager {
         clearSessionData();
         try {
             socket = new Socket();
-            socket.connect(new InetSocketAddress("127.0.0.1", 42069), SOCKET_TIMEOUT);
+            socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"), Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
             socket.setSoTimeout(SOCKET_TIMEOUT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

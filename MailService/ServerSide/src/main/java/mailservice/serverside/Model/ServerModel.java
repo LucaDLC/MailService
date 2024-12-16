@@ -186,7 +186,7 @@ public class ServerModel {
     }
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[a-zA-Z0-9._%+-]+@rama$");
+        return email.matches("^[a-zA-Z0-9._%+-]+@rama.it$");
     }
 
     private void saveEmail(String sender, String[] receivers, String subject, String content) {
@@ -239,7 +239,7 @@ public class ServerModel {
 
         // Filtra le email e crea un nuovo file senza quelle selezionate
         try {
-            File tempFile = new File(userFolder, "sent_emails_temp.txt");
+            File tempFile = new File(userFolder, "sent_emails.txt");
             try (BufferedReader reader = new BufferedReader(new FileReader(sentEmailsFile));
                  BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
 
