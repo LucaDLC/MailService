@@ -25,7 +25,7 @@ public class NetworkManager {
         return instance;
     }
 
-    public boolean connectToServer() {
+    public synchronized boolean connectToServer() {
         int retries = 3;
         while (retries > 0) {
             try {
@@ -78,6 +78,9 @@ public class NetworkManager {
         } catch (Exception e) {
             System.err.println("[ERROR] Failed to send message: " + e.getMessage());
             return false;
+        }
+        finally {
+            disconnectFromServer();
         }
     }
 
