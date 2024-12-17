@@ -53,35 +53,28 @@ public class ClientModel {
     public String[] fetchEmails() {
         String userEmail = configManager.readProperty("Client.Mail").trim();
         if (userEmail.isEmpty()) {
-            System.out.println("[ERROR] User email not set.");
-            return new String[] { "User email not set" };
+            return new String[]{"User email not set"};
         }
 
         if (!networkManager.connectToServer()) {
-            System.out.println("[ERROR] Not connected to server.");
-            return new String[] { "Connection error" };
+            return new String[]{"Connection error"};
         }
 
         boolean success = networkManager.sendMessage(CommandRequest.FETCH_EMAIL, userEmail);
         if (!success) {
-            System.out.println("[ERROR] Failed to send FETCH_EMAIL command.");
-            return new String[] { "Fetch email failed" };
+            return new String[]{"Fetch email failed"};
         }
 
-        String payload = networkManager.getLastPayload();
-        if (payload == null || payload.isEmpty() || payload.equals("No emails found for user: " + userEmail)) {
-            System.out.println("[INFO] No emails found for user: " + userEmail);
-            return new String[] { "No emails found" };
+        String response = networkManager.receiveMessage();
+        if (response == null || response.startsWith("No emails")) {
+            return new String[]{"No emails found"};
         }
-
-        System.out.println("[DEBUG] Payload received: " + payload);
-        return payload.split("\n");
+        return response.split(",");
     }
 
     public void logout() {
         userLogged = null; // Reset dell'utente loggato
         configManager.setProperty("Client.Mail", ""); // Rimuove l'email salvata
-        networkManager.clearSessionData(); // Pulisce i dati della sessione nel NetworkManager
     }
 
 }

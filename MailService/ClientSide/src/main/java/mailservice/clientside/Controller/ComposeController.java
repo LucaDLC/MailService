@@ -1,9 +1,7 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -30,7 +28,7 @@ public class ComposeController{
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
-    private Runnable updateCallback;
+    MainController mainController = new MainController();
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
@@ -53,6 +51,7 @@ public class ComposeController{
 
         if (sent) {
             showSuccessAlert("Email sent successfully.");
+            mainController.refreshEmails();
             Stage stage = (Stage) SendMailButton.getScene().getWindow();
             stage.close();
         } else {
@@ -109,9 +108,5 @@ public class ComposeController{
             MailBodyID.setHtmlText(""); //pulisco il campo corpo dell'email
             showSuccessAlert("Fields cleared successfully");
         }
-    }
-
-    public void setUpdateCallback(Runnable callBack) {
-        this.updateCallback = callBack;
     }
 }

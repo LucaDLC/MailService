@@ -1,6 +1,7 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,10 +58,18 @@ public class LoginController {
                     mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     mainStage.show();
 
-                    // Avvia il fetching delle email e il ping solo dopo il login
-                    ClientApp clientApp = new ClientApp();
-                    clientApp.startFetchingEmails();
-                    clientApp.startPingKeepAlive();
+                    MainController mainController = loader.getController();
+                    Platform.runLater(() -> {
+                        PauseTransition delay = new PauseTransition(Duration.seconds(2)); // Ritardo di 1 secondo
+                        delay.setOnFinished(event -> {
+                            System.out.println("[DEBUG] Delay finished. Calling refreshEmails...");
+                            mainController.refreshEmails();
+                        });
+                        delay.play();
+                    });
+
+                    // Debug di verifica
+                    System.out.println("[DEBUG] Main.fxml loaded successfully.");
 
                     //chiudo la finestra di login
                     Stage stage = (Stage) LoginButton.getScene().getWindow();

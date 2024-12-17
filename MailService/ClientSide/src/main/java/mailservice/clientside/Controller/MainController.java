@@ -16,17 +16,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.CommandRequest;
-import mailservice.clientside.Configuration.CommandResponse;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 
 import java.util.Timer;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -57,75 +52,61 @@ public class MainController {
     @FXML
     public MenuButton Reply;
 
-    private Timer emailRefreshTimer;
-    private static final long REFRESH_INTERVAL = 10000; //10 secondi di intervallo tra i refresh
-
     @FXML
     public void initialize() {
-        // Impostiamo il testo della MailLabel all'apertura della UI
-        ConfigManager configManager = ConfigManager.getInstance();
-        MailLabel.setText(configManager.readProperty("Client.Mail"));
-        startAutomaticRefresh(); //avvia il refresh automatico
+        System.out.println("[DEBUG] MainController initialized.");
+        System.out.println("[DEBUG] MailList reference: " + MailList);
 
-        MailList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.equals("No emails found.")) {
-                displayEmailDetails(newValue); // Mostra i dettagli della email selezionata
-            }
-        });
-    }
-
-    private void displayEmailDetails(String emailDetails) {
-        try {
-            // Supponiamo che i dettagli della email siano salvati in questo formato:
-            // "From: sender@example.com|To: receiver1@example.com,receiver2@example.com|Object: Subject|Date: 2024-12-07"
-            String[] parts = emailDetails.split("\\|");
-            SenderLabel.setText(parts[0].substring("From: ".length()));
-            ReceiverLabel.setText(parts[1].substring("To: ".length()));
-            ObjectLabel.setText(parts[2].substring("Object: ".length()));
-            DateLabel.setText(parts[3].substring("Date: ".length()));
-            MailContent.getEngine().loadContent("<p><strong>Oggetto:</strong> " + parts[2].substring("Object: ".length()) + "</p><p>Contenuto non disponibile.</p>");
-        } catch (Exception e) {
-            System.err.println("Error parsing email details: " + e.getMessage());
-            e.printStackTrace();
+        if (MailList != null) {
+            MailList.getItems().add("No emails found.");
+        } else {
+            System.err.println("[ERROR] MailList è null.");
         }
     }
 
-
-    private static ScheduledExecutorService emailRefreshScheduler;
-
-    private void startAutomaticRefresh(){
-        if (emailRefreshScheduler != null && !emailRefreshScheduler.isShutdown()) {
-            emailRefreshScheduler.shutdownNow(); // Ferma il task precedente
-        }
-
-        emailRefreshScheduler = Executors.newSingleThreadScheduledExecutor();
-        emailRefreshScheduler.scheduleAtFixedRate(this::refreshEmails, 0, 10, TimeUnit.SECONDS);
-    }
-
-    public static void stopAutomaticRefresh() {
-        if (emailRefreshScheduler != null && !emailRefreshScheduler.isShutdown()) {
-            emailRefreshScheduler.shutdownNow();
-        }
-    }
-    private void refreshEmails() {
+    void refreshEmails() {
         Platform.runLater(() -> {
-            NetworkManager networkManager = NetworkManager.getInstance();
-            if (networkManager.isConnected() || networkManager.connectToServer()) {
-                String[] emails = ClientModel.getInstance().fetchEmails();
-                updateEmailList(emails);
-            } else {
-                System.err.println("Failed to connect to server.");
+            if (MailList == null) {
+                System.err.println("[ERROR] MailList è ancora null. Ritenterò...");
+                return; // Esci se MailList non è pronto
             }
+
+            int retryCount = 3; // Numero massimo di tentativi
+            while (retryCount > 0) {
+                String[] emails = ClientModel.getInstance().fetchEmails();
+                if (emails == null || emails.length == 0) {
+                    System.err.println("[WARNING] Nessuna email trovata o connessione fallita. Tentativi rimasti: " + retryCount);
+                    retryCount--;
+                } else {
+                    updateEmailList(emails);
+                    System.out.println("[DEBUG] Email list aggiornata con successo.");
+                    return; // Esci se ha avuto successo
+                }
+            }
+            System.err.println("[ERROR] Impossibile aggiornare la lista delle email.");
+            MailList.getItems().add("No emails found.");
         });
     }
 
     //metodo per aggiornare la ListView con le email ricevute
     public void updateEmailList(String[] emails) {
         Platform.runLater(() -> {
+            if (MailList == null) {
+                System.err.println("[ERROR] MailList non è inizializzata.");
+                return;
+            }
+
             MailList.getItems().clear();
-            if (emails != null && emails.length > 0 && !emails[0].equals("No emails found")) {
-                MailList.getItems().addAll(emails);
-            } else {
+            if (emails != null && emails.length > 0) {
+                for (String email : emails) {
+                    // Escludi risposte non valide come "SUCCESS|..."
+                    if (email != null && !email.trim().isEmpty() && !email.startsWith("SUCCESS|")) {
+                        MailList.getItems().add(email);
+                    }
+                }
+            }
+
+            if (MailList.getItems().isEmpty()) {
                 MailList.getItems().add("No emails found.");
             }
         });
@@ -150,12 +131,6 @@ public class MainController {
     }
 
     @FXML
-    //handler per l'azione del bottone Compose
-    protected void onComposeButtonAction() {
-        System.out.println("Composing a new Email...");
-    }
-
-    @FXML
     protected void onDeleteButtonClick() {
         ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if (!selectedMails.isEmpty()) {
@@ -170,30 +145,23 @@ public class MainController {
                     String emailData = username + "|" + String.join(",", selectedMails);
 
                     NetworkManager networkManager = NetworkManager.getInstance();
-                    if (networkManager.connectToServer()) {
-                        boolean success = networkManager.sendMessage(CommandRequest.DELETE_EMAIL, emailData);
-                        if (success && CommandResponse.SUCCESS.name().equals(networkManager.getLastPayload())) {
-                            Platform.runLater(() -> {
-                                MailList.getItems().removeAll(selectedMails);
-                                showSuccessAlert("Emails deleted successfully.");
-                            });
+                    if (networkManager.sendMessage(CommandRequest.DELETE_EMAIL, emailData)) {
+                        String serverResponse = networkManager.receiveMessage();
+                        if ("SUCCESS".equals(serverResponse)) {
+                            refreshEmails();
+                            MailList.getItems().removeAll(selectedMails);
+                            showSuccessAlert("Emails deleted successfully.");
                         } else {
-                            Platform.runLater(() -> showDangerAlert("Failed to delete emails."));
+                            showDangerAlert("Failed to delete emails.");
                         }
                     } else {
-                        Platform.runLater(() -> showDangerAlert("Failed to connect to the server."));
+                        showDangerAlert("Failed to connect to the server.");
                     }
                 }
             });
         } else {
             showDangerAlert("No email selected for deletion.");
         }
-    }
-
-    @FXML
-    //handler per l'azione del bottone Delete
-    protected void onDeleteButtonAction() {
-        System.out.println("Deleting Email...");
     }
 
     @FXML
@@ -205,10 +173,7 @@ public class MainController {
             System.out.println("No email selected for forward");
         }
     }
-    @FXML
-    protected void onForwardButtonAction() {
-        System.out.println("Forwarding Email...");
-    }
+
     @FXML
     protected void onReplyButtonClick() {
         System.out.println("Replying Email...");
@@ -268,7 +233,6 @@ public class MainController {
         }
     }
 
-
     @FXML
     private void hideAlerts() {
         // Nascondere gli alert dopo 3 secondi
@@ -278,44 +242,4 @@ public class MainController {
         });
         pause.play();
     }
-
-    @FXML
-    private void updateEmailList() {
-        NetworkManager networkManager = NetworkManager.getInstance();
-
-        if (!networkManager.connectToServer()) {
-            System.out.println("Error: Not connected to the server");
-            showDangerAlert("Error: Not connected to the server");
-            return;
-        }
-
-        // Ottieni l'email del client
-        String username = ConfigManager.getInstance().readProperty("Client.Mail");
-
-        // Invia il comando FETCH_EMAIL
-        boolean success = networkManager.sendMessage(CommandRequest.FETCH_EMAIL, username);
-        if (success) {
-            String payload = networkManager.getLastPayload(); // Recupera le email dal server
-            if (payload != null) {
-                Platform.runLater(() -> {
-                    MailList.getItems().clear(); // Pulisce la lista
-
-                    if (payload.startsWith("No emails found")) {
-                        System.out.println("No emails found for user.");
-                        MailList.getItems().add("No emails found."); // Mostra un messaggio informativo
-                    } else {
-                        // Dividi le email ricevute e aggiorna la lista
-                        String[] emails = payload.split(",");
-                        for (String email : emails) {
-                            MailList.getItems().add(email);
-                        }
-                    }
-                });
-            }
-        } else {
-            System.out.println("Failed to fetch emails.");
-            showDangerAlert("Failed to fetch emails.");
-        }
-    }
-
 }
