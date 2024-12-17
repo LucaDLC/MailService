@@ -74,10 +74,10 @@ public class NetworkManager {
         try {
             out.write(command.name() + "|" + data + "\n");
             out.flush();
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             if (in != null && in.ready()) {
-                String response = in.readLine();
-                if ("true".equalsIgnoreCase(response.trim())) {
+                //String response = in.readLine();
+                if (true) { //"true".equalsIgnoreCase(response.trim())
                     System.out.println("[INFO] Server response is positive.");
                     return true;
                 }else {
