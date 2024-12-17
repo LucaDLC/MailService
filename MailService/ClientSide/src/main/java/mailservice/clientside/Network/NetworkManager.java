@@ -74,7 +74,20 @@ public class NetworkManager {
         try {
             out.write(command.name() + "|" + data + "\n");
             out.flush();
-            return true;
+            Thread.sleep(2000);
+            if (in != null && in.ready()) {
+                String response = in.readLine();
+                if ("true".equalsIgnoreCase(response.trim())) {
+                    System.out.println("[INFO] Server response is positive.");
+                    return true;
+                }else {
+                    System.err.println("[ERROR] Server response is negative.");
+                    return false;
+                }
+            } else { // Server did not respond
+                System.err.println("[ERROR] Server did not respond.");
+                return false;
+            }
         } catch (Exception e) {
             System.err.println("[ERROR] Failed to send message: " + e.getMessage());
             return false;
