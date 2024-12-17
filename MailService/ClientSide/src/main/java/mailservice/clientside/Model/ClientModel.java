@@ -36,7 +36,11 @@ public class ClientModel {
 
     public boolean validateEmail(String email){
         boolean checkMail = Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
-        if (checkMail && networkManager.sendMessage(LOGIN_CHECK,email)){
+        return checkMail;
+    }
+
+    public boolean existingEmail(String email) {
+        if (networkManager.sendMessage(LOGIN_CHECK,email)){
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
             return true;

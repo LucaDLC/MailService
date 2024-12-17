@@ -43,7 +43,8 @@ public class LoginController {
         if(clientModel.validateEmail(login))
         {
             System.out.println("Email is valid");
-            if(networkManager.connectToServer()){
+            if(clientModel.existingEmail(login)) {
+                System.out.println("The Email is a server user");
                 System.out.println("Connected to server");
                 showSuccessAlert();
                 //carica la scena principale
@@ -66,13 +67,13 @@ public class LoginController {
                     //chiudo la finestra di login
                     Stage stage = (Stage) LoginButton.getScene().getWindow();
                     stage.close();
-                }catch(IOException e){
-                    System.err.println("Errore nel caricamento del file FXML: " + e.getMessage());
+                } catch (IOException e) {
+                    System.err.println("Unable to load Main.fxml: " + e.getMessage());
                     showDangerAlert("Unable to load Main.fxml");
                 }
             }else{
-                System.err.println("Unable to connect to the server");
-                showDangerAlert("Unable to connect to the server");
+                System.err.println("The Email is not a server user");
+                showDangerAlert("The Email is not a server user");
             }
         }else{
             System.err.println("Invalid email");
