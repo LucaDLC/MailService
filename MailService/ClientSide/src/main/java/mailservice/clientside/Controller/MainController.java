@@ -54,6 +54,8 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        ConfigManager configManager = ConfigManager.getInstance();
+        MailLabel.setText(configManager.readProperty("Client.Mail"));
         System.out.println("[DEBUG] MainController initialized.");
         System.out.println("[DEBUG] MailList reference: " + MailList);
 

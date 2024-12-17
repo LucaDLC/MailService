@@ -85,11 +85,17 @@ public class NetworkManager {
     }
 
     public String receiveMessage() {
-        try {
-            return in.readLine();
-        } catch (IOException e) {
-            System.out.println("[ERROR] Error reading response: " + e.getMessage());
+        if (in == null) {
+            System.err.println("[ERROR] BufferedReader is null. Connection might not be established.");
             return null;
+        }
+        else {
+            try {
+                return in.readLine();
+            } catch (IOException e) {
+                System.out.println("[ERROR] Error reading response: " + e.getMessage());
+                return null;
+            }
         }
     }
 
