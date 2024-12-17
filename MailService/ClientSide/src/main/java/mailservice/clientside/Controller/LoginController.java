@@ -38,14 +38,12 @@ public class LoginController {
         System.out.println("Email: " + login);
 
         ClientModel clientModel = ClientModel.getInstance();
-        NetworkManager networkManager = NetworkManager.getInstance();
 
         if(clientModel.validateEmail(login))
         {
             System.out.println("Email is valid");
             if(clientModel.existingEmail(login)) {
                 System.out.println("The Email is a server user");
-                System.out.println("Connected to server");
                 showSuccessAlert();
                 //carica la scena principale
                 try {
