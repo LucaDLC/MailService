@@ -3,6 +3,7 @@ package mailservice.serverside.Model;
 import mailservice.serverside.Configuration.CommandResponse;
 import mailservice.serverside.Configuration.ConfigManager;
 import mailservice.serverside.Controller.ServerController;
+import mailservice.serverside.Log.LogType;
 
 import java.io.*;
 import java.net.BindException;
@@ -27,7 +28,7 @@ public class ServerModel {
     public void startServer() {
         synchronized (this) { // Sincronizzazione per prevenire avvii multipli
             if (running) {
-                controller.log("Server is already running on port " + port);
+                controller.log(LogType.INFO,"Server is already running on port " + port);
                 return; // se il server è già in esecuzione, non fare nulla
             }
             running = true; // imposta running su true per indicare che il server è in avvio
@@ -37,21 +38,21 @@ public class ServerModel {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);  //crea un nuovo server socket
-                controller.log("Server started on port " + port); //aggiunge un messaggio di log per segnalare che il server è stato avviato
+                controller.log(LogType.INFO,"Server started on port " + port); //aggiunge un messaggio di log per segnalare che il server è stato avviato
                 System.out.println("Server started on port " + port);
 
                 while (running) {
                     Socket clientSocket = serverSocket.accept(); //accetta una connessione da un client
-                    controller.log("Client connected from: " + clientSocket.getInetAddress()); //aggiunge un messaggio di log per segnalare che un client si è connesso
+                    controller.log(LogType.INFO,"Client connected from: " + clientSocket.getInetAddress()); //aggiunge un messaggio di log per segnalare che un client si è connesso
                     new Thread(() -> handleClient(clientSocket)).start(); //crea un nuovo thread per gestire il client
                 }
             } catch (BindException e) {
                 controller.showErrorAlert("Port " + port + " is already in use.");
-                controller.log("Port " + port + " is already in use.");
+                controller.log(LogType.INFO,"Port " + port + " is already in use.");
             } catch (IOException e) {
                 if(running){
                     controller.showErrorAlert("Error starting server: " + e.getMessage());
-                    controller.log("Error starting server: " + e.getMessage());
+                    controller.log(LogType.ERROR,"Error starting server: " + e.getMessage());
                 }
 
             }finally{
@@ -70,10 +71,10 @@ public class ServerModel {
             if(serverSocket != null && !serverSocket.isClosed()) {
                 System.out.println("Closing server...");
                 serverSocket.close();
-                controller.log("Server stopped on port " + port);
+                controller.log(LogType.INFO,"Server stopped on port " + port);
             }
         } catch (IOException e) {
-            controller.log("Error stoppong server: "+ e.getMessage());
+            controller.log(LogType.ERROR,"Error stoppong server: "+ e.getMessage());
         }
     }
 
@@ -82,13 +83,13 @@ public class ServerModel {
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))
         ) {
-            controller.log("Client connected: " + clientSocket.getInetAddress());
+            controller.log(LogType.INFO,"Client connected: " + clientSocket.getInetAddress());
 
             String clientMessage;
 
             while ((clientMessage = in.readLine()) != null) {
                 // Log del comando ricevuto
-                controller.log("Received message: " + clientMessage);
+                controller.log(LogType.SYSTEM,"Received message: " + clientMessage);
 
                 String[] parts = clientMessage.split("\\|");
                 String command = parts[0];
@@ -116,34 +117,34 @@ public class ServerModel {
                         break;
                     default:
                         response = CommandResponse.ILLEGAL_PARAMS;
-                        controller.log("Unknown command received: " + command);
+                        controller.log(LogType.ERROR,"Unknown command received: " + command);
                         out.write(response.name() + "\n");
                         out.flush();
                 }
 
                 if (response != null) {
-                    controller.log("Response sent: " + response.name());
+                    controller.log(LogType.INFO,"Response sent: " + response.name());
                 }
             }
         } catch (IOException e) {
-            controller.log("Error handling client: " + e.getMessage());
+            controller.log(LogType.ERROR,"Error handling client: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
-                controller.log("Client disconnected: " + clientSocket.getInetAddress());
+                controller.log(LogType.INFO,"Client disconnected: " + clientSocket.getInetAddress());
             } catch (IOException e) {
-                controller.log("Error closing client socket: " + e.getMessage());
+                controller.log(LogType.ERROR,"Error closing client socket: " + e.getMessage());
             }
         }
     }
 
     private CommandResponse handleSendEmail(String emailData, BufferedWriter out) throws IOException {
-        controller.log("[DEBUG] Received SEND_EMAIL request: " + emailData);
+        controller.log(LogType.SYSTEM,"Received SEND_EMAIL request: " + emailData);
 
         // Dividi i dati in base al separatore "|"
         String[] parts = emailData.split("\\|", 4);
         if (parts.length < 4) {
-            controller.log("[ERROR] Invalid email format: " + emailData);
+            controller.log(LogType.ERROR,"Invalid email format: " + emailData);
             out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid email format\n");
             out.flush();
             return CommandResponse.ILLEGAL_PARAMS;
@@ -156,7 +157,7 @@ public class ServerModel {
 
         // Valida il mittente
         if (!isValidEmail(sender)) {
-            controller.log("[ERROR] Invalid sender email: " + sender);
+            controller.log(LogType.ERROR,"Invalid sender email: " + sender);
             out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid sender email\n");
             out.flush();
             return CommandResponse.ILLEGAL_PARAMS;
@@ -165,7 +166,7 @@ public class ServerModel {
         // Valida i destinatari
         for (String receiver : receivers) {
             if (!isValidEmail(receiver.trim())) {
-                controller.log("[ERROR] Invalid receiver email: " + receiver);
+                controller.log(LogType.ERROR,"Invalid receiver email: " + receiver);
                 out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid receiver email\n");
                 out.flush();
                 return CommandResponse.ILLEGAL_PARAMS;
@@ -173,10 +174,10 @@ public class ServerModel {
         }
 
         String content = parts[3];
-        controller.log("[INFO] Email content received: " + content);
+        controller.log(LogType.INFO,"Email content received: " + content);
 
         // Email validata con successo
-        controller.log("[INFO] Email validated successfully.");
+        controller.log(LogType.INFO,"Email validated successfully.");
         saveEmail(sender, receivers, subject, content);
         out.write(CommandResponse.SUCCESS.name() + "\n");
         out.flush();
@@ -191,21 +192,21 @@ public class ServerModel {
 
     private void saveEmail(String sender, String[] receivers, String subject, String content) {
         // Logica di salvataggio dell'email
-        controller.log("[INFO] Email saved: From " + sender + " to " + String.join(",", receivers));
+        controller.log(LogType.INFO,"Email saved: From " + sender + " to " + String.join(",", receivers));
     }
 
     private CommandResponse handleDeleteEmail(String requestData, BufferedWriter out) {
-        controller.log("Processing email deletion request: " + requestData);
+        controller.log(LogType.SYSTEM,"Processing email deletion request: " + requestData);
 
         // Estrai username e email da eliminare
         String[] parts = requestData.split("\\|", 2); // Dividi la stringa in username e email
         if (parts.length < 2) {
-            controller.log("Invalid request format for email deletion.");
+            controller.log(LogType.ERROR,"Invalid request format for email deletion.");
             try {
                 out.write(CommandResponse.ILLEGAL_PARAMS.name() + "|Invalid request format\n");
                 out.flush();
             } catch (IOException e) {
-                controller.log("Error sending response: " + e.getMessage());
+                controller.log(LogType.ERROR,"Error sending response: " + e.getMessage());
             }
             return CommandResponse.ILLEGAL_PARAMS;
         }
@@ -215,24 +216,24 @@ public class ServerModel {
 
         File userFolder = new File("user_folders" + File.separator + username);
         if (!userFolder.exists() || !userFolder.isDirectory()) {
-            controller.log("Folder for user " + username + " does not exist.");
+            controller.log(LogType.ERROR,"Folder for user " + username + " does not exist.");
             try {
                 out.write(CommandResponse.FAILURE.name() + "|No folder found for user: " + username + "\n");
                 out.flush();
             } catch (IOException e) {
-                controller.log("Error sending response: " + e.getMessage());
+                controller.log(LogType.ERROR,"Error sending response: " + e.getMessage());
             }
             return CommandResponse.FAILURE;
         }
 
         File sentEmailsFile = new File(userFolder, "sent_emails.txt");
         if (!sentEmailsFile.exists() || !sentEmailsFile.isFile()) {
-            controller.log("No email file found for user: " + username);
+            controller.log(LogType.SYSTEM,"No email file found for user: " + username);
             try {
                 out.write(CommandResponse.FAILURE.name() + "|No emails found for user: " + username + "\n");
                 out.flush();
             } catch (IOException e) {
-                controller.log("Error sending response: " + e.getMessage());
+                controller.log(LogType.ERROR,"Error sending response: " + e.getMessage());
             }
             return CommandResponse.FAILURE;
         }
@@ -251,12 +252,12 @@ public class ServerModel {
                         writer.newLine();
                     } else {
                         emailDeleted = true;
-                        controller.log("Email deleted for user " + username + ": " + line);
+                        controller.log(LogType.INFO,"Email deleted for user " + username + ": " + line);
                     }
                 }
 
                 if (!emailDeleted) {
-                    controller.log("No matching emails found for deletion.");
+                    controller.log(LogType.INFO,"No matching emails found for deletion.");
                     out.write(CommandResponse.FAILURE.name() + "|No matching emails found for deletion\n");
                     out.flush();
                     return CommandResponse.FAILURE;
@@ -265,23 +266,23 @@ public class ServerModel {
 
             // Sostituisci il vecchio file con quello aggiornato
             if (!sentEmailsFile.delete() || !tempFile.renameTo(sentEmailsFile)) {
-                controller.log("Error updating email file for user: " + username);
+                controller.log(LogType.ERROR,"Error updating email file for user: " + username);
                 out.write(CommandResponse.FAILURE.name() + "|Failed to update email file\n");
                 out.flush();
                 return CommandResponse.FAILURE;
             }
 
-            controller.log("Selected emails deleted successfully for user: " + username);
+            controller.log(LogType.INFO,"Selected emails deleted successfully for user: " + username);
             out.write(CommandResponse.SUCCESS.name() + "|Selected emails deleted successfully\n");
             out.flush();
             return CommandResponse.SUCCESS;
         } catch (IOException e) {
-            controller.log("Error processing email deletion for user: " + username + ": " + e.getMessage());
+            controller.log(LogType.ERROR,"Error processing email deletion for user: " + username + ": " + e.getMessage());
             try {
                 out.write(CommandResponse.FAILURE.name() + "|Error processing email deletion\n");
                 out.flush();
             } catch (IOException ex) {
-                controller.log("Error sending response: " + ex.getMessage());
+                controller.log(LogType.ERROR,"Error sending response: " + ex.getMessage());
             }
             return CommandResponse.FAILURE;
         }
@@ -299,19 +300,19 @@ public class ServerModel {
 
     private CommandResponse handlePing(BufferedWriter out) {
         try {
-            controller.log("[DEBUG] Received PING request. Connection is alive.");
+            controller.log(LogType.SYSTEM,"[DEBUG] Received PING request. Connection is alive.");
             out.write(CommandResponse.SUCCESS.name() + "\n");
             out.flush();
             return CommandResponse.SUCCESS;
         } catch (IOException e) {
-            controller.log("[ERROR] Error handling PING request: " + e.getMessage());
+            controller.log(LogType.SYSTEM,"[ERROR] Error handling PING request: " + e.getMessage());
             return CommandResponse.FAILURE;
         }
     }
 
 
     private CommandResponse handleLoginCheck(String email, BufferedWriter out) throws IOException {
-        controller.log("Checking login for email: " + email);
+        controller.log(LogType.SYSTEM,"Checking login for email: " + email);
 
         // Estrai il nome utente dalla email
         String username = email.split("@")[0];
@@ -323,12 +324,12 @@ public class ServerModel {
         if (email.matches("^[a-zA-Z0-9._%+-]+@rama.it$")) {
             out.write(CommandResponse.SUCCESS.name() + "\n");
             out.flush();
-            controller.log("Login successful for: " + email);
+            controller.log(LogType.INFO,"Login successful for: " + email);
             return CommandResponse.SUCCESS;
         } else {
             out.write(CommandResponse.FAILURE.name() + "\n");
             out.flush();
-            controller.log("Invalid email: " + email);
+            controller.log(LogType.ERROR,"Invalid email: " + email);
             return CommandResponse.FAILURE;
         }
     }
@@ -384,18 +385,21 @@ public class ServerModel {
         }
 
         String baseDirectory = System.getProperty("user.dir") + File.separator + "UserFolders";
-        File baseDir = new File(baseDirectory);
+        File baseDir = new File(baseDirectory, username);
 
         if (!baseDir.exists()) {
             baseDir.mkdirs();
+            controller.log(LogType.SYSTEM,"User folder created for: " + username + " at: " + baseDir.getAbsolutePath());
         }
 
-        File userFolder = new File(baseDir, username);
+        File userFolder = new File(baseDir, "sent_emails.txt");
         if (!userFolder.exists()) {
-            userFolder.mkdirs();
-            controller.log("User folder created for: " + username + " at: " + userFolder.getAbsolutePath());
-        } else {
-            controller.log("Folder already exists: " + username + " at: " + userFolder.getAbsolutePath());
+            try {
+                userFolder.createNewFile();
+                controller.log(LogType.INFO,"Created sent_emails.txt for: " + username);
+            } catch (IOException e) {
+                controller.log(LogType.ERROR,"Failed to create email file for user: " + username);
+            }
         }
 
         return userFolder;

@@ -1,5 +1,6 @@
 package mailservice.clientside.Configuration;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Email {
@@ -71,13 +72,10 @@ public class Email {
     }
 
     @Override
-    public String toString() { return sender + " - " + subject; }
-    /*public  String dateToString() {
-        return (this.date == null) ? "" : ClientModel.formatDate(this.date);
-    }*/
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = (date != null) ? dateFormat.format(date) : "No Date";
+        return sender + " - " + subject + " (" + formattedDate + ")";
+    }
 
-    //@Override
-   // public int compareTo(Email email) {
-        //return email.getDate().compareTo(this.date);
-   // }
 }

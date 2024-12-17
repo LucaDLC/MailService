@@ -35,33 +35,28 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
-        System.out.println("[DEBUG] Sending Email...");
+        String recipient = RecipientFieldID.getText().trim();
+        String subject = ObjectFieldID.getText().trim();
+        String mailBody = MailBodyID.getHtmlText().trim();
 
-        String sender = ConfigManager.getInstance().readProperty("Client.Mail"); //prendo il mittente
-        String recipient = RecipientFieldID.getText(); //prendo il destinatario
+        if (recipient.isEmpty() || subject.isEmpty() || mailBody.isEmpty()) {
+            showDangerAlert("All fields (recipient, subject, body) must be filled.");
+            return;
+        }
+
+        // Invio dell'email
+        String sender = ConfigManager.getInstance().readProperty("Client.Mail");
         List<String> recipients = Arrays.asList(recipient.split(","));
-        String object = ObjectFieldID.getText(); //prendo l'oggetto
-        String mailBody = MailBodyID.getHtmlText(); //prendo il corpo dell'email
-
-        System.out.println("[DEBUG] Email data: Sender=" + sender + ", Recipients=" + recipients + ", Subject=" + object);
-
         NetworkManager networkManager = NetworkManager.getInstance();
-        boolean sent = networkManager.sendEmail(sender, recipients, object, mailBody);
+
+        boolean sent = networkManager.sendEmail(sender, recipients, subject, mailBody);
 
         if (sent) {
-            System.out.println("[INFO] Email sent successfully.");
-            Stage stage = (Stage) SendMailButton.getScene().getWindow();
-            stage.close();;
-
-            // Chiama il callback per aggiornare la lista delle email
-            if (updateCallback != null) {
-                updateCallback.run();
-            }
-
             showSuccessAlert("Email sent successfully.");
+            Stage stage = (Stage) SendMailButton.getScene().getWindow();
+            stage.close();
         } else {
-            System.out.println("[ERROR] Failed to send email.");
-            showDangerAlert("Failed to send email. Please check your connection or try again.");
+            showDangerAlert("Failed to send email. Please try again.");
         }
     }
 

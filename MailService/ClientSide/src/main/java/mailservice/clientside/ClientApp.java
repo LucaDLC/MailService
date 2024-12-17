@@ -32,8 +32,8 @@ public class ClientApp extends Application {
         stage.setScene(scene);
         stage.show();
 
-//        startFetchingEmails();
- //       startPingKeepAlive();
+        /*startFetchingEmails();
+        startPingKeepAlive();*/
 
         stage.setOnCloseRequest(event -> stop());
     }

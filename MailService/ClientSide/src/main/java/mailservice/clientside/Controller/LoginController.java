@@ -13,6 +13,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import mailservice.clientside.ClientApp;
 import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 
@@ -56,6 +57,11 @@ public class LoginController {
                     mainStage.setTitle("ClientSide - Main");
                     mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     mainStage.show();
+
+                    // Avvia il fetching delle email e il ping solo dopo il login
+                    ClientApp clientApp = new ClientApp();
+                    clientApp.startFetchingEmails();
+                    clientApp.startPingKeepAlive();
 
                     //chiudo la finestra di login
                     Stage stage = (Stage) LoginButton.getScene().getWindow();

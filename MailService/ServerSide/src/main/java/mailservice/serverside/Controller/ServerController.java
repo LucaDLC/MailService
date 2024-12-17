@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import mailservice.serverside.Log.LogType;
 import mailservice.serverside.Model.ServerModel;
 
 public class ServerController {
@@ -34,7 +35,7 @@ public class ServerController {
     @FXML
     public void startServer() {
         if (isServerRunning) {  // controllo se il server è già avviato
-            log("Server is already running.");
+            log(LogType.INFO,"Server is already running.");
             return;
         }
 
@@ -47,7 +48,7 @@ public class ServerController {
         stopButton.setDisable(false);
 
         //aggiungiamo un messaggio di log per segnalare che il server è stato avviato
-        log("Server started on port " + serverModel.getPort());
+        log(LogType.INFO,"Server started on port " + serverModel.getPort());
     }
     @FXML
     public void onStart() {
@@ -66,10 +67,10 @@ public class ServerController {
             stopButton.setDisable(true);
 
             //aggiungiamo un messaggio di log per segnalare che il server è stato fermato
-            log("Server stopped");
+            log(LogType.INFO, "Server stopped");
         }
         else {
-            log("Server is not running");
+            log(LogType.ERROR,"Server is not running");
         }
     }
     @FXML
@@ -78,9 +79,10 @@ public class ServerController {
     }
 
     //metodo per aggiungere un messaggio al log del server
-    public void log(String message) {
+    public void log(LogType type, String message) {
         Platform.runLater(() -> {
-            ServerLog.getItems().add(message);
+            String formattedMessage = String.format("[%s] %s", type.name(), message);
+            ServerLog.getItems().add(formattedMessage);
             ServerLog.scrollTo(ServerLog.getItems().size() - 1);
         });
     }
