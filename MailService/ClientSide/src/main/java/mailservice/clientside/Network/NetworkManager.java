@@ -53,6 +53,8 @@ public class NetworkManager {
     public synchronized void disconnectFromServer() {
         try {
             if (socket != null && !socket.isClosed()) {
+                in.close();
+                out.close();
                 socket.close();
             }
             System.out.println("[INFO] Disconnected from server.");
@@ -64,7 +66,6 @@ public class NetworkManager {
     public boolean sendMessage(CommandRequest command, String data) {
         String ServerResponse;
         if (socket == null || socket.isClosed()) {
-            System.err.println("[ERROR] Connection to server lost.");
             connectToServer();
         }
         try {

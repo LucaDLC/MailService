@@ -56,12 +56,9 @@ public class ClientModel {
             return new String[]{"User email not set"};
         }
 
-        if (!networkManager.connectToServer()) {
-            return new String[]{"Connection error"};
-        }
+        networkManager.connectToServer();
 
-        boolean success = networkManager.sendMessage(CommandRequest.FETCH_EMAIL, userEmail);
-        if (!success) {
+        if (!networkManager.sendMessage(CommandRequest.FETCH_EMAIL, userEmail)) {
             return new String[]{"Fetch email failed"};
         }
 
