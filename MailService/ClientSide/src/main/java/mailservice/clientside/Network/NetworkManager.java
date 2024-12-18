@@ -13,7 +13,7 @@ public class NetworkManager {
     private PrintWriter out;
     private BufferedReader in;
 
-    private static final int SOCKET_TIMEOUT = 30000; // Timeout di 30 secondi
+    private static final int SOCKET_TIMEOUT = 5000; // Timeout di 5 secondi
     private static NetworkManager instance;
 
     private NetworkManager() {}
@@ -35,11 +35,10 @@ public class NetworkManager {
                 }
 
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"),
-                        Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
+                socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"),Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
                 socket.setSoTimeout(SOCKET_TIMEOUT);
-                out = new PrintWriter(socket.getOutputStream(), true);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                out = new PrintWriter(socket.getOutputStream(), true);
                 System.out.println("[INFO] Connected to server.");
                 return true;
             } catch (IOException e) {
@@ -58,15 +57,12 @@ public class NetworkManager {
             }
             System.out.println("[INFO] Disconnected from server.");
         } catch (IOException e) {
-            System.out.println("[ERROR] Error disconnecting: " + e.getMessage());
-        } finally {
-            socket = null;
-            out = null;
-            in = null;
+            System.err.println("[ERROR] Error disconnecting: " + e.getMessage());
         }
     }
 
     public boolean sendMessage(CommandRequest command, String data) {
+        String ServerResponse;
         if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection to server lost.");
             connectToServer();
@@ -74,20 +70,9 @@ public class NetworkManager {
         try {
             out.write(command.name() + "|" + data + "\n");
             out.flush();
-            Thread.sleep(1000);
-            if (in != null && in.ready()) {
-                //String response = in.readLine();
-                if (true) { //"true".equalsIgnoreCase(response.trim())
-                    System.out.println("[INFO] Server response is positive.");
-                    return true;
-                }else {
-                    System.err.println("[ERROR] Server response is negative.");
-                    return false;
-                }
-            } else { // Server did not respond
-                System.err.println("[ERROR] Server did not respond.");
-                return false;
-            }
+            Thread.sleep(500);
+            ServerResponse = receiveMessage();
+            return true;
         } catch (Exception e) {
             System.err.println("[ERROR] Failed to send message: " + e.getMessage());
             return false;
@@ -98,17 +83,17 @@ public class NetworkManager {
     }
 
     public String receiveMessage() {
-        if (in == null) {
-            System.err.println("[ERROR] BufferedReader is null. Connection might not be established.");
-            return null;
-        }
-        else {
-            try {
+        try{
+            if(in != null && in.ready()){
                 return in.readLine();
-            } catch (IOException e) {
-                System.out.println("[ERROR] Error reading response: " + e.getMessage());
+            }
+            else{
+                System.err.println("[ERROR] BufferedReader is null. Connection might not be established.");
                 return null;
             }
+        }catch(Exception e){
+            System.err.println("[ERROR] Failed to receive message: " + e.getMessage());
+            return null;
         }
     }
 
