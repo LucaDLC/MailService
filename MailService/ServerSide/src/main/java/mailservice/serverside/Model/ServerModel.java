@@ -8,9 +8,6 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ServerModel {
     private int port;
@@ -68,8 +65,8 @@ public class ServerModel {
     }
 
     private void handleClient(Socket clientSocket) {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+        try (ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
             String clientMessage;
             while ((clientMessage = in.readLine()) != null) {
@@ -94,7 +91,7 @@ public class ServerModel {
         }
     }
 
-    private void handleSendEmail(String emailData, BufferedWriter out) throws IOException {
+    private void handleSendEmail(String emailData, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
         String[] parts = emailData.split("\\|", 4);
         if (parts.length < 4) {
@@ -125,7 +122,7 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response sent to client.");
     }
 
-    private void handleFetchEmail(String userEmail, BufferedWriter out) throws IOException {
+    private void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Fetching emails for user: " + userEmail);
 
         File userFolder = createUserFolder(userEmail);
@@ -154,7 +151,7 @@ public class ServerModel {
         sendSuccessResponse(out, allEmails.toString().trim());
     }
 
-    private void handleLoginCheck(String email, BufferedWriter out) throws IOException {
+    private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
         if (!isValidEmail(email)) {
             sendErrorResponse(out, "Invalid email format.");
             return;
@@ -165,7 +162,7 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
-    private void handleDeleteEmail(String requestData, BufferedWriter out) throws IOException {
+    private void handleDeleteEmail(String requestData, ObjectOutputStream out) throws IOException {
         String[] parts = requestData.split("\\|", 2);
         if (parts.length < 2) {
             sendErrorResponse(out, "Invalid request format.");
@@ -238,14 +235,14 @@ public class ServerModel {
         return false;
     }
 
-    private void sendErrorResponse(BufferedWriter out, String message) throws IOException {
-        out.write("ERROR|" + message + "\n");
+    private void sendErrorResponse(ObjectOutputStream out, String message) throws IOException {
+        out.writeObject("ERROR|" + message + "\n");
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
     }
 
-    private void sendSuccessResponse(BufferedWriter out, String message) throws IOException {
-        out.write("SUCCESS|" + message + "\n");
+    private void sendSuccessResponse(ObjectOutputStream out, String message) throws IOException {
+        out.writeObject("SUCCESS|" + message + "\n");
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
     }
