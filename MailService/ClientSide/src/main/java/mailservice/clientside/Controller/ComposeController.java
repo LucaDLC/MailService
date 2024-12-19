@@ -48,9 +48,9 @@ public class ComposeController{
             protected Boolean call() {
                 String sender = ConfigManager.getInstance().readProperty("Client.Mail");
                 List<String> recipients = Arrays.asList(recipient.split(","));
-                ClientModel.NetworkManager networkManager = ClientModel.NetworkManager.getInstance();
+                ClientModel clientModel = ClientModel.getInstance();
 
-                return networkManager.sendEmail(sender, recipients, subject, mailBody);
+                return clientModel.sendEmail(recipients, subject, mailBody);
             }
         };
 

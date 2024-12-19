@@ -12,10 +12,7 @@ module mailservice.clientside { //modulo che contiene le classi per il client
     opens mailservice.clientside.Controller to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
     exports mailservice.clientside.Model; //esporta il package per l'utilizzo da parte di altri moduli
     opens mailservice.clientside.Model to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
-    //exports mailservice.clientside.Scene; //esporta il package per l'utilizzo da parte di altri moduli
-    //opens mailservice.clientside.Scene to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
     exports mailservice.clientside.Configuration; //esporta il package per l'utilizzo da parte di altri moduli
     opens mailservice.clientside.Configuration to javafx.fxml;
-    exports mailservice.clientside.Network;
-    opens mailservice.clientside.Network to javafx.fxml; //apre il package per l'utilizzo da parte di JavaFX
+
 }

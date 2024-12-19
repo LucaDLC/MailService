@@ -2,6 +2,7 @@ package mailservice.clientside.Configuration;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public class ConfigManager {
     /* SPIEGAZIONE CONFIG MANAGER
@@ -65,5 +66,9 @@ public class ConfigManager {
     private File getDir() {
         String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "User.properties"; //ottengo il percorso del file
         return new File(url);   //restituisco il persorso del file di configurazione
+    }
+
+    public boolean validateEmail(String email) {
+        return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
     }
 }

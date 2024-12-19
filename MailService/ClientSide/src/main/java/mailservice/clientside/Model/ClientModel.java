@@ -5,15 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import mailservice.clientside.Configuration.*;
 
@@ -30,7 +26,7 @@ public class ClientModel {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private static final int SOCKET_TIMEOUT = 5000; // Timeout di 5 secondi
+    private static final int SOCKET_TIMEOUT = 8000; // Timeout di 8 secondi
 
     private static final int threadsNumber = 5;
     private ExecutorService operationPool;
@@ -40,41 +36,20 @@ public class ClientModel {
         ConfigManager configManager = ConfigManager.getInstance();
 
         try {
-            String clientMail = configManager.readProperty("Client.Mail");
-            if (validateEmail(clientMail)){
-                System.out.println("[INFO] Email is Valid");
-                userLogged = clientMail;
-                if(sendCMD(LOGIN_CHECK)){
-                    System.out.println("[INFO] Email exists in the server");
-                    serverHost = configManager.readProperty("Client.ServerHost");
-                    serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
-                    fetchPeriod = Integer.parseInt(configManager.readProperty("Client.FetchPeriod"));
-                    operationPool = Executors.newFixedThreadPool(threadsNumber);
-                } else {
-                    System.err.println("[ERROR] Email not exists in the server");
-                    userLogged = null;
-                    throw new IllegalArgumentException();
-                }
-
-            } else {
-                System.err.println("[ERROR] Email is not Valid");
-                throw new IllegalArgumentException();
-            }
-
+            userLogged = configManager.readProperty("Client.Mail");
+            serverHost = configManager.readProperty("Client.ServerHost");
+            serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
+            fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
+            operationPool = Executors.newFixedThreadPool(threadsNumber);
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
-            System.exit(1);
         }
     }
 
 
+
     public static ClientModel getInstance() {
         return new ClientModel();
-    }
-
-
-    public boolean validateEmail(String email) {
-        return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
     }
 
 
@@ -158,7 +133,6 @@ public class ClientModel {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
             return null;
         }
-
         try {
             Object response = in.readObject(); // Legge un oggetto dallo stream
             if (response instanceof CommandResponse) {
@@ -182,7 +156,8 @@ public class ClientModel {
 
 
     public boolean sendEmail(List<String> receivers, String subject, String content) {
-        if (receivers.stream().anyMatch(receiver -> !validateEmail(receiver))) {
+        ConfigManager configManager = ConfigManager.getInstance();
+        if (receivers.stream().anyMatch(receiver -> !configManager.validateEmail(receiver))) {
             System.err.println("[ERROR] One or more receiver emails are invalid.");
             return false;
         }

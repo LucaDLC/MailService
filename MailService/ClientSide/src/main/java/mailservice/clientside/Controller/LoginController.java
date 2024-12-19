@@ -14,9 +14,12 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 
 import java.io.IOException;
+
+import static mailservice.clientside.Configuration.CommandRequest.LOGIN_CHECK;
 
 public class LoginController {
 
@@ -31,20 +34,18 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
-        ClientModel.getInstance().logout(); //pulisce i dati della sessione
         System.out.println("Attempting Login...");
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
         System.out.println("Email: " + login);
+        ConfigManager configManager = ConfigManager.getInstance();
 
-        ClientModel clientModel = ClientModel.getInstance();
-
-        if(clientModel.validateEmail(login))
+        if(configManager.validateEmail(login))
         {
-            System.out.println("Email is valid");
-            if(clientModel.existingEmail(login)) {
-                System.out.println("The Email is a server user");
+            System.out.println("[INFO] Email is valid");
+            configManager.setProperty("Client.Mail", login);
+            if(ClientModel.getInstance().sendCMD(LOGIN_CHECK)){
+                System.out.println("[INFO]The Email is a server user");
                 showSuccessAlert();
-                //carica la scena principale
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
                     Parent mainView = loader.load(); //carico il file FXML
@@ -76,13 +77,13 @@ public class LoginController {
                     System.err.println("Unable to load Main.fxml: " + e.getMessage());
                     showDangerAlert("Unable to load Main.fxml");
                 }
-            }else{
-                System.err.println("The Email is not a server user");
-                showDangerAlert("The Email is not a server user");
+            } else {
+                System.err.println("[ERROR] The Email is not a server user");
             }
-        }else{
-            System.err.println("Invalid email");
-            showDangerAlert("Invalid email");
+
+        } else {
+            System.err.println("[ERROR] Email is not Valid");
+            showDangerAlert("Invalid Email");
         }
     }
 

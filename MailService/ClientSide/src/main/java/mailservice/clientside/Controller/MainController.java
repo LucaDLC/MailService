@@ -118,7 +118,7 @@ public class MainController {
                 SenderLabel.setText(email.getSender());
                 ReceiverLabel.setText(String.join(", ", email.getReceivers()));
                 ObjectLabel.setText(email.getSubject());
-                DateLabel.setText(email.getDate());
+                DateLabel.setText(email.getDate().toString());
                 MailContent.getEngine().loadContent(email.getText());
             });
         }
@@ -162,9 +162,9 @@ public class MainController {
                             .flatMap(email -> email.getReceivers().stream())
                             .collect(Collectors.joining(","));
 
-                    ClientModel.NetworkManager networkManager = ClientModel.NetworkManager.getInstance();
-                    if (networkManager.sendCMD(CommandRequest.DELETE_EMAIL, emailData)) {
-                        String serverResponse = networkManager.receiveMessage();
+                    ClientModel clientModel = ClientModel.getInstance();
+                    if (clientModel.sendCMD(CommandRequest.DELETE_EMAIL)) {
+                        String serverResponse = String.valueOf(clientModel.receiveMessage());
                         if ("SUCCESS".equals(serverResponse)) {
                             refreshEmails();
                             MailList.getItems().removeAll(selectedMails);
