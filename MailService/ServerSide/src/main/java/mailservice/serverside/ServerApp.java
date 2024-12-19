@@ -1,19 +1,15 @@
 package mailservice.serverside;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class ServerApp extends Application {
-
-    private static ExecutorService GUI;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -26,21 +22,14 @@ public class ServerApp extends Application {
         stage.setTitle("ServerSide - Log");
         stage.setScene(scene);
         stage.show();
-    }
 
-    public void stop() {
-        GUI.shutdown();
-        try {
-            if (!GUI.awaitTermination(3, TimeUnit.SECONDS)) {
-                GUI.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            GUI.shutdownNow();
-        }
+        stage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
     public static void main(String[] args) {
-        GUI = Executors.newSingleThreadExecutor();
-        GUI.execute(Application::launch);
+        launch();
     }
 }
