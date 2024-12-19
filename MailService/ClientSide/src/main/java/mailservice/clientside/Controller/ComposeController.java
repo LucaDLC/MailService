@@ -1,6 +1,7 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -31,7 +32,6 @@ public class ComposeController{
     MainController mainController = new MainController();
 
     @FXML
-    //metodo che viene chiamato quando si preme il bottone
     protected void onSendMailButtonClick() {
         String recipient = RecipientFieldID.getText().trim();
         String subject = ObjectFieldID.getText().trim();
@@ -42,21 +42,34 @@ public class ComposeController{
             return;
         }
 
-        // Invio dell'email
-        String sender = ConfigManager.getInstance().readProperty("Client.Mail");
-        List<String> recipients = Arrays.asList(recipient.split(","));
-        NetworkManager networkManager = NetworkManager.getInstance();
+        // Invio asincrono dell'email
+        Task<Boolean> sendEmailTask = new Task<>() {
+            @Override
+            protected Boolean call() {
+                String sender = ConfigManager.getInstance().readProperty("Client.Mail");
+                List<String> recipients = Arrays.asList(recipient.split(","));
+                NetworkManager networkManager = NetworkManager.getInstance();
 
-        boolean sent = networkManager.sendEmail(sender, recipients, subject, mailBody);
+                return networkManager.sendEmail(sender, recipients, subject, mailBody);
+            }
+        };
 
-        if (sent) {
-            showSuccessAlert("Email sent successfully.");
-            mainController.refreshEmails();
-            Stage stage = (Stage) SendMailButton.getScene().getWindow();
-            stage.close();
-        } else {
-            showDangerAlert("Failed to send email. Please try again.");
-        }
+        sendEmailTask.setOnSucceeded(event -> {
+            if (sendEmailTask.getValue()) {
+                showSuccessAlert("Email sent successfully.");
+                mainController.refreshEmails(); // Aggiorna la lista delle email
+                Stage stage = (Stage) SendMailButton.getScene().getWindow();
+                stage.close();
+            } else {
+                showDangerAlert("Failed to send email. Please try again.");
+            }
+        });
+
+        sendEmailTask.setOnFailed(event -> {
+            showDangerAlert("An error occurred while sending the email. Please try again.");
+        });
+
+        new Thread(sendEmailTask).start(); // Esegue il task in un thread separato
     }
 
     private void showDangerAlert(String message) {

@@ -1,5 +1,6 @@
 package mailservice.clientside.Network;
 
+import javafx.concurrent.Task;
 import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
 
@@ -13,7 +14,7 @@ public class NetworkManager {
     private PrintWriter out;
     private BufferedReader in;
 
-    private static final int SOCKET_TIMEOUT = 5000; // Timeout di 5 secondi
+    private static final int SOCKET_TIMEOUT = 30000; // Timeout di 5 secondi
     private static NetworkManager instance;
 
     private NetworkManager() {}
@@ -26,28 +27,19 @@ public class NetworkManager {
     }
 
     public synchronized boolean connectToServer() {
-        int retries = 3;
-        while (retries > 0) {
-            try {
-                if (socket != null && !socket.isClosed()) {
-                    System.out.println("[DEBUG] Already connected to server.");
-                    return true;
-                }
-
+        try {
+            if (socket == null || socket.isClosed() || !socket.isConnected()) {
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"),Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
+                socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"), Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
                 socket.setSoTimeout(SOCKET_TIMEOUT);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 out = new PrintWriter(socket.getOutputStream(), true);
-                System.out.println("[INFO] Connected to server.");
-                return true;
-            } catch (IOException e) {
-                retries--;
-                System.err.println("[ERROR] Retry connection (" + retries + " attempts left): " + e.getMessage());
             }
+            return true;
+        } catch (IOException e) {
+            System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
+            return false;
         }
-        System.err.println("[ERROR] Unable to connect to server after retries.");
-        return false;
     }
 
     public synchronized void disconnectFromServer() {
@@ -64,66 +56,75 @@ public class NetworkManager {
     }
 
     public boolean sendMessage(CommandRequest command, String data) {
-        String ServerResponse;
-        if (socket == null || socket.isClosed()) {
-            connectToServer();
+        if (!ensureConnection()) {
+            System.err.println("[ERROR] Unable to connect to server.");
+            return false;
         }
         try {
-            out.write(command.name() + "|" + data + "\n");
+            out.println(command.name() + "|" + data);
             out.flush();
-            Thread.sleep(500);
-            ServerResponse = receiveMessage();
-            return true;
+            String response = receiveMessage(); // Legge la risposta
+
+            if (response != null && response.startsWith("SUCCESS")) {
+                System.out.println("[INFO] Command executed successfully: " + response);
+                return true;
+            } else if (response == null) {
+                System.err.println("[ERROR] Response is null. Possible timeout or connection issue.");
+            } else {
+                System.err.println("[ERROR] Command failed. Response: " + response);
+            }
+            return false;
         } catch (Exception e) {
             System.err.println("[ERROR] Failed to send message: " + e.getMessage());
             return false;
         }
-        finally {
-            disconnectFromServer();
+    }
+
+    public boolean ensureConnection() {
+        if (socket != null && socket.isConnected() && !socket.isClosed()) {
+            return true;
         }
+        return connectToServer();
     }
 
     public String receiveMessage() {
-        try{
-            if(in != null && in.ready()){
-                return in.readLine();
-            }
-            else{
-                System.err.println("[ERROR] BufferedReader is null. Connection might not be established.");
-                return null;
-            }
-        }catch(Exception e){
-            System.err.println("[ERROR] Failed to receive message: " + e.getMessage());
+        if (!ensureConnection()) {
+            System.err.println("[ERROR] Connection not established. Cannot receive messages.");
+            return null;
+        }
+
+        try {
+            String response = in.readLine();
+            System.out.println("[DEBUG] Raw server response: " + response);
+            return response;
+        } catch (IOException e) {
+            System.err.println("[ERROR] Exception while reading server response: " + e.getMessage());
             return null;
         }
     }
 
     public boolean sendEmail(String sender, List<String> receivers, String subject, String content) {
-        if (!connectToServer()) {
-            System.out.println("[ERROR] Not connected to the server. Cannot send email.");
+        if (!ensureConnection()) {
+            System.err.println("[ERROR] Unable to connect to server.");
             return false;
         }
-
         try {
-            String receiverList = String.join(",", receivers);
-            String emailData = sender + "|" + receiverList + "|" + subject + "|" + content;
+            String emailData = sender + "|" + String.join(",", receivers) + "|" + subject + "|" + content;
+            out.println(CommandRequest.SEND_EMAIL.name() + "|" + emailData);
+            out.flush();
 
-            System.out.println("[DEBUG] Sending email data: " + emailData);
-            if (sendMessage(CommandRequest.SEND_EMAIL, emailData)) {
-                String response = receiveMessage();
-                if (response != null && response.trim().startsWith("SUCCESS")) {
-                    System.out.println("[INFO] Email sent successfully.");
-                    return true;
-                } else {
-                    System.out.println("[ERROR] Failed to send email. Server response: " + response);
-                    return false;
-                }
+            String response = receiveMessage(); // Legge la risposta del server
+            if (response != null && response.startsWith("SUCCESS")) {
+                System.out.println("[INFO] Email sent successfully.");
+                return true;
+            } else if (response == null) {
+                System.err.println("[ERROR] No response received. Timeout occurred.");
             } else {
-                System.out.println("[ERROR] Failed to send email command to server.");
-                return false;
+                System.err.println("[ERROR] Failed to send email. Server response: " + response);
             }
+            return false;
         } catch (Exception e) {
-            System.out.println("[ERROR] Exception while sending email: " + e.getMessage());
+            System.err.println("[ERROR] Exception while sending email: " + e.getMessage());
             return false;
         }
     }

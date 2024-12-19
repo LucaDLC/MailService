@@ -2,7 +2,9 @@ package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,11 +19,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
+import mailservice.clientside.Configuration.Email;
 import mailservice.clientside.Model.ClientModel;
 import mailservice.clientside.Network.NetworkManager;
 
-import java.util.Timer;
+import java.util.Collections;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -36,7 +40,7 @@ public class MainController {
     @FXML
     private WebView MailContent; //serve a visualizzare il contenuto dell'email
     @FXML
-    private ListView<String> MailList; //serve a visualizzare la lista delle email
+    private ListView<Email> MailList; //serve a visualizzare la lista delle email
     @FXML
     private Label MailLabel; //serve a visualizzare la mail email
     @FXML
@@ -52,89 +56,100 @@ public class MainController {
     @FXML
     public MenuButton Reply;
 
+    private ClientModel clientModel;
+
     @FXML
     public void initialize() {
-        ConfigManager configManager = ConfigManager.getInstance();
-        MailLabel.setText(configManager.readProperty("Client.Mail"));
-        System.out.println("[DEBUG] MainController initialized.");
-        System.out.println("[DEBUG] MailList reference: " + MailList);
-
-        if (MailList != null) {
-            MailList.getItems().add("No emails found.");
+        System.out.println("[DEBUG] Initializing MainController...");
+        clientModel = ClientModel.getInstance();
+        if (clientModel == null) {
+            System.err.println("[ERROR] Failed to initialize ClientModel.");
         } else {
-            System.err.println("[ERROR] MailList è null.");
+            System.out.println("[INFO] ClientModel initialized successfully.");
         }
-    }
 
-    void refreshEmails() {
-        Platform.runLater(() -> {
-            if (MailList == null) {
-                System.err.println("[ERROR] MailList è ancora null. Ritenterò...");
-                return; // Esci se MailList non è pronto
-            }
+        assert clientModel != null;
+        String userEmail = clientModel.getUserEmail();
+        if (userEmail != null) {
+            MailLabel.setText(userEmail);
+        } else {
+            System.err.println("[ERROR] User email not found in ClientModel.");
+        }
 
-            int retryCount = 3; // Numero massimo di tentativi
-            while (retryCount > 0) {
-                String[] emails = ClientModel.getInstance().fetchEmails();
-                if (emails == null || emails.length == 0) {
-                    System.err.println("[WARNING] Nessuna email trovata o connessione fallita. Tentativi rimasti: " + retryCount);
-                    retryCount--;
-                } else {
-                    updateEmailList(emails);
-                    System.out.println("[DEBUG] Email list aggiornata con successo.");
-                    return; // Esci se ha avuto successo
-                }
-            }
-            System.err.println("[ERROR] Impossibile aggiornare la lista delle email.");
-            MailList.getItems().add("No emails found.");
-        });
-    }
-
-    //metodo per aggiornare la ListView con le email ricevute
-    public void updateEmailList(String[] emails) {
-        Platform.runLater(() -> {
-            if (MailList == null) {
-                System.err.println("[ERROR] MailList non è inizializzata.");
-                return;
-            }
-
-            MailList.getItems().clear();
-            if (emails != null && emails.length > 0) {
-                for (String email : emails) {
-                    // Escludi risposte non valide come "SUCCESS|..."
-                    if (email != null && !email.trim().isEmpty() && !email.startsWith("SUCCESS|")) {
-                        MailList.getItems().add(email);
-                    }
-                }
-            }
-
-            if (MailList.getItems().isEmpty()) {
-                MailList.getItems().add("No emails found.");
+        MailList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                displayEmailDetails(newSelection);
             }
         });
+
+        refreshEmails();
+    }
+
+    public void refreshEmails() {
+        if (clientModel == null) {
+            System.err.println("[ERROR] ClientModel is not initialized.");
+            return;
+        }
+
+        Task<ObservableList<Email>> fetchEmailsTask = new Task<>() {
+            @Override
+            protected ObservableList<Email> call() {
+                return FXCollections.observableArrayList(clientModel.fetchEmails());
+            }
+        };
+
+        fetchEmailsTask.setOnSucceeded(event -> {
+            ObservableList<Email> emails = fetchEmailsTask.getValue();
+            if (emails.isEmpty()) {
+                emails.add(new Email("System", Collections.singletonList("N/A"), "No Subject", "No emails found."));
+            }
+            MailList.setItems(emails);
+        });
+
+        fetchEmailsTask.setOnFailed(event -> {
+            System.err.println("[ERROR] Failed to fetch emails: " + fetchEmailsTask.getException().getMessage());
+        });
+
+        new Thread(fetchEmailsTask).start();
+    }
+
+    private void displayEmailDetails(Email email) {
+        if (email != null) {
+            Platform.runLater(() -> {
+                SenderLabel.setText(email.getSender());
+                ReceiverLabel.setText(String.join(", ", email.getReceivers()));
+                ObjectLabel.setText(email.getSubject());
+                DateLabel.setText(email.getDate());
+                MailContent.getEngine().loadContent(email.getText());
+            });
+        }
     }
 
     //implementazione delle azioni da eseguire quando si preme il bottone
     //metodo che viene chiamato quando si preme il bottone
     @FXML
     protected void onComposeButtonClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
-            Parent composeView = loader.load();
-            Scene composeScene = new Scene(composeView);
-            Stage composeStage = new Stage();
-            composeStage.setScene(composeScene);
-            composeStage.setTitle("ClientSide - Mail Compose");
-            composeStage.initModality(Modality.APPLICATION_MODAL);
-            composeStage.show();
-        } catch (IOException e) {
-            System.err.println("Error loading FXML file: " + e.getMessage());
-        }
+        System.out.println("[DEBUG] Compose button clicked.");
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     protected void onDeleteButtonClick() {
-        ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
+        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if (!selectedMails.isEmpty()) {
             Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
             confirmDialog.setTitle("Delete Confirmation");
@@ -144,7 +159,9 @@ public class MainController {
             confirmDialog.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     String username = ConfigManager.getInstance().readProperty("Client.Mail").split("@")[0];
-                    String emailData = username + "|" + String.join(",", selectedMails);
+                    String emailData = username + "|" + selectedMails.stream()
+                            .flatMap(email -> email.getReceivers().stream())
+                            .collect(Collectors.joining(","));
 
                     NetworkManager networkManager = NetworkManager.getInstance();
                     if (networkManager.sendMessage(CommandRequest.DELETE_EMAIL, emailData)) {
@@ -168,7 +185,7 @@ public class MainController {
 
     @FXML
     protected void onForwardButtonClick() {
-        ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
+        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Forward");
         }else{
@@ -179,7 +196,7 @@ public class MainController {
     @FXML
     protected void onReplyButtonClick() {
         System.out.println("Replying Email...");
-        ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
+        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Reply");
         }
@@ -187,7 +204,7 @@ public class MainController {
 
     @FXML
     protected void onReplyAllButtonAction() {
-        ObservableList<String> selectedMails = MailList.getSelectionModel().getSelectedItems();
+        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Reply All");
         }else{

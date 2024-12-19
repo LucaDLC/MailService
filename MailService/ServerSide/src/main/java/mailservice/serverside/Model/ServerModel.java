@@ -79,6 +79,8 @@ public class ServerModel {
                 String command = parts[0];
                 String argument = parts.length > 1 ? parts[1] : "";
 
+                controller.log(LogType.SYSTEM, "Handling command: " + command + " with argument: " + argument);
+
                 switch (command) {
                     case "LOGIN_CHECK" -> handleLoginCheck(argument, out);
                     case "FETCH_EMAIL" -> handleFetchEmail(argument, out);
@@ -93,6 +95,7 @@ public class ServerModel {
     }
 
     private void handleSendEmail(String emailData, BufferedWriter out) throws IOException {
+        controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
         String[] parts = emailData.split("\\|", 4);
         if (parts.length < 4) {
             sendErrorResponse(out, "Invalid email format.");
@@ -112,14 +115,24 @@ public class ServerModel {
         saveEmailToFolders(sender, String.format("From: %s\nTo: %s\nSubject: %s\nContent: %s\n",
                 sender, String.join(",", receivers), subject, content));
 
+        for (String receiver : receivers) {
+            saveEmailToFolders(receiver, String.format("From: %s\nTo: %s\nSubject: %s\nContent: %s\n",
+                    sender, receiver, subject, content));
+        }
+
+        controller.log(LogType.SYSTEM, "Flushing response to client...");
         sendSuccessResponse(out, "Email sent successfully.");
+        controller.log(LogType.SYSTEM, "Response sent to client.");
     }
 
     private void handleFetchEmail(String userEmail, BufferedWriter out) throws IOException {
+        controller.log(LogType.SYSTEM, "Fetching emails for user: " + userEmail);
+
         File userFolder = createUserFolder(userEmail);
         File[] emailFiles = userFolder.listFiles((dir, name) -> name.startsWith("email_"));
 
         if (emailFiles == null || emailFiles.length == 0) {
+            controller.log(LogType.SYSTEM, "No emails found for user: " + userEmail);
             sendSuccessResponse(out, "No emails found.");
             return;
         }
@@ -131,9 +144,13 @@ public class ServerModel {
                 while ((line = reader.readLine()) != null) {
                     allEmails.append(line).append("\n");
                 }
-                allEmails.append("-----\n"); // Separatore tra email
+            } catch (IOException e) {
+                controller.log(LogType.ERROR, "Error reading email file: " + emailFile.getName() + " - " + e.getMessage());
             }
         }
+
+        controller.log(LogType.SYSTEM, "Emails fetched successfully for user: " + userEmail);
+
         sendSuccessResponse(out, allEmails.toString().trim());
     }
 
@@ -145,6 +162,7 @@ public class ServerModel {
 
         createUserFolder(email);
         sendSuccessResponse(out, "Login successful.");
+        controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
     private void handleDeleteEmail(String requestData, BufferedWriter out) throws IOException {
@@ -223,11 +241,13 @@ public class ServerModel {
     private void sendErrorResponse(BufferedWriter out, String message) throws IOException {
         out.write("ERROR|" + message + "\n");
         out.flush();
+        controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
     }
 
     private void sendSuccessResponse(BufferedWriter out, String message) throws IOException {
         out.write("SUCCESS|" + message + "\n");
         out.flush();
+        controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
     }
 
     public int getPort() {
