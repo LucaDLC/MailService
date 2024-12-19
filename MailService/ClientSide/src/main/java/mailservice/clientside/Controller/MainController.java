@@ -164,7 +164,7 @@ public class MainController {
                             .collect(Collectors.joining(","));
 
                     NetworkManager networkManager = NetworkManager.getInstance();
-                    if (networkManager.sendMessage(CommandRequest.DELETE_EMAIL, emailData)) {
+                    if (networkManager.sendCMD(CommandRequest.DELETE_EMAIL, emailData)) {
                         String serverResponse = networkManager.receiveMessage();
                         if ("SUCCESS".equals(serverResponse)) {
                             refreshEmails();

@@ -1,21 +1,15 @@
 package mailservice.clientside.Model;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import mailservice.clientside.Configuration.CommandRequest;
-import mailservice.clientside.Configuration.CommandResponse;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Configuration.Email;
 import mailservice.clientside.Network.NetworkManager;
 import static mailservice.clientside.Configuration.CommandRequest.*;
-import static mailservice.clientside.Configuration.CommandResponse.*;
 
 
 public class ClientModel {
@@ -44,7 +38,7 @@ public class ClientModel {
     }
 
     public boolean existingEmail(String email) {
-        if (networkManager.sendMessage(LOGIN_CHECK, email)) {
+        if (networkManager.sendCMD(LOGIN_CHECK, email)) {
             configManager.setProperty("Client.Mail", email);
             this.userLogged = email;
             return true;

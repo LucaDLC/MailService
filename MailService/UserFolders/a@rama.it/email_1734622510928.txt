@@ -1,0 +1,4 @@
+From: a@rama.it
+To: a@rama.it
+Subject: sfg
+Content: <html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">asf</span></p></body></html>

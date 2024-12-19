@@ -1,6 +1,5 @@
 package mailservice.clientside.Network;
 
-import javafx.concurrent.Task;
 import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
 
@@ -11,8 +10,8 @@ import java.util.List;
 
 public class NetworkManager {
     private Socket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     private static final int SOCKET_TIMEOUT = 30000; // Timeout di 5 secondi
     private static NetworkManager instance;
@@ -26,23 +25,29 @@ public class NetworkManager {
         return instance;
     }
 
-    public synchronized boolean connectToServer() {
+    public boolean connectToServer() {
         try {
-            if (socket == null || socket.isClosed() || !socket.isConnected()) {
+            if (socket == null || socket.isClosed()) {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(ConfigManager.getInstance().readProperty("Client.ServerHost"), Integer.parseInt(ConfigManager.getInstance().readProperty("Client.ServerPort"))), SOCKET_TIMEOUT);
                 socket.setSoTimeout(SOCKET_TIMEOUT);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(socket.getOutputStream(), true);
+                in = new ObjectInputStream(socket.getInputStream());
+                out = new ObjectOutputStream(socket.getOutputStream());
+                System.out.println("[INFO] Connected to server.");
+                return true;
             }
-            return true;
+            else {
+                System.out.println("[INFO] Already connected to server.");
+                return true;
+            }
+
         } catch (IOException e) {
             System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
             return false;
         }
     }
 
-    public synchronized void disconnectFromServer() {
+    public void disconnectFromServer() {
         try {
             if (socket != null && !socket.isClosed()) {
                 in.close();
@@ -55,8 +60,8 @@ public class NetworkManager {
         }
     }
 
-    public boolean sendMessage(CommandRequest command, String data) {
-        if (!ensureConnection()) {
+    public boolean sendCMD(CommandRequest command, String data) {
+        if (!connectToServer()) {
             System.err.println("[ERROR] Unable to connect to server.");
             return false;
         }
@@ -69,7 +74,7 @@ public class NetworkManager {
                 System.out.println("[INFO] Command executed successfully: " + response);
                 return true;
             } else if (response == null) {
-                System.err.println("[ERROR] Response is null. Possible timeout or connection issue.");
+                System.err.println("[ERROR] Response is null. Timeout occurred.");
             } else {
                 System.err.println("[ERROR] Command failed. Response: " + response);
             }
@@ -77,18 +82,13 @@ public class NetworkManager {
         } catch (Exception e) {
             System.err.println("[ERROR] Failed to send message: " + e.getMessage());
             return false;
+        } finally {
+            disconnectFromServer();
         }
-    }
-
-    public boolean ensureConnection() {
-        if (socket != null && socket.isConnected() && !socket.isClosed()) {
-            return true;
-        }
-        return connectToServer();
     }
 
     public String receiveMessage() {
-        if (!ensureConnection()) {
+        if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
             return null;
         }
@@ -104,7 +104,7 @@ public class NetworkManager {
     }
 
     public boolean sendEmail(String sender, List<String> receivers, String subject, String content) {
-        if (!ensureConnection()) {
+        if (!connectToServer()) {
             System.err.println("[ERROR] Unable to connect to server.");
             return false;
         }
