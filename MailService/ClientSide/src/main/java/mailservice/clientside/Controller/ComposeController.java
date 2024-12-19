@@ -10,7 +10,7 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Network.NetworkManager;
+import mailservice.clientside.Model.ClientModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class ComposeController{
             protected Boolean call() {
                 String sender = ConfigManager.getInstance().readProperty("Client.Mail");
                 List<String> recipients = Arrays.asList(recipient.split(","));
-                NetworkManager networkManager = NetworkManager.getInstance();
+                ClientModel.NetworkManager networkManager = ClientModel.NetworkManager.getInstance();
 
                 return networkManager.sendEmail(sender, recipients, subject, mailBody);
             }

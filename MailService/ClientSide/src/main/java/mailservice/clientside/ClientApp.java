@@ -5,14 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Controller.MainController;
 import mailservice.clientside.Model.ClientModel;
-import mailservice.clientside.Network.NetworkManager;
 
 import java.io.IOException;
 
 public class ClientApp extends Application {
-    NetworkManager networkManager = NetworkManager.getInstance();
+    ClientModel.NetworkManager networkManager = ClientModel.NetworkManager.getInstance();
 
     @Override
     public void start(Stage stage) throws IOException {

@@ -21,7 +21,6 @@ import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Configuration.Email;
 import mailservice.clientside.Model.ClientModel;
-import mailservice.clientside.Network.NetworkManager;
 
 import java.util.Collections;
 import java.io.IOException;
@@ -163,7 +162,7 @@ public class MainController {
                             .flatMap(email -> email.getReceivers().stream())
                             .collect(Collectors.joining(","));
 
-                    NetworkManager networkManager = NetworkManager.getInstance();
+                    ClientModel.NetworkManager networkManager = ClientModel.NetworkManager.getInstance();
                     if (networkManager.sendCMD(CommandRequest.DELETE_EMAIL, emailData)) {
                         String serverResponse = networkManager.receiveMessage();
                         if ("SUCCESS".equals(serverResponse)) {

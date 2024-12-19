@@ -14,9 +14,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.ClientApp;
 import mailservice.clientside.Model.ClientModel;
-import mailservice.clientside.Network.NetworkManager;
 
 import java.io.IOException;
 
