@@ -69,8 +69,8 @@ public class ClientModel {
             if (socket == null || socket.isClosed()) {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(serverHost, serverPort), SOCKET_TIMEOUT);
-                in = new ObjectInputStream(socket.getInputStream());
                 out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
                 System.out.println("[INFO] Connected to server.");
                 return true;
             }
@@ -83,20 +83,23 @@ public class ClientModel {
             System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
             return false;
         }
+
+
     }
 
 
     public void disconnectFromServer() {
-        try {
-            if (socket != null && !socket.isClosed()) {
+        if (socket != null && !socket.isClosed()) {
+            try {
                 in.close();
                 out.close();
                 socket.close();
+                System.out.println("[INFO] Disconnected from server.");
+            } catch (IOException e) {
+                System.err.println("[ERROR] Error disconnecting: " + e.getMessage());
             }
-            System.out.println("[INFO] Disconnected from server.");
-        } catch (IOException e) {
-            System.err.println("[ERROR] Error disconnecting: " + e.getMessage());
         }
+
     }
 
 
@@ -112,7 +115,7 @@ public class ClientModel {
             Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
-            if (response != null && response.equals("SUCCESS")) {
+            if (response != null && response == CommandResponse.SUCCESS) {
                 System.out.println("[INFO] Command executed successfully: " + response);
                 return true;
             } else {
@@ -129,7 +132,8 @@ public class ClientModel {
 
 
     public CommandResponse receiveMessage() {
-        if (socket == null || socket.isClosed()) {
+        return CommandResponse.SUCCESS;
+        /*if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
             return null;
         }
@@ -150,16 +154,18 @@ public class ClientModel {
         catch (ClassNotFoundException e) {
             System.err.println("[ERROR] Class not found while reading server response: " + e.getMessage());
             return null;
-        }
+        }*/
 
     }
 
 
     public boolean sendEmail(List<String> receivers, String subject, String content) {
-        ConfigManager configManager = ConfigManager.getInstance();
-        if (receivers.stream().anyMatch(receiver -> !configManager.validateEmail(receiver))) {
-            System.err.println("[ERROR] One or more receiver emails are invalid.");
-            return false;
+        for (String recipientSplit : receivers) {
+            String trimmedRecipient = recipientSplit.trim();
+            if (!ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
+                System.err.println("[ERROR] Invalid email insert during Compose phase: " + trimmedRecipient);
+                return false;
+            }
         }
 
         if (!connectToServer()) {
@@ -173,10 +179,10 @@ public class ClientModel {
             out.flush();
             Thread.sleep(250);
             CommandResponse response = receiveMessage();
-            if (response != null && response.equals("SUCCESS")) {
+            if (response != null && response == CommandResponse.SUCCESS) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
                 return true;
-            } else if(response != null && response.equals("ILLEGAL_PARAMS")) {
+            } else if(response != null && response != CommandResponse.ILLEGAL_PARAMS) {
                 System.err.println("[ERROR] Receivers does not exist in the server " + response);
                 return false;
             }

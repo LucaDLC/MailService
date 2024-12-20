@@ -34,7 +34,6 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonClick() {
-        System.out.println("Attempting Login...");
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
         System.out.println("Email: " + login);
         ConfigManager configManager = ConfigManager.getInstance();

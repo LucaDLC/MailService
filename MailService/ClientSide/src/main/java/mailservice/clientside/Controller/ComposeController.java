@@ -42,14 +42,24 @@ public class ComposeController{
             return;
         }
 
+        List<String> recipients = Arrays.asList(recipient.split(","));
+
+        for (String recipientSplit : recipients) {
+            // Rimuove gli spazi bianchi e valida l'email
+            String trimmedRecipient = recipientSplit.trim();
+            if (ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
+                System.out.println("[INFO] Valid email: " + trimmedRecipient);
+            } else {
+                System.err.println("[ERROR] Invalid email: " + trimmedRecipient);
+                showDangerAlert("Invalid email: " + trimmedRecipient);
+                return;
+            }
+        }
         // Invio asincrono dell'email
         Task<Boolean> sendEmailTask = new Task<>() {
             @Override
             protected Boolean call() {
-                String sender = ConfigManager.getInstance().readProperty("Client.Mail");
-                List<String> recipients = Arrays.asList(recipient.split(","));
                 ClientModel clientModel = ClientModel.getInstance();
-
                 return clientModel.sendEmail(recipients, subject, mailBody);
             }
         };

@@ -59,7 +59,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        System.out.println("[DEBUG] Initializing MainController...");
+        System.out.println("[INFO] Initializing MainController...");
         clientModel = ClientModel.getInstance();
         if (clientModel == null) {
             System.err.println("[ERROR] Failed to initialize ClientModel.");
@@ -128,7 +128,7 @@ public class MainController {
     //metodo che viene chiamato quando si preme il bottone
     @FXML
     protected void onComposeButtonClick() {
-        System.out.println("[DEBUG] Compose button clicked.");
+        System.out.println("[INFO] Composing Mail.");
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
@@ -188,13 +188,13 @@ public class MainController {
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Forward");
         }else{
-            System.out.println("No email selected for forward");
+            System.out.println("[INFO] No email selected for forward");
         }
     }
 
     @FXML
     protected void onReplyButtonClick() {
-        System.out.println("Replying Email...");
+        System.out.println("[INFO] Replying Email...");
         ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Reply");
@@ -203,11 +203,12 @@ public class MainController {
 
     @FXML
     protected void onReplyAllButtonAction() {
+        System.out.println("[INFO] Replying Email...");
         ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
         if(!selectedMails.isEmpty()) {
             showComposeWindow("Reply All");
         }else{
-            System.out.println("No email selected for reply all ");
+            System.out.println("[INFO] No email selected for reply all ");
         }
     }
     private void showComposeWindow(String action) {
@@ -221,7 +222,7 @@ public class MainController {
             composeStage.initModality(Modality.APPLICATION_MODAL);
             composeStage.show();
         }catch(IOException e){
-            System.err.println("Error loadind FXML file: " + e.getMessage());
+            System.err.println("[ERROR] Error loadind FXML file: " + e.getMessage());
             e.printStackTrace();
         }
     }
