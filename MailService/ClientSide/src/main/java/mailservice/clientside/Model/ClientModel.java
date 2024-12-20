@@ -103,12 +103,12 @@ public class ClientModel {
     }
 
 
-    public boolean sendCMD(CommandRequest command) {
+    private boolean sendCMD(CommandRequest command, Email dataMail) {
         if (!connectToServer()) {
             System.err.println("[ERROR] Unable to connect to server.");
             return false;
         }
-        Request request = new Request(userLogged, command, null);
+        Request request = new Request(userLogged, command, dataMail);
         try {
             out.writeObject(request);
             out.flush();
@@ -131,17 +131,30 @@ public class ClientModel {
     }
 
 
-    public CommandResponse receiveMessage() {
+    public boolean wrapDeleteEmail(Email delmail){
+        return sendCMD(DELETE_EMAIL, delmail);
+    }
+
+
+    public boolean wrapLoginCheck(){
+        return sendCMD(DELETE_EMAIL, null);
+    }
+
+
+    private CommandResponse receiveMessage() {
         return CommandResponse.SUCCESS;
         /*if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
             return null;
         }
         try {
-            Object response = in.readObject(); // Legge un oggetto dallo stream
-            if (response instanceof CommandResponse) {
-                CommandResponse cmdResponse = (CommandResponse) response;
+            Object inResponse = in.readObject(); // Legge un oggetto dallo stream
+            if (inResponse instanceof Response) {
+                Response cmdResponse = (Response) inResponse;
                 System.out.println("[DEBUG] Raw server response: " + cmdResponse);
+
+                // estrapolare la commandResponse
+
                 return cmdResponse;
             } else {
                 System.err.println("[ERROR] Unexpected response type: " + response.getClass());

@@ -2,6 +2,7 @@ package mailservice.serverside.Configuration;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public class ConfigManager {
     /* SPIEGAZIONE CONFIG MANAGER
@@ -48,5 +49,9 @@ public class ConfigManager {
     private File getDir() {
         String uri = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "Server.properties";
         return new File(uri);
+    }
+
+    public boolean validateEmail(String email) {
+        return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
     }
 }

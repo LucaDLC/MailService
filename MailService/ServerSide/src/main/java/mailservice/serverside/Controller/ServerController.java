@@ -9,6 +9,8 @@ import javafx.scene.control.Alert.AlertType;
 import mailservice.serverside.Log.LogType;
 import mailservice.serverside.Model.ServerModel;
 
+import java.net.Socket;
+
 public class ServerController {
     @FXML
     private ListView<String> ServerLog; //serve a visualizzare il log del server

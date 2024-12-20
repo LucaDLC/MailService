@@ -1,6 +1,9 @@
 package mailservice.serverside.Model;
 
+import mailservice.serverside.Configuration.CommandRequest;
 import mailservice.serverside.Configuration.ConfigManager;
+import mailservice.serverside.Configuration.Email;
+import mailservice.serverside.Configuration.Request;
 import mailservice.serverside.Controller.ServerController;
 import mailservice.serverside.Log.LogType;
 
@@ -8,26 +11,35 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
 
 public class ServerModel {
-    private int port;
+    private final int port;
+    private final int timeout;
+
     private ServerSocket serverSocket;
     private volatile boolean running;
+
+    private ExecutorService serverThreads;
+    private final int threadsNumber;
+
     private ServerController controller;
 
+
     public ServerModel(ServerController serverController) {
+        ConfigManager configManager = ConfigManager.getInstance();
         this.controller = serverController;
-        this.port = Integer.parseInt(ConfigManager.getInstance().readProperty("Server.Port"));
+        this.port = Integer.parseInt(configManager.readProperty("Server.Port"));
+        this.timeout = Integer.parseInt(configManager.readProperty("Server.Timeout"));
+        this.threadsNumber = Integer.parseInt(configManager.readProperty("Server.Threads"));
     }
 
     public void startServer() {
-        synchronized (this) {
-            if (running) {
-                controller.log(LogType.INFO, "Server is already running on port " + port);
-                return;
-            }
-            running = true;
+        if (running) {
+            controller.log(LogType.INFO, "Server is already running on port " + port);
+            return;
         }
+        running = true;
 
         new Thread(() -> {
             try {
@@ -37,7 +49,7 @@ public class ServerModel {
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     controller.log(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
-                    new Thread(() -> handleClient(clientSocket)).start();
+                    serverThreads.submit(handleClient(clientSocket));
                 }
             } catch (BindException e) {
                 controller.showErrorAlert("Port " + port + " is already in use.");
@@ -50,10 +62,13 @@ public class ServerModel {
     }
 
     public void stopServer() {
-        synchronized (this) {
-            if (!running) return;
-            running = false;
+        if (!running)
+        {
+            controller.log(LogType.INFO, "Server stopped on port " + port);
+            return;
         }
+        running = false;
+
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
@@ -64,34 +79,31 @@ public class ServerModel {
         }
     }
 
-    private void handleClient(Socket clientSocket) {
+    private Runnable handleClient(Socket clientSocket) {
         try (ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
              ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
 
-            String clientMessage;
-            while ((clientMessage = in.readLine()) != null) {
+            Request clientMessage;
+            while ((clientMessage = (Request) in.readObject()) != null && clientMessage instanceof Request) {
                 controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
 
-                String[] parts = clientMessage.split("\\|", 2);
-                String command = parts[0];
-                String argument = parts.length > 1 ? parts[1] : "";
-
-                controller.log(LogType.SYSTEM, "Handling command: " + command + " with argument: " + argument);
-
-                switch (command) {
-                    case "LOGIN_CHECK" -> handleLoginCheck(argument, out);
-                    case "FETCH_EMAIL" -> handleFetchEmail(argument, out);
-                    case "SEND_EMAIL" -> handleSendEmail(argument, out);
-                    case "DELETE_EMAIL" -> handleDeleteEmail(argument, out);
+                switch (clientMessage.cmdName()) {
+                    case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
+                    case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), out);
+                    case SEND_EMAIL -> handleSendEmail(clientMessage.logged(),clientMessage.mail(), out);
+                    case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(),clientMessage.mail(), out);
                     default -> sendErrorResponse(out, "Unknown command.");
                 }
             }
         } catch (IOException e) {
             controller.log(LogType.ERROR, "Client error: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            controller.log(LogType.ERROR, "Command Request error: " + e.getMessage());
         }
+        return null;
     }
 
-    private void handleSendEmail(String emailData, ObjectOutputStream out) throws IOException {
+    private void handleSendEmail(String emailData, Email mail, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
         String[] parts = emailData.split("\\|", 4);
         if (parts.length < 4) {
@@ -162,7 +174,7 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
-    private void handleDeleteEmail(String requestData, ObjectOutputStream out) throws IOException {
+    private void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
         String[] parts = requestData.split("\\|", 2);
         if (parts.length < 2) {
             sendErrorResponse(out, "Invalid request format.");

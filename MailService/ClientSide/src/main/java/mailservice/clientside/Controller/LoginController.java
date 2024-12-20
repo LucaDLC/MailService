@@ -42,7 +42,7 @@ public class LoginController {
         {
             System.out.println("[INFO] Email is valid");
             configManager.setProperty("Client.Mail", login);
-            if(ClientModel.getInstance().sendCMD(LOGIN_CHECK)){
+            if(ClientModel.getInstance().wrapLoginCheck()){
                 System.out.println("[INFO]The Email is a server user");
                 showSuccessAlert();
                 try {

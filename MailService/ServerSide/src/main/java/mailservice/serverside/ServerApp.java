@@ -23,10 +23,12 @@ public class ServerApp extends Application {
         stage.setScene(scene);
         stage.show();
 
-        stage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
+    }
+
+    @Override
+    public void stop(){
+        Platform.exit();
+        System.exit(0);
     }
 
     public static void main(String[] args) {

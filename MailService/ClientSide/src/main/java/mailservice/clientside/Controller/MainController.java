@@ -163,17 +163,13 @@ public class MainController {
                             .collect(Collectors.joining(","));
 
                     ClientModel clientModel = ClientModel.getInstance();
-                    if (clientModel.sendCMD(CommandRequest.DELETE_EMAIL)) {
-                        String serverResponse = String.valueOf(clientModel.receiveMessage());
-                        if ("SUCCESS".equals(serverResponse)) {
-                            refreshEmails();
-                            MailList.getItems().removeAll(selectedMails);
-                            showSuccessAlert("Emails deleted successfully.");
-                        } else {
-                            showDangerAlert("Failed to delete emails.");
-                        }
+                    if (clientModel.wrapDeleteEmail(null)) {   //da rivedere
+                        refreshEmails();
+                        MailList.getItems().removeAll(selectedMails);
+                        showSuccessAlert("Emails deleted successfully.");
+
                     } else {
-                        showDangerAlert("Failed to connect to the server.");
+                    showDangerAlert("Failed to delete emails.");
                     }
                 }
             });
