@@ -7,7 +7,7 @@
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/User.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/User.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +83,7 @@
       <recent name="mailservice.clientside.Controller" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.ServerApp">
+  <component name="RunManager" selected="Application.ClientApp">
     <configuration name="ClientApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="mailservice.clientside.ClientApp" />
       <module name="ClientSide" />
@@ -112,8 +112,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ServerApp" />
         <item itemvalue="Application.ClientApp" />
+        <item itemvalue="Application.ServerApp" />
       </list>
     </recent_temporary>
   </component>
@@ -189,7 +189,7 @@
       <workItem from="1734645337384" duration="3017000" />
       <workItem from="1734707392180" duration="6053000" />
       <workItem from="1734791266601" duration="8898000" />
-      <workItem from="1734802764079" duration="2990000" />
+      <workItem from="1734802764079" duration="3732000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

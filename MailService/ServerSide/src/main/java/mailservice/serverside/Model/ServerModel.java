@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
@@ -43,7 +44,11 @@ public class ServerModel {
             controller.log(LogType.INFO, "Server is already running on port " + port);
             return;
         }
+
         running = true;
+
+        // Inizializza il thread pool
+        serverThreads = Executors.newFixedThreadPool(threadsNumber);
 
         new Thread(() -> {
             try {
@@ -53,7 +58,9 @@ public class ServerModel {
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     controller.log(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
-                    serverThreads.submit(handleClient(clientSocket));
+
+                    // Invio di un task Runnable al thread pool
+                    serverThreads.submit(() -> handleClient(clientSocket));
                 }
             } catch (BindException e) {
                 controller.showErrorAlert("Port " + port + " is already in use.");
@@ -66,70 +73,68 @@ public class ServerModel {
     }
 
     public void stopServer() {
-        if (!running)
-        {
-            controller.log(LogType.INFO, "Server stopped on port " + port);
+        if (!running) {
+            controller.log(LogType.INFO, "Server is not running.");
             return;
         }
+
         running = false;
 
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                controller.log(LogType.INFO, "Server stopped on port " + port);
+                controller.log(LogType.INFO, "Server socket closed.");
             }
+
             if (serverThreads != null && !serverThreads.isShutdown()) {
                 serverThreads.shutdown(); // Avvia lo shutdown dei thread esistenti
                 if (!serverThreads.awaitTermination(30, TimeUnit.SECONDS)) {
                     controller.log(LogType.ERROR, "Forcing thread pool shutdown...");
-                    serverThreads.shutdownNow(); // Forza lo shutdown se i thread non terminano in tempo
+                    serverThreads.shutdownNow(); // Forza lo shutdown
                 }
             }
         } catch (IOException e) {
-            controller.log(LogType.ERROR, "Error stopping server: " + e.getMessage());
+            controller.log(LogType.ERROR, "Error closing server socket: " + e.getMessage());
         } catch (InterruptedException e) {
-            controller.log(LogType.ERROR, "Error stopping server threads: " + e.getMessage());
+            controller.log(LogType.ERROR, "Thread pool shutdown interrupted: " + e.getMessage());
             Thread.currentThread().interrupt();
         } finally {
-            // Cleanup finale
+            serverThreads = null;
             serverSocket = null;
-            controller.log(LogType.INFO, "Socket inhibited.");
+            controller.log(LogType.INFO, "Server shutdown complete.");
         }
     }
 
-    private Runnable handleClient(Socket clientSocket) {
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
-        try {
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
-            in = new ObjectInputStream(clientSocket.getInputStream());
+    private void handleClient(Socket clientSocket) {
+        try (
+                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
+        ) {
             Request clientMessage;
-            while ((clientMessage = (Request) in.readObject()) != null && clientMessage instanceof Request) {
+            while ((clientMessage = (Request) in.readObject()) != null) {
                 controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
 
                 switch (clientMessage.cmdName()) {
                     case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
                     case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), out);
-                    case SEND_EMAIL -> handleSendEmail(clientMessage.logged(),clientMessage.mail(), out);
-                    case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(),clientMessage.mail(), out);
-                    default -> sendErrorResponse(out, "Unknown command.");
+                    case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
+                    case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
+                    default -> sendCMDResponse(out, GENERIC_ERROR);
                 }
             }
         } catch (IOException e) {
-            controller.log(LogType.ERROR, "Client error: " + e.getMessage());
+            controller.log(LogType.ERROR, "Client disconnected or IO error: " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            controller.log(LogType.ERROR, "Command Request error: " + e.getMessage());
-        }
-        Response response = new Response(CommandResponse.GENERIC_ERROR,null);
-        try {
-            out.writeObject(response);
-            out.flush();
+            controller.log(LogType.ERROR, "Invalid command received: " + e.getMessage());
+        } finally {
+            try {
+                clientSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                controller.log(LogType.ERROR, "Error closing client socket: " + e.getMessage());
             }
-
-        return null;
+        }
     }
+
 
     private synchronized void handleSendEmail(String emailData, Email mail, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
@@ -143,7 +148,7 @@ public class ServerModel {
         }
 
         controller.log(LogType.SYSTEM, "Flushing response to client...");
-        sendSuccessResponse(out, "Email sent successfully.");
+        sendCMDResponse(out, SUCCESS);
         controller.log(LogType.SYSTEM, "Response sent to client.");
     }
 
@@ -155,7 +160,7 @@ public class ServerModel {
 
         if (emailFiles == null || emailFiles.length == 0) {
             controller.log(LogType.SYSTEM, "No emails found for user: " + userEmail);
-            sendSuccessResponse(out, "No emails found.");
+            sendCMDResponse(out, SUCCESS);
             return;
         }
 
@@ -173,24 +178,24 @@ public class ServerModel {
 
         controller.log(LogType.SYSTEM, "Emails fetched successfully for user: " + userEmail);
 
-        sendSuccessResponse(out, allEmails.toString().trim());
+        sendCMDResponse(out, SUCCESS);
     }
 
     private synchronized void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
         if (!isValidEmail(email)) {
-            sendErrorResponse(out, "Invalid email format.");
+            sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
 
         createUserFolder(email);
-        sendSuccessResponse(out, "Login successful.");
+        sendCMDResponse(out, SUCCESS);
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
     private synchronized void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
         String[] parts = requestData.split("\\|", 2);
         if (parts.length < 2) {
-            sendErrorResponse(out, "Invalid request format.");
+            sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
 
@@ -199,7 +204,7 @@ public class ServerModel {
         File emailFile = getUserEmailFile(userEmail);
 
         if (!emailFile.exists()) {
-            sendErrorResponse(out, "No emails found.");
+            sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
 
@@ -216,7 +221,7 @@ public class ServerModel {
 
         emailFile.delete();
         new File(emailFile + ".tmp").renameTo(emailFile);
-        sendSuccessResponse(out, "Emails deleted successfully.");
+        sendCMDResponse(out, SUCCESS);
     }
 
     private synchronized void saveEmailToFolders(String username, String emailContent) {
@@ -267,17 +272,21 @@ public class ServerModel {
         return false;
     }
 
-    private void sendErrorResponse(ObjectOutputStream out, String message) throws IOException {
-        out.writeObject("ERROR|" + message + "\n");
+    public void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
+        Response response = new Response(cmdResponse,null);
+        out.writeObject(response);
         out.flush();
-        controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
+        controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
 
-    private void sendSuccessResponse(ObjectOutputStream out, String message) throws IOException {
-        out.writeObject("SUCCESS|" + message + "\n");
+    public void sendMail(ObjectOutputStream out, CommandResponse cmdResponse, List<Email> mail) throws IOException {
+        Response response = new Response(cmdResponse,mail);
+        out.writeObject(response);
         out.flush();
-        controller.log(LogType.SYSTEM, "Response flushed to client: " + message);
+        controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
+
+
 
     public int getPort() {
         return port;
