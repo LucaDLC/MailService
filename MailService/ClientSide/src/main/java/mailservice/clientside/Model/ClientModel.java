@@ -140,7 +140,7 @@ public class ClientModel {
 
 
     public boolean wrapLoginCheck(){
-        return sendCMD(DELETE_EMAIL, null);
+        return sendCMD(LOGIN_CHECK, null);
     }
 
 
@@ -151,7 +151,7 @@ public class ClientModel {
             return null;
         }
         try {
-            Response cmdResponse = null;
+            Response cmdResponse;
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
                 cmdResponse = (Response) inResponse;
@@ -159,7 +159,7 @@ public class ClientModel {
 
                 return cmdResponse.responseName();
             } else {
-                System.err.println("[ERROR] Unexpected response type: " + cmdResponse.getClass());
+                System.err.println("[ERROR] Unexpected response type: " + inResponse.getClass());
                 return null;
             }
         } catch (IOException e) {
