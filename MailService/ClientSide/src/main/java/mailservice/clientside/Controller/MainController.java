@@ -60,32 +60,41 @@ public class MainController {
     public void initialize() {
         System.out.println("[INFO] Initializing MainController...");
         clientModel = ClientModel.getInstance();
+
         if (clientModel == null) {
             System.err.println("[ERROR] Failed to initialize ClientModel.");
-        } else {
-            System.out.println("[INFO] ClientModel initialized successfully.");
+            showDangerAlert("Initialization error.");
+            ComposeButton.setDisable(true);
+            ForwardButton.setDisable(true);
+            DeleteButton.setDisable(true);
+            Platform.exit();
+            return;
         }
 
-        assert clientModel != null;
-        String userEmail = clientModel.getUserEmail();
-        if (userEmail != null) {
-            MailLabel.setText(userEmail);
-        } else {
-            System.err.println("[ERROR] User email not found in ClientModel.");
-        }
+        System.out.println("[INFO] ClientModel initialized successfully.");
+        MailLabel.setText(clientModel.getUserEmail());
+        refreshEmails();
+
+        // Set up the cell factory to display only the email subject
+        MailList.setCellFactory(lv -> new ListCell<Email>() {
+            @Override
+            protected void updateItem(Email email, boolean empty) {
+                super.updateItem(email, empty);
+                setText(empty || email == null ? null : email.getSubject());
+            }
+        });
 
         MailList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 displayEmailDetails(newSelection);
             }
         });
-
-        refreshEmails();
     }
 
     public void refreshEmails() {
         if (clientModel == null) {
-            System.err.println("[ERROR] ClientModel is not initialized.");
+            System.err.println("[ERROR] ClientModel is not initialized. Cannot fetch emails.");
+            showDangerAlert("Unable to refresh emails: ClientModel is not initialized.");
             return;
         }
 
@@ -99,13 +108,14 @@ public class MainController {
         fetchEmailsTask.setOnSucceeded(event -> {
             ObservableList<Email> emails = fetchEmailsTask.getValue();
             if (emails.isEmpty()) {
-                emails.add(new Email("System", Collections.singletonList("N/A"), "No Subject", "No emails found."));
+                System.out.println("[INFO] No emails found.");
             }
             MailList.setItems(emails);
         });
 
         fetchEmailsTask.setOnFailed(event -> {
             System.err.println("[ERROR] Failed to fetch emails: " + fetchEmailsTask.getException().getMessage());
+            showDangerAlert("Failed to fetch emails.");
         });
 
         new Thread(fetchEmailsTask).start();
@@ -113,13 +123,11 @@ public class MainController {
 
     private void displayEmailDetails(Email email) {
         if (email != null) {
-            Platform.runLater(() -> {
-                SenderLabel.setText(email.getSender());
-                ReceiverLabel.setText(String.join(", ", email.getReceivers()));
-                ObjectLabel.setText(email.getSubject());
-                DateLabel.setText(email.getDate().toString());
-                MailContent.getEngine().loadContent(email.getText());
-            });
+            SenderLabel.setText(email.getSender());
+            ReceiverLabel.setText(String.join(", ", email.getReceivers()));
+            ObjectLabel.setText(email.getSubject());
+            DateLabel.setText(email.getDate().toString());
+            MailContent.getEngine().loadContent(email.getText());
         }
     }
 

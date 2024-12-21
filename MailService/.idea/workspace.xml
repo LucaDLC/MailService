@@ -5,9 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/User.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/User.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/.idea/.name" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/Email.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/Email.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/a@rama.it/email_1734622510924.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/a@rama.it/email_1734622510928.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/a@rama.it/email_1734622886756.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/a@rama.it/email_1734622886772.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734435664872.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734616283748.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734619999659.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734620639763.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734620825818.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734621222287.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734621557294.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734621557297.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734622009859.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ale@rama.it/email_1734622009880.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/alexa@rama.it/email_1734619262589.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734433835755.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734434083970.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734434866828.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734435112904.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734435509757.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734435812496.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734615312346.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734616089093.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734616093989.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734617966948.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/ciao@rama.it/email_1734618185835.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/luca@rama.it/email_1734615448296.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserFolders/perz@rama.it/email_1734614894942.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,12 +93,15 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/LucaDLC/Desktop/MailService/MailService",
+    "last_opened_file_path": "C:/Users/alexa/OneDrive/Desktop/GitHub/MailService",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
     "vue.rearranger.settings.migration": "true"
   }
@@ -120,8 +157,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
       </set>
     </attachedChunks>
   </component>
@@ -190,6 +227,8 @@
       <workItem from="1734707392180" duration="6053000" />
       <workItem from="1734791266601" duration="8898000" />
       <workItem from="1734802764079" duration="3732000" />
+      <workItem from="1734810025277" duration="77000" />
+      <workItem from="1734810354315" duration="7203000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

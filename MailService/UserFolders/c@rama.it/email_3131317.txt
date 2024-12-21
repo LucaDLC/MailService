@@ -1,0 +1,6 @@
+ID:3131317
+Sender:c@rama.it
+Receivers:c@rama.it
+Subject:privet
+Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">cum stai?</span></p></body></html>
+Date:Sat Dec 21 23:03:15 CET 2024

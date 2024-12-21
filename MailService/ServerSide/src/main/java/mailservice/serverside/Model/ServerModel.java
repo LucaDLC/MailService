@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,7 +32,6 @@ public class ServerModel {
 
     private ServerController controller;
 
-
     public ServerModel(ServerController serverController) {
         ConfigManager configManager = ConfigManager.getInstance();
         this.controller = serverController;
@@ -44,22 +45,16 @@ public class ServerModel {
             controller.log(LogType.INFO, "Server is already running on port " + port);
             return;
         }
-
         running = true;
-
-        // Inizializza il thread pool
         serverThreads = Executors.newFixedThreadPool(threadsNumber);
 
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
                 controller.log(LogType.INFO, "Server started on port " + port);
-
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     controller.log(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
-
-                    // Invio di un task Runnable al thread pool
                     serverThreads.submit(() -> handleClient(clientSocket));
                 }
             } catch (BindException e) {
@@ -77,43 +72,32 @@ public class ServerModel {
             controller.log(LogType.INFO, "Server is not running.");
             return;
         }
-
         running = false;
-
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                controller.log(LogType.INFO, "Server socket closed.");
             }
-
             if (serverThreads != null && !serverThreads.isShutdown()) {
-                serverThreads.shutdown(); // Avvia lo shutdown dei thread esistenti
+                serverThreads.shutdown();
                 if (!serverThreads.awaitTermination(30, TimeUnit.SECONDS)) {
-                    controller.log(LogType.ERROR, "Forcing thread pool shutdown...");
-                    serverThreads.shutdownNow(); // Forza lo shutdown
+                    serverThreads.shutdownNow();
                 }
             }
-        } catch (IOException e) {
-            controller.log(LogType.ERROR, "Error closing server socket: " + e.getMessage());
-        } catch (InterruptedException e) {
-            controller.log(LogType.ERROR, "Thread pool shutdown interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-        } finally {
-            serverThreads = null;
-            serverSocket = null;
             controller.log(LogType.INFO, "Server shutdown complete.");
+        } catch (IOException | InterruptedException e) {
+            controller.log(LogType.ERROR, "Error while shutting down server: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
     private void handleClient(Socket clientSocket) {
-        try (
-                ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
-        ) {
+        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+             ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
             Request clientMessage;
             while ((clientMessage = (Request) in.readObject()) != null) {
                 controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
-
                 switch (clientMessage.cmdName()) {
                     case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
                     case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), out);
@@ -122,10 +106,8 @@ public class ServerModel {
                     default -> sendCMDResponse(out, GENERIC_ERROR);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             controller.log(LogType.ERROR, "Client disconnected or IO error: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            controller.log(LogType.ERROR, "Invalid command received: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
@@ -135,50 +117,83 @@ public class ServerModel {
         }
     }
 
-
-    private synchronized void handleSendEmail(String emailData, Email mail, ObjectOutputStream out) throws IOException {
-        controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
-        if(!(emailData.equals(mail.getSender()))){
-            controller.log(LogType.ERROR,"Not syncronized email sender with session.");
+    private void handleSendEmail(String userEmail, Email mail, ObjectOutputStream out) throws IOException {
+        if (!userEmail.equals(mail.getSender())) {
+            sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
-        if(!areValidEmails(mail.getReceivers())){
-            controller.log(LogType.ERROR, "Invalid receiver email.");
+        if (!areValidEmails(mail.getReceivers())) {
+            sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
-
-        controller.log(LogType.SYSTEM, "Flushing response to client...");
-        sendCMDResponse(out, SUCCESS);
-        controller.log(LogType.SYSTEM, "Response sent to client.");
+        saveEmailToFile(mail);
+        sendMail(out, SUCCESS, List.of(mail));
     }
 
-    private synchronized void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
-        controller.log(LogType.SYSTEM, "Fetching emails for user: " + userEmail);
+    private void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
+        List<Email> emails = fetchEmails(userEmail);
+        if (emails.isEmpty()) {
+            sendCMDResponse(out, SUCCESS);
+        } else {
+            sendMail(out, SUCCESS, emails);
+        }
+    }
 
+    private List<Email> fetchEmails(String userEmail) {
         File userFolder = createUserFolder(userEmail);
         File[] emailFiles = userFolder.listFiles((dir, name) -> name.startsWith("email_"));
-
-        if (emailFiles == null || emailFiles.length == 0) {
-            controller.log(LogType.SYSTEM, "No emails found for user: " + userEmail);
-            sendCMDResponse(out, SUCCESS);
-            return;
-        }
-
-        StringBuilder allEmails = new StringBuilder();
+        List<Email> emails = new ArrayList<>();
         for (File emailFile : emailFiles) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    allEmails.append(line).append("\n");
-                }
-            } catch (IOException e) {
-                controller.log(LogType.ERROR, "Error reading email file: " + emailFile.getName() + " - " + e.getMessage());
+            Email email = readEmailFromFile(emailFile);
+            if (email != null) {
+                emails.add(email);
             }
         }
+        return emails;
+    }
 
-        controller.log(LogType.SYSTEM, "Emails fetched successfully for user: " + userEmail);
+    private Email readEmailFromFile(File emailFile) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
+            String line;
+            String sender = "", subject = "", text = "";
+            List<String> receivers = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Sender:")) {
+                    sender = line.substring(7);
+                } else if (line.startsWith("Receivers:")) {
+                    receivers = Arrays.asList(line.substring(10).split(","));
+                } else if (line.startsWith("Subject:")) {
+                    subject = line.substring(8);
+                } else if (line.startsWith("Text:")) {
+                    text = line.substring(5);
+                }
+            }
+            return new Email(sender, receivers, subject, text);
+        } catch (IOException e) {
+            controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
+            return null;
+        }
+    }
 
-        sendCMDResponse(out, SUCCESS);
+    private void saveEmailToFile(Email email) {
+        File userFolder = createUserFolder(email.getSender());
+        String emailFileName = "email_" + email.getId() + ".txt";
+        File emailFile = new File(userFolder, emailFileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+            writer.write(emailToString(email));
+            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+        } catch (IOException e) {
+            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+        }
+    }
+
+    private String emailToString(Email email) {
+        return "ID:" + email.getId() + "\n" +
+                "Sender:" + email.getSender() + "\n" +
+                "Receivers:" + String.join(",", email.getReceivers()) + "\n" +
+                "Subject:" + email.getSubject() + "\n" +
+                "Text:" + email.getText() + "\n" +
+                "Date:" + email.getDate().toString() + "\n";
     }
 
     private synchronized void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
@@ -224,33 +239,22 @@ public class ServerModel {
         sendCMDResponse(out, SUCCESS);
     }
 
-    private synchronized void saveEmailToFolders(String username, String emailContent) {
-        File userFolder = createUserFolder(username);
-        String emailFileName = "email_" + System.currentTimeMillis() + ".txt";
-
-        File emailFile = new File(userFolder, emailFileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
-            writer.write(emailContent);
-        } catch (IOException e) {
-            controller.log(LogType.ERROR, "Failed to save email: " + e.getMessage());
-        }
-    }
-
     private synchronized File getUserEmailFile(String userEmail) {
         File userFolder = createUserFolder(userEmail);
         return new File(userFolder, "sent_emails.txt");
     }
 
-    private synchronized File createUserFolder(String username) {
+    private File createUserFolder(String username) {
         File folder = new File("UserFolders", username);
-        if (!folder.exists()) folder.mkdirs();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
         return folder;
     }
 
     private synchronized boolean checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File userFolder = new File(baseDirectory, userEmail);
-        // Restituisce true se la cartella esiste ed è una directory, altrimenti false
         return userFolder.exists() && userFolder.isDirectory();
     }
 
@@ -259,10 +263,7 @@ public class ServerModel {
     }
 
     private boolean areValidEmails(List<String> emails) {
-        for (String email : emails) {
-            if(!checkFolderName(email)) return false;
-        }
-        return true;
+        return emails.stream().allMatch(this::isValidEmail);
     }
 
     private boolean shouldDelete(String line, String[] emailsToDelete) {
@@ -273,20 +274,18 @@ public class ServerModel {
     }
 
     public void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
-        Response response = new Response(cmdResponse,null);
+        Response response = new Response(cmdResponse, null);
         out.writeObject(response);
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
 
     public void sendMail(ObjectOutputStream out, CommandResponse cmdResponse, List<Email> mail) throws IOException {
-        Response response = new Response(cmdResponse,mail);
+        Response response = new Response(cmdResponse, mail);
         out.writeObject(response);
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
-
-
 
     public int getPort() {
         return port;

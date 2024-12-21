@@ -1,0 +1,6 @@
+ID:-962597462
+Sender:c@rama.it
+Receivers:c@rama.it
+Subject:a
+Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">a</span></p></body></html>
+Date:Sat Dec 21 23:22:21 CET 2024

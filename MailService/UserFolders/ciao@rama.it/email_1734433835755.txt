@@ -1,4 +1,0 @@
-From: ciao@rama.it
-To: ciao@rama.it
-Subject: ciao
-Content: <html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">come va?</span></p></body></html>

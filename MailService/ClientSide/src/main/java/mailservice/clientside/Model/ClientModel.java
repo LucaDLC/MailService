@@ -5,12 +5,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javafx.application.Platform;
 import mailservice.clientside.Configuration.*;
+import mailservice.clientside.Controller.MainController;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
 
@@ -33,7 +36,7 @@ public class ClientModel {
 
     private static final int threadsNumber = 5;
     private ExecutorService operationPool;
-
+    private static ClientModel instance;
 
     private ClientModel() {
         ConfigManager configManager = ConfigManager.getInstance();
@@ -52,7 +55,20 @@ public class ClientModel {
 
 
     public static ClientModel getInstance() {
-        return new ClientModel();
+        if (instance == null) {
+            synchronized (ClientModel.class) {
+                if (instance == null) {
+                    try {
+                        instance = new ClientModel();
+                        System.out.println("[INFO] ClientModel instance created.");
+                    } catch (Exception e) {
+                        System.err.println("[ERROR] Failed to initialize ClientModel: " + e.getMessage());
+                        instance = null;
+                    }
+                }
+            }
+        }
+        return instance;
     }
 
 
@@ -151,10 +167,9 @@ public class ClientModel {
             return null;
         }
         try {
-            Response cmdResponse;
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
-                cmdResponse = (Response) inResponse;
+                Response cmdResponse = (Response) inResponse;
                 System.out.println("[DEBUG] Raw server response: " + cmdResponse);
 
                 return cmdResponse.responseName();
@@ -175,6 +190,11 @@ public class ClientModel {
 
 
     public boolean sendEmail(List<String> receivers, String subject, String content) {
+        if (receivers == null || receivers.isEmpty()) {
+            System.err.println("[ERROR] No recipients provided for the email.");
+            return false;
+        }
+
         for (String recipientSplit : receivers) {
             String trimmedRecipient = recipientSplit.trim();
             if (!ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
@@ -196,6 +216,10 @@ public class ClientModel {
             CommandResponse response = receiveMessage();
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
+                Platform.runLater(() -> {
+                    MainController mainController = new MainController();
+                    mainController.refreshEmails(); // Refresh safely on the JavaFX thread
+                });
                 return true;
             } else if(response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
                 System.err.println("[ERROR] Receivers does not exist in the server " + response);
@@ -215,7 +239,7 @@ public class ClientModel {
 
 
     public List<Email> fetchEmails() {
-        List<Email> emails = Collections.emptyList(); // Lista vuota di default
+        List<Email> emails = new ArrayList<>(); // Lista vuota di default
 
         try {
             if (!connectToServer()) {
@@ -225,13 +249,17 @@ public class ClientModel {
 
             out.writeObject(new Request(userLogged, FETCH_EMAIL, null));
             out.flush();
-            Thread.sleep(250);
-            Object response = in.readObject(); // Legge direttamente la risposta dal server
 
-            if (response instanceof List) {
-                emails = (List<Email>) response; // Cast sicuro, controllato dal tipo
+            Thread.sleep(250);
+
+            Response response = (Response) in.readObject(); // Expecting a Response object
+            if (response != null && response.responseName() == CommandResponse.SUCCESS) {
+                emails = response.args();  // Accessing the list directly
+                if (emails == null) {
+                    emails = new ArrayList<>();  // Ensure non-null list
+                }
             } else {
-                System.err.println("[ERROR] Invalid response type received.");
+                System.err.println("[ERROR] Invalid or empty response received.");
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("[ERROR] Error fetching emails: " + e.getMessage());

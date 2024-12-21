@@ -1,9 +1,10 @@
 package mailservice.shared;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Email {
+public class Email implements Serializable {
     private int id;
     private final String sender;
     private final List<String> receivers;
