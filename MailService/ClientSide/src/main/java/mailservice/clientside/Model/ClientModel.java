@@ -115,7 +115,7 @@ public class ClientModel {
             Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
-            if (response != null && response == CommandResponse.SUCCESS) {
+            if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Command executed successfully: " + response);
                 return true;
             } else {
@@ -142,22 +142,21 @@ public class ClientModel {
 
 
     private CommandResponse receiveMessage() {
-        return CommandResponse.SUCCESS;
-        /*if (socket == null || socket.isClosed()) {
+        //return CommandResponse.SUCCESS;
+        if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
             return null;
         }
         try {
+            Response cmdResponse = null;
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
-                Response cmdResponse = (Response) inResponse;
+                cmdResponse = (Response) inResponse;
                 System.out.println("[DEBUG] Raw server response: " + cmdResponse);
 
-                // estrapolare la commandResponse
-
-                return cmdResponse;
+                return cmdResponse.responseName();
             } else {
-                System.err.println("[ERROR] Unexpected response type: " + response.getClass());
+                System.err.println("[ERROR] Unexpected response type: " + cmdResponse.getClass());
                 return null;
             }
         } catch (IOException e) {
@@ -167,7 +166,7 @@ public class ClientModel {
         catch (ClassNotFoundException e) {
             System.err.println("[ERROR] Class not found while reading server response: " + e.getMessage());
             return null;
-        }*/
+        }
 
     }
 
@@ -192,10 +191,10 @@ public class ClientModel {
             out.flush();
             Thread.sleep(250);
             CommandResponse response = receiveMessage();
-            if (response != null && response == CommandResponse.SUCCESS) {
+            if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
                 return true;
-            } else if(response != null && response != CommandResponse.ILLEGAL_PARAMS) {
+            } else if(response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
                 System.err.println("[ERROR] Receivers does not exist in the server " + response);
                 return false;
             }

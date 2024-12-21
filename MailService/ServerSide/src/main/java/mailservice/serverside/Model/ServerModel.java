@@ -1,9 +1,6 @@
 package mailservice.serverside.Model;
 
-import mailservice.serverside.Configuration.CommandRequest;
-import mailservice.serverside.Configuration.ConfigManager;
-import mailservice.serverside.Configuration.Email;
-import mailservice.serverside.Configuration.Request;
+import mailservice.serverside.Configuration.*;
 import mailservice.serverside.Controller.ServerController;
 import mailservice.serverside.Log.LogType;
 
@@ -11,7 +8,9 @@ import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ServerModel {
     private final int port;
@@ -74,15 +73,31 @@ public class ServerModel {
                 serverSocket.close();
                 controller.log(LogType.INFO, "Server stopped on port " + port);
             }
+            if (serverThreads != null && !serverThreads.isShutdown()) {
+                serverThreads.shutdown(); // Avvia lo shutdown dei thread esistenti
+                if (!serverThreads.awaitTermination(30, TimeUnit.SECONDS)) {
+                    controller.log(LogType.ERROR, "Forcing thread pool shutdown...");
+                    serverThreads.shutdownNow(); // Forza lo shutdown se i thread non terminano in tempo
+                }
+            }
         } catch (IOException e) {
             controller.log(LogType.ERROR, "Error stopping server: " + e.getMessage());
+        } catch (InterruptedException e) {
+            controller.log(LogType.ERROR, "Error stopping server threads: " + e.getMessage());
+            Thread.currentThread().interrupt();
+        } finally {
+            // Cleanup finale
+            serverSocket = null;
+            controller.log(LogType.INFO, "Socket inhibited.");
         }
     }
 
     private Runnable handleClient(Socket clientSocket) {
-        try (ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-             ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-
+        ObjectOutputStream out = null;
+        ObjectInputStream in = null;
+        try {
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            in = new ObjectInputStream(clientSocket.getInputStream());
             Request clientMessage;
             while ((clientMessage = (Request) in.readObject()) != null && clientMessage instanceof Request) {
                 controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
@@ -100,33 +115,26 @@ public class ServerModel {
         } catch (ClassNotFoundException e) {
             controller.log(LogType.ERROR, "Command Request error: " + e.getMessage());
         }
+        Response response = new Response(CommandResponse.GENERIC_ERROR,null);
+        try {
+            out.writeObject(response);
+            out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         return null;
     }
 
-    private void handleSendEmail(String emailData, Email mail, ObjectOutputStream out) throws IOException {
+    private synchronized void handleSendEmail(String emailData, Email mail, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Processing SEND_EMAIL command...");
-        String[] parts = emailData.split("\\|", 4);
-        if (parts.length < 4) {
-            sendErrorResponse(out, "Invalid email format.");
+        if(!(emailData.equals(mail.getSender()))){
+            controller.log(LogType.ERROR,"Not syncronized email sender with session.");
             return;
         }
-
-        String sender = parts[0].trim();
-        String[] receivers = parts[1].split(",");
-        String subject = parts[2].trim();
-        String content = parts[3];
-
-        if (!isValidEmail(sender) || !areValidEmails(receivers)) {
-            sendErrorResponse(out, "Invalid sender or receiver email.");
+        if(!areValidEmails(mail.getReceivers())){
+            controller.log(LogType.ERROR, "Invalid receiver email.");
             return;
-        }
-
-        saveEmailToFolders(sender, String.format("From: %s\nTo: %s\nSubject: %s\nContent: %s\n",
-                sender, String.join(",", receivers), subject, content));
-
-        for (String receiver : receivers) {
-            saveEmailToFolders(receiver, String.format("From: %s\nTo: %s\nSubject: %s\nContent: %s\n",
-                    sender, receiver, subject, content));
         }
 
         controller.log(LogType.SYSTEM, "Flushing response to client...");
@@ -134,7 +142,7 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response sent to client.");
     }
 
-    private void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
+    private synchronized void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
         controller.log(LogType.SYSTEM, "Fetching emails for user: " + userEmail);
 
         File userFolder = createUserFolder(userEmail);
@@ -163,7 +171,7 @@ public class ServerModel {
         sendSuccessResponse(out, allEmails.toString().trim());
     }
 
-    private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
+    private synchronized void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
         if (!isValidEmail(email)) {
             sendErrorResponse(out, "Invalid email format.");
             return;
@@ -174,7 +182,7 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
-    private void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
+    private synchronized void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
         String[] parts = requestData.split("\\|", 2);
         if (parts.length < 2) {
             sendErrorResponse(out, "Invalid request format.");
@@ -206,7 +214,7 @@ public class ServerModel {
         sendSuccessResponse(out, "Emails deleted successfully.");
     }
 
-    private void saveEmailToFolders(String username, String emailContent) {
+    private synchronized void saveEmailToFolders(String username, String emailContent) {
         File userFolder = createUserFolder(username);
         String emailFileName = "email_" + System.currentTimeMillis() + ".txt";
 
@@ -218,24 +226,31 @@ public class ServerModel {
         }
     }
 
-    private File getUserEmailFile(String userEmail) {
+    private synchronized File getUserEmailFile(String userEmail) {
         File userFolder = createUserFolder(userEmail);
         return new File(userFolder, "sent_emails.txt");
     }
 
-    private File createUserFolder(String username) {
+    private synchronized File createUserFolder(String username) {
         File folder = new File("UserFolders", username);
         if (!folder.exists()) folder.mkdirs();
         return folder;
+    }
+
+    private synchronized boolean checkFolderName(String userEmail) {
+        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
+        File userFolder = new File(baseDirectory, userEmail);
+        // Restituisce true se la cartella esiste ed è una directory, altrimenti false
+        return userFolder.exists() && userFolder.isDirectory();
     }
 
     private boolean isValidEmail(String email) {
         return email.matches("^[a-zA-Z0-9._%+-]+@rama.it$");
     }
 
-    private boolean areValidEmails(String[] emails) {
+    private boolean areValidEmails(List<String> emails) {
         for (String email : emails) {
-            if (!isValidEmail(email.trim())) return false;
+            if(!checkFolderName(email)) return false;
         }
         return true;
     }
@@ -261,5 +276,9 @@ public class ServerModel {
 
     public int getPort() {
         return port;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }
