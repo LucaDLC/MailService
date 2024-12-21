@@ -19,8 +19,6 @@ import mailservice.clientside.Model.ClientModel;
 
 import java.io.IOException;
 
-import static mailservice.clientside.Configuration.CommandRequest.LOGIN_CHECK;
-
 public class LoginController {
 
     @FXML

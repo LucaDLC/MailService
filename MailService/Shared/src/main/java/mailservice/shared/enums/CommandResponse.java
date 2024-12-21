@@ -1,4 +1,4 @@
-package mailservice.clientside.Configuration;
+package mailservice.shared.enums;
 import java.io.Serializable;
 
 public enum CommandResponse implements Serializable {

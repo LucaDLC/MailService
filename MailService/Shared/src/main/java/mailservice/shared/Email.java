@@ -1,4 +1,4 @@
-package mailservice.serverside.Configuration;
+package mailservice.shared;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

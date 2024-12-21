@@ -11,6 +11,11 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import mailservice.shared.*;
+import mailservice.shared.enums.*;
+
+import static mailservice.shared.enums.CommandResponse.*;
+import static mailservice.shared.enums.CommandRequest.*;
 
 public class ServerModel {
     private final int port;

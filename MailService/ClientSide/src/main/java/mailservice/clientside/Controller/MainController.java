@@ -17,9 +17,8 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.Configuration.CommandRequest;
 import mailservice.clientside.Configuration.ConfigManager;
-import mailservice.clientside.Configuration.Email;
+import mailservice.shared.Email;
 import mailservice.clientside.Model.ClientModel;
 
 import java.util.Collections;

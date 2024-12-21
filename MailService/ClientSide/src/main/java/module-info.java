@@ -4,7 +4,7 @@ module mailservice.clientside { //modulo che contiene le classi per il client
     requires javafx.web;
 
     requires org.kordamp.bootstrapfx.core; //modulo richiesto per l'interfaccia utente
-
+    requires Shared; //modulo richiesto per la comunicazione con il server
 
     exports mailservice.clientside;
     opens mailservice.clientside to javafx.fxml;

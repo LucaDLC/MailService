@@ -9,11 +9,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import mailservice.clientside.Configuration.*;
+import mailservice.shared.*;
+import mailservice.shared.enums.*;
 
-import static mailservice.clientside.Configuration.CommandRequest.*;
+import static mailservice.shared.enums.CommandRequest.*;
+import static mailservice.shared.enums.CommandResponse.*;
+
 
 
 public class ClientModel {

@@ -5,10 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
+      <change afterPath="$PROJECT_DIR$/Shared/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Shared/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/User.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/User.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/CommandRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/enums/CommandRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/CommandResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/enums/CommandResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/Email.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/Email.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Configuration/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/Shared/src/main/java/mailservice/shared/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/MainController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/CommandRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/CommandResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/Email.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/Request.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Configuration/Response.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Model/ServerModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/module-info.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +40,7 @@
       <list>
         <option value="Class" />
         <option value="Record" />
+        <option value="module-info" />
       </list>
     </option>
   </component>
@@ -47,28 +68,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ClientApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ServerApp.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/LucaDLC/Desktop/email-service-main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ClientApp.executor": "Run",
+    "Application.ServerApp.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/LucaDLC/Desktop/MailService/MailService",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\LucaDLC\Desktop\MailService\MailService\ClientSide\src\main\java\mailservice\clientside\Configuration" />
@@ -189,6 +210,7 @@
       <workItem from="1734645337384" duration="3017000" />
       <workItem from="1734707392180" duration="6053000" />
       <workItem from="1734791266601" duration="8898000" />
+      <workItem from="1734802764079" duration="1953000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

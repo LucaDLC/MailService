@@ -1,4 +1,6 @@
-package mailservice.clientside.Configuration;
+package mailservice.shared;
+
+import mailservice.shared.enums.CommandRequest;
 
 import java.io.Serializable;
 
