@@ -245,7 +245,8 @@ public class ServerModel {
     }
 
     private File createUserFolder(String username) {
-        File folder = new File("UserFolders", username);
+        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
+        File folder = new File(baseDirectory, username);
         if (!folder.exists()) {
             folder.mkdirs();
         }

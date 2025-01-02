@@ -1,6 +1,0 @@
-ID:120032606
-Sender:c@rama.it
-Receivers:c@rama.it
-Subject:hola
-Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">como estas?</span></p></body></html>
-Date:Sat Dec 21 22:56:42 CET 2024

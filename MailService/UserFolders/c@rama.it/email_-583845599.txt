@@ -1,6 +1,0 @@
-ID:-583845599
-Sender:c@rama.it
-Receivers:c@rama.it
-Subject:wow
-Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">oggi sono andata allo zoo</span></p></body></html>
-Date:Sat Dec 21 23:17:58 CET 2024

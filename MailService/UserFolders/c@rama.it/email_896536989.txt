@@ -1,6 +1,0 @@
-ID:896536989
-Sender:c@rama.it
-Receivers:c@rama.it
-Subject:ciao
-Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">come va?</span></p></body></html>
-Date:Sat Dec 21 22:34:31 CET 2024
