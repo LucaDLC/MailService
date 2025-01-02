@@ -29,8 +29,6 @@ public class ComposeController{
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
-    MainController mainController = new MainController();
-
     @FXML
     protected void onSendMailButtonClick() {
         String recipient = RecipientFieldID.getText().trim();
@@ -67,7 +65,6 @@ public class ComposeController{
         sendEmailTask.setOnSucceeded(event -> {
             if (sendEmailTask.getValue()) {
                 showSuccessAlert("Email sent successfully.");
-                mainController.refreshEmails(); // Aggiorna la lista delle email
                 Stage stage = (Stage) SendMailButton.getScene().getWindow();
                 stage.close();
             } else {
