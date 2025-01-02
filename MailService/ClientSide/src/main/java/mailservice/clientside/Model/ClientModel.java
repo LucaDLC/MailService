@@ -36,6 +36,7 @@ public class ClientModel {
 
     private static final int threadsNumber = 5;
     private ExecutorService operationPool;
+    private static ClientModel instance;
 
     private ClientModel() {
         ConfigManager configManager = ConfigManager.getInstance();
@@ -53,8 +54,12 @@ public class ClientModel {
 
 
 
-    public static ClientModel getInstance() {
-        return new ClientModel();
+    public static synchronized ClientModel getInstance() {
+        if (instance == null) {
+            System.out.println("[DEBUG] Initializing ClientModel instance...");
+            instance = new ClientModel();
+        }
+        return instance;
     }
 
 
