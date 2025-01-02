@@ -25,7 +25,7 @@ public class ClientApp extends Application {
     @Override
     public void stop() {
         System.out.println("[INFO] Application is stopping...");
-        ClientModel.getInstance().disconnectFromServer();
+        ClientModel.getInstance().logout();
     }
 
     public static void main(String[] args) {

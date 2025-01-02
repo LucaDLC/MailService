@@ -69,6 +69,7 @@ public class ClientModel {
     public void logout() {
         userLogged = null;
         operationPool.shutdown();
+        disconnectFromServer();
     }
 
 
