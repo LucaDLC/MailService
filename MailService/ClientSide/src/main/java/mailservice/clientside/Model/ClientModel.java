@@ -36,7 +36,6 @@ public class ClientModel {
 
     private static final int threadsNumber = 5;
     private ExecutorService operationPool;
-    private static ClientModel instance;
 
     private ClientModel() {
         ConfigManager configManager = ConfigManager.getInstance();
@@ -55,20 +54,7 @@ public class ClientModel {
 
 
     public static ClientModel getInstance() {
-        if (instance == null) {
-            synchronized (ClientModel.class) {
-                if (instance == null) {
-                    try {
-                        instance = new ClientModel();
-                        System.out.println("[INFO] ClientModel instance created.");
-                    } catch (Exception e) {
-                        System.err.println("[ERROR] Failed to initialize ClientModel: " + e.getMessage());
-                        instance = null;
-                    }
-                }
-            }
-        }
-        return instance;
+        return new ClientModel();
     }
 
 
@@ -167,9 +153,10 @@ public class ClientModel {
             return null;
         }
         try {
+            Response cmdResponse;
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
-                Response cmdResponse = (Response) inResponse;
+                cmdResponse = (Response) inResponse;
                 System.out.println("[DEBUG] Raw server response: " + cmdResponse);
 
                 return cmdResponse.responseName();

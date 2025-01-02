@@ -123,11 +123,13 @@ public class MainController {
 
     private void displayEmailDetails(Email email) {
         if (email != null) {
-            SenderLabel.setText(email.getSender());
-            ReceiverLabel.setText(String.join(", ", email.getReceivers()));
-            ObjectLabel.setText(email.getSubject());
-            DateLabel.setText(email.getDate().toString());
-            MailContent.getEngine().loadContent(email.getText());
+            Platform.runLater(() -> {
+                SenderLabel.setText(email.getSender());
+                ReceiverLabel.setText(String.join(", ", email.getReceivers()));
+                ObjectLabel.setText(email.getSubject());
+                DateLabel.setText(email.getDate().toString());
+                MailContent.getEngine().loadContent(email.getText());
+            });
         }
     }
 
