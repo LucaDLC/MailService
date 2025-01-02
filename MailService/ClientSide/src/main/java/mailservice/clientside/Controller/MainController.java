@@ -54,7 +54,7 @@ public class MainController {
     @FXML
     public MenuButton Reply;
 
-    private ClientModel clientModel;
+    private ClientModel clientModel = null;
 
     @FXML
     public void initialize() {
