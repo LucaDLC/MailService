@@ -204,10 +204,6 @@ public class ClientModel {
             CommandResponse response = receiveMessage();
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
-                Platform.runLater(() -> {
-                    MainController mainController = new MainController();
-                    mainController.refreshEmails(); // Refresh safely on the JavaFX thread
-                });
                 return true;
             } else if(response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
                 System.err.println("[ERROR] Receivers does not exist in the server " + response);

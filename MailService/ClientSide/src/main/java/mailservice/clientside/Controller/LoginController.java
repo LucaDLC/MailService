@@ -54,16 +54,6 @@ public class LoginController {
                     mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     mainStage.show();
 
-                    MainController mainController = loader.getController();
-                    Platform.runLater(() -> {
-                        PauseTransition delay = new PauseTransition(Duration.seconds(2)); // Ritardo di 1 secondo
-                        delay.setOnFinished(event -> {
-                            System.out.println("[DEBUG] Delay finished. Calling refreshEmails...");
-                            mainController.refreshEmails();
-                        });
-                        delay.play();
-                    });
-
                     // Debug di verifica
                     System.out.println("[DEBUG] Main.fxml loaded successfully.");
 
