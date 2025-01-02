@@ -73,11 +73,12 @@ public class MainController {
 
         System.out.println("[INFO] ClientModel initialized successfully.");
         MailLabel.setText(clientModel.getUserEmail());
-        clientModel.startPeriodicFetch();
-        refreshEmails();
 
-        // Set up the cell factory to display only the email subject
-        MailList.setCellFactory(lv -> new ListCell<Email>() {
+        // Collega la ListView alla lista osservabile
+        MailList.setItems(clientModel.getEmailList());
+
+        // Set up il cell factory per visualizzare i soggetti delle email
+        MailList.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(Email email, boolean empty) {
                 super.updateItem(email, empty);
@@ -90,37 +91,10 @@ public class MainController {
                 displayEmailDetails(newSelection);
             }
         });
+
+        clientModel.startPeriodicFetch();
     }
 
-    public void refreshEmails() {
-        if (clientModel == null) {
-            System.err.println("[ERROR] ClientModel is not initialized. Cannot fetch emails.");
-            showDangerAlert("Unable to refresh emails: ClientModel is not initialized.");
-            return;
-        }
-
-        Task<ObservableList<Email>> fetchEmailsTask = new Task<>() {
-            @Override
-            protected ObservableList<Email> call() {
-                return FXCollections.observableArrayList(clientModel.fetchEmails());
-            }
-        };
-
-        fetchEmailsTask.setOnSucceeded(event -> {
-            ObservableList<Email> emails = fetchEmailsTask.getValue();
-            if (emails.isEmpty()) {
-                System.out.println("[INFO] No emails found.");
-            }
-            MailList.setItems(emails);
-        });
-
-        fetchEmailsTask.setOnFailed(event -> {
-            System.err.println("[ERROR] Failed to fetch emails: " + fetchEmailsTask.getException().getMessage());
-            showDangerAlert("Failed to fetch emails.");
-        });
-
-        new Thread(fetchEmailsTask).start();
-    }
 
     private void displayEmailDetails(Email email) {
         if (email != null) {
@@ -174,7 +148,7 @@ public class MainController {
 
                     ClientModel clientModel = ClientModel.getInstance();
                     if (clientModel.wrapDeleteEmail(null)) {   //da rivedere
-                        refreshEmails();
+                        //refreshEmails();
                         MailList.getItems().removeAll(selectedMails);
                         showSuccessAlert("Emails deleted successfully.");
 

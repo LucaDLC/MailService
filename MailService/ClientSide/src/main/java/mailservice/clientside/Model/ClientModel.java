@@ -14,6 +14,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mailservice.clientside.Configuration.*;
 import mailservice.clientside.Controller.MainController;
 import mailservice.shared.*;
@@ -38,6 +40,7 @@ public class ClientModel {
 
     private static final int threadsNumber = 5;
     private ScheduledExecutorService operationPool;
+    private ObservableList<Email> emailList;
 
 
     private ClientModel() {
@@ -49,6 +52,7 @@ public class ClientModel {
             serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
             operationPool = Executors.newScheduledThreadPool(threadsNumber);
+            emailList = FXCollections.observableArrayList();
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
         }
@@ -63,6 +67,10 @@ public class ClientModel {
 
     public String getUserEmail() {
         return userLogged;
+    }
+
+    public ObservableList<Email> getEmailList() {
+        return emailList;
     }
 
 
@@ -225,13 +233,13 @@ public class ClientModel {
     }
 
 
-    public List<Email> fetchEmails() {
+    public void fetchEmails() {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
 
         try {
             if (!connectToServer()) {
                 System.err.println("[ERROR] Unable to connect to server.");
-                return emails; // Ritorna subito la lista vuota se non riesce a connettersi
+                return; // Ritorna subito la lista vuota se non riesce a connettersi
             }
 
             out.writeObject(new Request(userLogged, FETCH_EMAIL, null));
@@ -256,12 +264,15 @@ public class ClientModel {
             disconnectFromServer();
         }
 
-        return emails;
+        List<Email> finalEmails = emails;
+        Platform.runLater(() -> {
+            emailList.setAll(finalEmails); // Aggiorna la lista osservabile
+        });
     }
 
     public void startPeriodicFetch() {
         operationPool.scheduleAtFixedRate(() -> {
-                fetchEmails();
+                this.fetchEmails();
         }, 0, fetchPeriod, TimeUnit.SECONDS);
     }
 
