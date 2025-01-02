@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
 import mailservice.clientside.Configuration.*;
@@ -35,7 +37,7 @@ public class ClientModel {
     private static final int SOCKET_TIMEOUT = 8000; // Timeout di 8 secondi
 
     private static final int threadsNumber = 5;
-    private ExecutorService operationPool;
+    private ScheduledExecutorService operationPool;
 
 
     private ClientModel() {
@@ -46,7 +48,7 @@ public class ClientModel {
             serverHost = configManager.readProperty("Client.ServerHost");
             serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
-            operationPool = Executors.newFixedThreadPool(threadsNumber);
+            operationPool = Executors.newScheduledThreadPool(threadsNumber);
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
         }
@@ -255,6 +257,13 @@ public class ClientModel {
 
         return emails;
     }
+
+    public void startPeriodicFetch() {
+        operationPool.scheduleAtFixedRate(() -> {
+                fetchEmails();
+        }, 0, fetchPeriod, TimeUnit.SECONDS);
+    }
+
 
 }
 

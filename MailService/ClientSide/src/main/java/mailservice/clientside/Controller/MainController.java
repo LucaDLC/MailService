@@ -73,6 +73,7 @@ public class MainController {
 
         System.out.println("[INFO] ClientModel initialized successfully.");
         MailLabel.setText(clientModel.getUserEmail());
+        clientModel.startPeriodicFetch();
         refreshEmails();
 
         // Set up the cell factory to display only the email subject
