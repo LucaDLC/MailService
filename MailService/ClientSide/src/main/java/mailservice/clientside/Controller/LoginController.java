@@ -1,7 +1,6 @@
 package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,7 +23,7 @@ public class LoginController {
     @FXML
     private TextField LoginFieldID; //serve a inserire l'email dell'utente
     @FXML
-    private Button LoginButton; //serve a effettuare il login
+    private Button LoginButton; //serve ad effettuare il login
     @FXML
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
     @FXML
@@ -54,9 +53,6 @@ public class LoginController {
                     mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     mainStage.show();
 
-                    // Debug di verifica
-                    System.out.println("[DEBUG] Main.fxml loaded successfully.");
-
                     //chiudo la finestra di login
                     Stage stage = (Stage) LoginButton.getScene().getWindow();
                     stage.close();
@@ -66,6 +62,7 @@ public class LoginController {
                 }
             } else {
                 System.err.println("[ERROR] The Email is not a server user");
+                showDangerAlert("Server is offline or user not registered yet");
             }
 
         } else {
@@ -88,7 +85,6 @@ public class LoginController {
         dangerAlert.getChildren().add(dangerText);
         dangerAlert.setVisible(true);
         hideAlerts();
-        //aggiungo il messaggio di errore al campo dangerAlert
     }
 
     @FXML
@@ -100,7 +96,6 @@ public class LoginController {
         successAlert.getChildren().add(successText);
         successAlert.setVisible(true);
         hideAlerts();
-        //aggiungo il messaggio di successo al campo successAlert
     }
 
     @FXML
