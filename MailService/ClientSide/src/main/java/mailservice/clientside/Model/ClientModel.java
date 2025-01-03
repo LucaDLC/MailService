@@ -41,6 +41,7 @@ public class ClientModel {
     private static final int threadsNumber = 5;
     private ScheduledExecutorService operationPool;
     private ObservableList<Email> emailList;
+    private static ClientModel instance;
 
 
     private ClientModel() {
@@ -60,8 +61,12 @@ public class ClientModel {
 
 
 
-    public static ClientModel getInstance() {
-        return new ClientModel();
+    public static synchronized ClientModel getInstance() {
+        if (instance == null || !instance.wrapLoginCheck()) {
+
+            instance = new ClientModel();
+        }
+        return instance;
     }
 
 
@@ -76,8 +81,20 @@ public class ClientModel {
 
     public void logout() {
         userLogged = null;
-        operationPool.shutdownNow();
+        if (operationPool != null) {
+            operationPool.shutdown();
+            try {
+                if (!operationPool.awaitTermination(5, TimeUnit.SECONDS)) {
+                    System.err.println("[ERROR] Forcefully shutting down operation pool...");
+                    operationPool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                System.err.println("[ERROR] Interrupted during pool termination.");
+                operationPool.shutdownNow();
+            }
+        }
         disconnectFromServer();
+        System.out.println("[INFO] Client Process Terminated Successfully.");
     }
 
 
@@ -154,7 +171,11 @@ public class ClientModel {
 
 
     public boolean wrapLoginCheck(){
-        return sendCMD(LOGIN_CHECK, null);
+        boolean result = sendCMD(LOGIN_CHECK, null);
+        if(!result){
+            instance = null;
+        }
+        return result;
     }
 
 
