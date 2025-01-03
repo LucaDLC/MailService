@@ -292,9 +292,7 @@ public class ClientModel {
     }
 
     public void startPeriodicFetch() {
-        operationPool.scheduleAtFixedRate(() -> {
-                this.fetchEmails();
-        }, 0, fetchPeriod, TimeUnit.SECONDS);
+        operationPool.scheduleAtFixedRate(this::fetchEmails, 0, fetchPeriod, TimeUnit.SECONDS);
     }
 
 
