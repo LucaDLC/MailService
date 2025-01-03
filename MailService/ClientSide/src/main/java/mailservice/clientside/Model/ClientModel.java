@@ -254,7 +254,7 @@ public class ClientModel {
     }
 
 
-    public void fetchEmails() {
+    private void fetchEmails() {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
 
         try {
