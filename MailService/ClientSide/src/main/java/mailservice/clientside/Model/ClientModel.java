@@ -98,7 +98,7 @@ public class ClientModel {
     }
 
 
-    public boolean connectToServer() {
+    private boolean connectToServer() {
         try {
             if (socket == null || socket.isClosed()) {
                 socket = new Socket();
@@ -122,7 +122,7 @@ public class ClientModel {
     }
 
 
-    public void disconnectFromServer() {
+    private void disconnectFromServer() {
         if (socket != null && !socket.isClosed()) {
             try {
                 in.close();
