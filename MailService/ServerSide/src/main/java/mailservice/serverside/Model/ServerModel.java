@@ -138,6 +138,7 @@ public class ServerModel {
             } else {
                 sendMail(out, SUCCESS, emails);
             }
+            controller.log(LogType.INFO, "Fetched all Mail: ");
         }
         else{ //mentre qui SOLO le NUOVE mail
             List<Email> emails = fetchEmails(userEmail);
@@ -146,6 +147,7 @@ public class ServerModel {
             } else {
                 sendMail(out, SUCCESS, emails);
             }
+            controller.log(LogType.INFO, "Fetched new Mail: ");
         }
 
     }
