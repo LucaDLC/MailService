@@ -100,7 +100,7 @@ public class ServerModel {
                 controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
                 switch (clientMessage.cmdName()) {
                     case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
-                    case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), out);
+                    case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(),clientMessage.mail(), out);
                     case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
                     case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
                     default -> sendCMDResponse(out, GENERIC_ERROR);
@@ -130,13 +130,24 @@ public class ServerModel {
         sendMail(out, SUCCESS, List.of(mail));
     }
 
-    private void handleFetchEmail(String userEmail, ObjectOutputStream out) throws IOException {
-        List<Email> emails = fetchEmails(userEmail);
-        if (emails.isEmpty()) {
-            sendCMDResponse(out, SUCCESS);
-        } else {
-            sendMail(out, SUCCESS, emails);
+    private void handleFetchEmail(String userEmail, Email forceAll, ObjectOutputStream out) throws IOException {
+        if (forceAll != null){ //qui bisognerà fare che scarica TUTTA la caselladi posta
+            List<Email> emails = fetchEmails(userEmail);
+            if (emails.isEmpty()) {
+                sendCMDResponse(out, SUCCESS);
+            } else {
+                sendMail(out, SUCCESS, emails);
+            }
         }
+        else{ //mentre qui SOLO le NUOVE mail
+            List<Email> emails = fetchEmails(userEmail);
+            if (emails.isEmpty()) {
+                sendCMDResponse(out, SUCCESS);
+            } else {
+                sendMail(out, SUCCESS, emails);
+            }
+        }
+
     }
 
     private List<Email> fetchEmails(String userEmail) {
