@@ -256,7 +256,6 @@ public class ClientModel {
 
     private void fetchEmails(boolean fullForceFetch) {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
-
         try {
             if (!connectToServer()) {
                 System.err.println("[ERROR] Unable to connect to server.");
@@ -297,8 +296,8 @@ public class ClientModel {
 
     public void startPeriodicFetch() {
         fetchEmails(true);
-        operationPool.scheduleAtFixedRate(() -> fetchEmails(false), 0, fetchPeriod, TimeUnit.SECONDS);
+        operationPool.scheduleAtFixedRate(() -> fetchEmails(false), 5, fetchPeriod, TimeUnit.SECONDS);
     }
-    
+
 }
 
