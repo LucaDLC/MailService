@@ -38,7 +38,7 @@ public class ClientModel {
     private ObjectInputStream in;
     private static final int SOCKET_TIMEOUT = 8000; // Timeout di 8 secondi
 
-    private static final int threadsNumber = 5;
+    private static final int threadsNumber = 1;
     private ScheduledExecutorService operationPool;
     private ObservableList<Email> emailList;
     private static ClientModel instance;
