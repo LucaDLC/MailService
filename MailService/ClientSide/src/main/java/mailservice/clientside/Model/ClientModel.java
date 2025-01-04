@@ -55,7 +55,6 @@ public class ClientModel {
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
             operationPool = Executors.newScheduledThreadPool(threadsNumber);
             emailList = FXCollections.observableArrayList();
-            fullForceFetch();
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
         }
@@ -255,7 +254,7 @@ public class ClientModel {
     }
 
 
-    private void fetchEmails(boolean All) {
+    private void fetchEmails(boolean fullForceFetch) {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
 
         try {
@@ -263,7 +262,7 @@ public class ClientModel {
                 System.err.println("[ERROR] Unable to connect to server.");
                 return; // Ritorna subito la lista vuota se non riesce a connettersi
             }
-            if(All){
+            if(fullForceFetch){
                 out.writeObject(new Request(userLogged, FETCH_EMAIL, generateEmptyEmail()));
             }
             else {
@@ -297,13 +296,9 @@ public class ClientModel {
     }
 
     public void startPeriodicFetch() {
+        fetchEmails(true);
         operationPool.scheduleAtFixedRate(() -> fetchEmails(false), 0, fetchPeriod, TimeUnit.SECONDS);
     }
-
-
-    public void fullForceFetch(){
-        fetchEmails(true);
-    }
-
+    
 }
 
