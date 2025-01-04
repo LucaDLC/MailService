@@ -21,6 +21,7 @@ import mailservice.clientside.Controller.MainController;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
 
+import static mailservice.shared.Email.generateEmptyEmail;
 import static mailservice.shared.enums.CommandRequest.*;
 import static mailservice.shared.enums.CommandResponse.*;
 
@@ -54,6 +55,7 @@ public class ClientModel {
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
             operationPool = Executors.newScheduledThreadPool(threadsNumber);
             emailList = FXCollections.observableArrayList();
+            fullForceFetch();
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
         }
@@ -63,7 +65,6 @@ public class ClientModel {
 
     public static synchronized ClientModel getInstance() {
         if (instance == null || !instance.wrapLoginCheck()) {
-
             instance = new ClientModel();
         }
         return instance;
@@ -254,7 +255,7 @@ public class ClientModel {
     }
 
 
-    private void fetchEmails() {
+    private void fetchEmails(boolean All) {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
 
         try {
@@ -262,8 +263,12 @@ public class ClientModel {
                 System.err.println("[ERROR] Unable to connect to server.");
                 return; // Ritorna subito la lista vuota se non riesce a connettersi
             }
-
-            out.writeObject(new Request(userLogged, FETCH_EMAIL, null));
+            if(All){
+                out.writeObject(new Request(userLogged, FETCH_EMAIL, generateEmptyEmail()));
+            }
+            else {
+                out.writeObject(new Request(userLogged, FETCH_EMAIL, null));
+            }
             out.flush();
 
             Thread.sleep(250);
@@ -292,9 +297,13 @@ public class ClientModel {
     }
 
     public void startPeriodicFetch() {
-        operationPool.scheduleAtFixedRate(this::fetchEmails, 0, fetchPeriod, TimeUnit.SECONDS);
+        operationPool.scheduleAtFixedRate(() -> fetchEmails(false), 0, fetchPeriod, TimeUnit.SECONDS);
     }
 
+
+    public void fullForceFetch(){
+        fetchEmails(true);
+    }
 
 }
 
