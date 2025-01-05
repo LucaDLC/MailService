@@ -179,7 +179,8 @@ public class ServerModel {
                     subject = line.substring(8);
                 } else if (line.startsWith("Text:")) {
                     text = line.substring(5);
-                }
+                } 
+
             }
             return new Email(sender, receivers, subject, text);
         } catch (IOException e) {
@@ -199,6 +200,7 @@ public class ServerModel {
             controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
         }
     }
+
 
     private String emailToString(Email email) {
         return "ID:" + email.getId() + "\n" +
@@ -220,37 +222,31 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
-    private synchronized void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
-        sendCMDResponse(out, SUCCESS);
-        /*String[] parts = requestData.split("\\|", 2);
-        if (parts.length < 2) {
+    private synchronized void handleDeleteEmail(String requestOwner, Email mail, ObjectOutputStream out) throws IOException {
+        if (checkFolderName(requestOwner) == null) {
+            controller.log(LogType.ERROR, "User folder not found: " + requestOwner);
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
 
-        String userEmail = parts[0];
-        String[] emailsToDelete = parts[1].split(",");
-        File emailFile = getUserEmailFile(userEmail);
+        // Costruisce il nome del file
+        String emailFileName = "email_" + mail.getId() + ".txt";
+        File emailFile = new File(checkFolderName(requestOwner), emailFileName);
 
-        if (!emailFile.exists()) {
-            sendCMDResponse(out, ILLEGAL_PARAMS);
-            return;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(emailFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile + ".tmp"))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!shouldDelete(line, emailsToDelete)) {
-                    writer.write(line + "\n");
-                }
+        // Controlla l'esistenza del file ed elimina se esiste
+        if (emailFile.exists()) {
+            if (emailFile.delete()) {
+                controller.log(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
+                sendCMDResponse(out, SUCCESS);
+            } else {
+                controller.log(LogType.ERROR, "Failed to delete email file: " + emailFileName);
+                sendCMDResponse(out, GENERIC_ERROR);
             }
+        } else {
+            controller.log(LogType.ERROR, "Email file not found: " + emailFileName);
+            sendCMDResponse(out, GENERIC_ERROR);
         }
 
-        emailFile.delete();
-        new File(emailFile + ".tmp").renameTo(emailFile);
-        sendCMDResponse(out, SUCCESS);*/
     }
 
     private synchronized File getUserEmailFile(String userEmail) {
@@ -267,11 +263,17 @@ public class ServerModel {
         return folder;
     }
 
-    private synchronized boolean checkFolderName(String userEmail) {
+    private synchronized File checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File userFolder = new File(baseDirectory, userEmail);
-        return userFolder.exists() && userFolder.isDirectory();
+        if(userFolder.exists() && userFolder.isDirectory()){
+            return new File(baseDirectory, userEmail);
+        }
+        else{
+            return null;
+        }
     }
+
 
     private boolean isValidEmail(String email) {
         return email.matches("^[a-zA-Z0-9._%+-]+@rama.it$");
