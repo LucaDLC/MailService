@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Email implements Serializable {
-    private String id;
+    private int id;
     private final String sender;
     private final List<String> receivers;
     private final String subject;
@@ -20,22 +20,20 @@ public class Email implements Serializable {
         this.receivers = new ArrayList<>(receivers);
         this.date = new Date();
         this.isToRead = false;
-        this.id = UUID.randomUUID().toString(); // Genera un UUID al posto di usare hashCode
+        this.id = this.hashCode();
     }
     public static Email generateEmptyEmail(){
         Email email = new Email("", List.of(""), "",
                 "");
         email.date = null;
-        email.id = String.valueOf(email.hashCode());
+        email.id = email.hashCode();
 
         return email;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
-    public void setId(String id) {this.id = id;}
-
     public String getSender() {
         return sender;
     }
@@ -71,7 +69,7 @@ public class Email implements Serializable {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Email email = (Email) obj;
-        return id.equals(email.id);
+        return id == email.id && isToRead == email.isToRead && sender.equals(email.sender) && receivers.equals(email.receivers) && subject.equals(email.subject) && text.equals(email.text) && date.equals(email.date);
     }
 
     @Override
@@ -80,5 +78,6 @@ public class Email implements Serializable {
         String formattedDate = (date != null) ? dateFormat.format(date) : "No Date";
         return sender + " - " + subject + " (" + formattedDate + ")";
     }
+
 
 }

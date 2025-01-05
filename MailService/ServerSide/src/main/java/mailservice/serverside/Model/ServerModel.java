@@ -168,12 +168,10 @@ public class ServerModel {
     private Email readEmailFromFile(File emailFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
             String line;
-            String sender = "", subject = "", text = "", id = "";
+            String sender = "", subject = "", text = "";
             List<String> receivers = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
-                if (line.startsWith("ID:")) {
-                    id = line.substring(3); // Leggi l'UUID
-                } else if (line.startsWith("Sender:")) {
+                if (line.startsWith("Sender:")) {
                     sender = line.substring(7);
                 } else if (line.startsWith("Receivers:")) {
                     receivers = Arrays.asList(line.substring(10).split(","));
@@ -181,11 +179,10 @@ public class ServerModel {
                     subject = line.substring(8);
                 } else if (line.startsWith("Text:")) {
                     text = line.substring(5);
-                }
+                } 
+
             }
-            Email email = new Email(sender, receivers, subject, text);
-            email.setId(id); // Imposta l'UUID letto dal file
-            return email;
+            return new Email(sender, receivers, subject, text);
         } catch (IOException e) {
             controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
             return null;
@@ -194,7 +191,7 @@ public class ServerModel {
 
     private void saveEmailToFile(Email email) {
         File userFolder = createUserFolder(email.getSender());
-        String emailFileName = "email_" + email.getId() + ".txt"; // Utilizza l'UUID
+        String emailFileName = "email_" + email.getId() + ".txt";
         File emailFile = new File(userFolder, emailFileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
             writer.write(emailToString(email));

@@ -150,17 +150,11 @@ public class MainController {
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 // Chiamata al metodo wrapDeleteEmail nel client
+
                 if (ClientModel.getInstance().wrapDeleteEmail(selectedEmail)) {
                     // Se l'eliminazione va a buon fine, rimuovi l'email dalla lista
                     MailList.getItems().remove(selectedEmail);
                     showSuccessAlert("Email deleted successfully.");
-                    Platform.runLater(() -> {
-                        SenderLabel.setText("");
-                        ReceiverLabel.setText("");
-                        ObjectLabel.setText("");
-                        DateLabel.setText("");
-                        MailContent.getEngine().loadContent(""); // Pulisce il contenuto del WebView
-                    });
                 } else {
                     // Se l'eliminazione fallisce, mostra un messaggio di errore
                     showDangerAlert("Failed to delete the selected email.");
@@ -179,7 +173,30 @@ public class MainController {
             return;
         }
         System.out.println("[INFO] Forwarding Mail.");
-        showComposeWindow("", "Fwd: " + selectedEmail.getSubject(), "Forwarded message:\n\n" + selectedEmail.getText());
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -192,7 +209,31 @@ public class MainController {
             return;
         }
         System.out.println("[INFO] Replying Mail.");
-        showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "\n\nOn " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+                composeController.setRecipientFieldID(selectedEmail.getSender());
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -204,27 +245,45 @@ public class MainController {
             showDangerAlert("Please select an email to reply.");
             return;
         }
-        System.out.println("[INFO] Replying All Mail.");
+        System.out.println("[INFO] Replying Mail.");
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
 
-        String allRecipients = String.join(", ", selectedEmail.getReceivers());
-        showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "\n\nOn " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+                composeController.setRecipientFieldID(selectedEmail.getSender() + ", " + String.join(", ", selectedEmail.getReceivers()));
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
-    private void showComposeWindow(String recipients, String subject, String body) {
-        try {
+    private void showComposeWindow(String action) {
+        try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
             Parent composeView = loader.load();
-            ComposeController composeController = loader.getController();
-            composeController.setRecipientFieldID(recipients);
-            composeController.setObjectFieldID(subject);
-            composeController.setMailBody(body);
-
+            Scene composeScene = new Scene(composeView);
             Stage composeStage = new Stage();
-            composeStage.setScene(new Scene(composeView));
+            composeStage.setScene(composeScene);
             composeStage.setTitle("ClientSide - Mail Compose");
             composeStage.initModality(Modality.APPLICATION_MODAL);
             composeStage.show();
-        } catch (IOException e) {
-            System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+        }catch(IOException e){
+            System.err.println("[ERROR] Error loadind FXML file: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -244,7 +303,6 @@ public class MainController {
     @FXML
     private void showSuccessAlert(String message) {
         if(successAlert != null){
-            System.out.println("Showing success alert: " + message); // Aggiungi questa linea per il debug
             successAlert.getChildren().clear();
             Text successText = new Text(message);
             successText.setFill(Color.GREEN);
