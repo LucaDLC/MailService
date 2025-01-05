@@ -228,7 +228,7 @@ public class ClientModel {
             return false;
         }
         try {
-            Email emailData = new Email(userLogged, receivers, subject, content);
+            Email emailData = new Email(userLogged, receivers, subject, content); //receviers deve essere trimmerata prima di mandarla
             Request request = new Request(userLogged, SEND_EMAIL, emailData);
             out.writeObject(request);
             out.flush();
