@@ -132,64 +132,145 @@ public class MainController {
 
     @FXML
     protected void onDeleteButtonClick() {
-        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
-        if (!selectedMails.isEmpty()) {
-            Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmDialog.setTitle("Delete Confirmation");
-            confirmDialog.setHeaderText(null);
-            confirmDialog.setContentText("Are you sure you want to delete the selected emails?");
+        Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
 
-            confirmDialog.showAndWait().ifPresent(response -> {
-                if (response == ButtonType.OK) {
-                    String username = ConfigManager.getInstance().readProperty("Client.Mail").split("@")[0];
-                    String emailData = username + "|" + selectedMails.stream()
-                            .flatMap(email -> email.getReceivers().stream())
-                            .collect(Collectors.joining(","));
-
-                    ClientModel clientModel = ClientModel.getInstance();
-                    if (clientModel.wrapDeleteEmail(null)) {   //da rivedere
-                        //refreshEmails();
-                        MailList.getItems().removeAll(selectedMails);
-                        showSuccessAlert("Emails deleted successfully.");
-
-                    } else {
-                    showDangerAlert("Failed to delete emails.");
-                    }
-                }
-            });
-        } else {
-            showDangerAlert("No email selected for deletion.");
+        if (selectedEmail == null) {
+            // Se nessuna email è selezionata, mostra un avviso
+            showDangerAlert("Please select an email to delete.");
+            return;
         }
+
+        // Conferma l'azione di eliminazione
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Delete Confirmation");
+        confirmationAlert.setHeaderText(null);
+        confirmationAlert.setContentText("Are you sure you want to delete the selected email?");
+
+        // Se l'utente conferma, procedi con l'eliminazione
+        confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Chiamata al metodo wrapDeleteEmail nel client
+
+                if (ClientModel.getInstance().wrapDeleteEmail(selectedEmail)) {
+                    // Se l'eliminazione va a buon fine, rimuovi l'email dalla lista
+                    MailList.getItems().remove(selectedEmail);
+                    showSuccessAlert("Email deleted successfully.");
+                } else {
+                    // Se l'eliminazione fallisce, mostra un messaggio di errore
+                    showDangerAlert("Failed to delete the selected email.");
+                }
+            }
+        });
     }
 
     @FXML
     protected void onForwardButtonClick() {
-        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
-        if(!selectedMails.isEmpty()) {
-            showComposeWindow("Forward");
-        }else{
-            System.out.println("[INFO] No email selected for forward");
+        Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
+
+        if (selectedEmail == null) {
+            // Se nessuna email è selezionata, mostra un avviso
+            showDangerAlert("Please select an email to forward.");
+            return;
         }
+        System.out.println("[INFO] Forwarding Mail.");
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     protected void onReplyButtonClick() {
-        System.out.println("[INFO] Replying Email...");
-        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
-        if(!selectedMails.isEmpty()) {
-            showComposeWindow("Reply");
+        Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
+
+        if (selectedEmail == null) {
+            // Se nessuna email è selezionata, mostra un avviso
+            showDangerAlert("Please select an email to forward.");
+            return;
         }
+        System.out.println("[INFO] Replying Mail.");
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+                composeController.setRecipientFieldID(selectedEmail.getSender());
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     protected void onReplyAllButtonAction() {
-        System.out.println("[INFO] Replying Email...");
-        ObservableList<Email> selectedMails = MailList.getSelectionModel().getSelectedItems();
-        if(!selectedMails.isEmpty()) {
-            showComposeWindow("Reply All");
-        }else{
-            System.out.println("[INFO] No email selected for reply all ");
+        Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
+
+        if (selectedEmail == null) {
+            // Se nessuna email è selezionata, mostra un avviso
+            showDangerAlert("Please select an email to forward.");
+            return;
         }
+        System.out.println("[INFO] Replying Mail.");
+        Platform.runLater(() -> {
+            try {
+                // Carica il file FXML
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
+                Parent composeView = loader.load();
+
+                // Ottieni il controller della finestra di composizione
+                ComposeController composeController = loader.getController();
+                composeController.setMailBody(selectedEmail.getText());
+                composeController.setObjectFieldID(selectedEmail.getSubject());
+                composeController.setRecipientFieldID(selectedEmail.getSender() + ", " + String.join(", ", selectedEmail.getReceivers()));
+
+
+                // Mostra la finestra di composizione
+                Scene composeScene = new Scene(composeView);
+                Stage composeStage = new Stage();
+                composeStage.setScene(composeScene);
+                composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.initModality(Modality.APPLICATION_MODAL);
+                composeStage.show();
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
     private void showComposeWindow(String action) {
         try{

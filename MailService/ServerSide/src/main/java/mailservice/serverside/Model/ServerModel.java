@@ -221,7 +221,8 @@ public class ServerModel {
     }
 
     private synchronized void handleDeleteEmail(String requestData, Email mail, ObjectOutputStream out) throws IOException {
-        String[] parts = requestData.split("\\|", 2);
+        sendCMDResponse(out, SUCCESS);
+        /*String[] parts = requestData.split("\\|", 2);
         if (parts.length < 2) {
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
@@ -249,7 +250,7 @@ public class ServerModel {
 
         emailFile.delete();
         new File(emailFile + ".tmp").renameTo(emailFile);
-        sendCMDResponse(out, SUCCESS);
+        sendCMDResponse(out, SUCCESS);*/
     }
 
     private synchronized File getUserEmailFile(String userEmail) {

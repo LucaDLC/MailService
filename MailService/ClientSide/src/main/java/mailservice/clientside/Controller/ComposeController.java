@@ -129,4 +129,23 @@ public class ComposeController{
             showSuccessAlert("Fields cleared successfully");
         }
     }
+
+    public void setObjectFieldID(String obj) {
+        if(ObjectFieldID != null) {
+            ObjectFieldID.setText(obj);
+        }
+    }
+
+    public void setRecipientFieldID(String obj) {
+        if(RecipientFieldID != null) {
+            RecipientFieldID.setText(obj);
+        }
+    }
+
+    public void setMailBody(String body) {
+        if(MailBodyID != null) {
+            MailBodyID.setHtmlText(body);
+        }
+    }
+
 }
