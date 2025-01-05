@@ -205,7 +205,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to forward.");
+            showDangerAlert("Please select an email to reply.");
             return;
         }
         System.out.println("[INFO] Replying Mail.");
@@ -242,7 +242,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to forward.");
+            showDangerAlert("Please select an email to reply.");
             return;
         }
         System.out.println("[INFO] Replying Mail.");
