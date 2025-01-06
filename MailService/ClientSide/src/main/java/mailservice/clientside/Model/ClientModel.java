@@ -233,6 +233,7 @@ public class ClientModel {
         try {
             Email emailData = new Email(userLogged, trimmedReceivers, subject, content);
             Request request = new Request(userLogged, SEND_EMAIL, emailData);
+            System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
             out.flush();
             Thread.sleep(250);
@@ -265,10 +266,14 @@ public class ClientModel {
                 return; // Ritorna subito la lista vuota se non riesce a connettersi
             }
             if(fullForceFetch){
-                out.writeObject(new Request(userLogged, FETCH_EMAIL, generateEmptyEmail()));
+                Request request = new Request(userLogged, FETCH_EMAIL, generateEmptyEmail());
+                System.out.println("[DEBUG] Raw client request: " + request);
+                out.writeObject(request);
             }
             else {
-                out.writeObject(new Request(userLogged, FETCH_EMAIL, null));
+                Request request = new Request(userLogged, FETCH_EMAIL, null);
+                System.out.println("[DEBUG] Raw client request: " + request);
+                out.writeObject(request);
             }
             out.flush();
 
