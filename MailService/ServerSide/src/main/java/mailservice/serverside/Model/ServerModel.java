@@ -119,7 +119,7 @@ public class ServerModel {
 
     private void handleSendEmail(String userEmail, Email mail, ObjectOutputStream out) throws IOException {
         if (!userEmail.equals(mail.getSender())) {
-            sendCMDResponse(out, ILLEGAL_PARAMS);
+            sendCMDResponse(out, GENERIC_ERROR);
             return;
         }
         if (!areValidEmails(mail.getReceivers())) {
@@ -128,7 +128,6 @@ public class ServerModel {
         }
         saveEmailToFile(mail);
         sendCMDResponse(out, SUCCESS);
-        //sendMail(out, SUCCESS, List.of(mail));
     }
 
     private void handleFetchEmail(String userEmail, Email forceAll, ObjectOutputStream out) throws IOException {
@@ -259,11 +258,16 @@ public class ServerModel {
 
     private File createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
-        File folder = new File(baseDirectory, username);
-        if (!folder.exists()) {
-            folder.mkdirs();
+        if(isValidEmail(username)){
+            File folder = new File(baseDirectory, username);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            return folder;
         }
-        return folder;
+        else {
+            return null;
+        }
     }
 
     private synchronized File checkFolderName(String userEmail) {
@@ -311,7 +315,4 @@ public class ServerModel {
         return port;
     }
 
-    public boolean isRunning() {
-        return running;
-    }
 }
