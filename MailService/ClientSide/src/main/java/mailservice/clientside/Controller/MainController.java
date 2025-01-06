@@ -102,7 +102,7 @@ public class MainController {
                 SenderLabel.setText(email.getSender());
                 ReceiverLabel.setText(String.join(", ", email.getReceivers()));
                 ObjectLabel.setText(email.getSubject());
-                DateLabel.setText(email.getDate().toString());
+                DateLabel.setText(email.getDate());
                 MailContent.getEngine().loadContent(email.getText());
             });
         }
@@ -192,7 +192,7 @@ public class MainController {
             return;
         }
         System.out.println("[INFO] Replying Mail.");
-        showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "\n\nOn " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
+        showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "\n\n\n " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
     }
 
     @FXML

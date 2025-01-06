@@ -184,7 +184,7 @@ public class ServerModel {
                 }
 
             }
-            return new Email(sender, receivers, subject, text);
+            return new Email(sender, receivers, subject, text, date);
         } catch (IOException e) {
             controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
             return null;
@@ -210,7 +210,7 @@ public class ServerModel {
                 "Receivers:" + String.join(",", email.getReceivers()) + "\n" +
                 "Subject:" + email.getSubject() + "\n" +
                 "Text:" + email.getText() + "\n" +
-                "Date:" + email.getDate().toString() + "\n";
+                "Date:" + email.getDate() + "\n";
     }
 
     private synchronized void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {

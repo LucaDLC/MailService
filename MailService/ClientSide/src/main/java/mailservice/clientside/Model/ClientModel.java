@@ -144,6 +144,7 @@ public class ClientModel {
         }
         Request request = new Request(userLogged, command, dataMail);
         try {
+            System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
             out.flush();
             Thread.sleep(250);

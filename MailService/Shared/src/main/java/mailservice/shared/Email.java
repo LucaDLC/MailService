@@ -18,10 +18,21 @@ public class Email implements Serializable {
         this.subject = subject;
         this.text = text;
         this.receivers = new ArrayList<>(receivers);
-        this.date = newDate();
+        this.date = newDate(null);
         this.isToRead = false;
         this.id = this.hashCode();
     }
+
+    public Email(String sender, List<String> receivers, String subject, String text, String data){
+        this.sender = sender;
+        this.subject = subject;
+        this.text = text;
+        this.receivers = new ArrayList<>(receivers);
+        this.date = newDate(data);
+        this.isToRead = false;
+        this.id = this.hashCode();
+    }
+
     public static Email generateEmptyEmail(){
         Email email = new Email("", List.of(""), "",
                 "");
@@ -59,10 +70,14 @@ public class Email implements Serializable {
         return email.getSender().equals("") && email.getReceivers().equals("") && email.getSubject().equals("") && email.getText().equals("");
     }
 
-    public static String newDate(){
-        Date date = new Date();
+    private static String newDate(String passedDate) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        return dateFormatter.format(date);
+        if (passedDate == null){
+            return dateFormatter.format(new Date());
+        }
+        else {
+            return passedDate;
+        }
     }
 
     @Override
@@ -80,7 +95,7 @@ public class Email implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String formattedDate = (date != null) ? dateFormat.format(date) : "No Date";
         return sender + " - " + subject + " (" + formattedDate + ")";
     }
