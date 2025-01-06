@@ -127,7 +127,8 @@ public class ServerModel {
             return;
         }
         saveEmailToFile(mail);
-        sendMail(out, SUCCESS, List.of(mail));
+        sendCMDResponse(out, SUCCESS);
+        //sendMail(out, SUCCESS, List.of(mail));
     }
 
     private void handleFetchEmail(String userEmail, Email forceAll, ObjectOutputStream out) throws IOException {

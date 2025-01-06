@@ -10,7 +10,7 @@ public class Email implements Serializable {
     private final List<String> receivers;
     private final String subject;
     private final String text;
-    private String date;
+    private final String date;
     private boolean isToRead;
 
     public Email(String sender, List<String> receivers, String subject, String text){
@@ -35,8 +35,7 @@ public class Email implements Serializable {
 
     public static Email generateEmptyEmail(){
         Email email = new Email("", List.of(""), "",
-                "");
-        email.date = null;
+                "", null);
         email.id = email.hashCode();
 
         return email;

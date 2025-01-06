@@ -216,12 +216,14 @@ public class ClientModel {
             return false;
         }
 
+        List<String> trimmedReceivers = new ArrayList<>();
         for (String recipientSplit : receivers) {
             String trimmedRecipient = recipientSplit.trim();
             if (!ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
                 System.err.println("[ERROR] Invalid email insert during Compose phase: " + trimmedRecipient);
                 return false;
             }
+            trimmedReceivers.add(trimmedRecipient);
         }
 
         if (!connectToServer()) {
@@ -229,7 +231,7 @@ public class ClientModel {
             return false;
         }
         try {
-            Email emailData = new Email(userLogged, receivers, subject, content); //receviers deve essere trimmerata prima di mandarla
+            Email emailData = new Email(userLogged, trimmedReceivers, subject, content);
             Request request = new Request(userLogged, SEND_EMAIL, emailData);
             out.writeObject(request);
             out.flush();
