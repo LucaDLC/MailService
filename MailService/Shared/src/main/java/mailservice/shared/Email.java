@@ -10,7 +10,7 @@ public class Email implements Serializable {
     private final List<String> receivers;
     private final String subject;
     private final String text;
-    private Date date;
+    private String date;
     private boolean isToRead;
 
     public Email(String sender, List<String> receivers, String subject, String text){
@@ -18,7 +18,7 @@ public class Email implements Serializable {
         this.subject = subject;
         this.text = text;
         this.receivers = new ArrayList<>(receivers);
-        this.date = new Date();
+        this.date = newDate();
         this.isToRead = false;
         this.id = this.hashCode();
     }
@@ -46,7 +46,7 @@ public class Email implements Serializable {
     public String getText() {
         return text;
     }
-    public Date getDate() { return date; }
+    public String getDate() { return date; }
     public boolean isToRead() {
         return isToRead;
     }
@@ -57,6 +57,12 @@ public class Email implements Serializable {
 
     public static boolean isEmpty(Email email){
         return email.getSender().equals("") && email.getReceivers().equals("") && email.getSubject().equals("") && email.getText().equals("");
+    }
+
+    public static String newDate(){
+        Date date = new Date();
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return dateFormatter.format(date);
     }
 
     @Override

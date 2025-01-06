@@ -168,7 +168,7 @@ public class ServerModel {
     private Email readEmailFromFile(File emailFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
             String line;
-            String sender = "", subject = "", text = "";
+            String sender = "", subject = "", text = "", date = "";
             List<String> receivers = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("Sender:")) {
@@ -179,7 +179,9 @@ public class ServerModel {
                     subject = line.substring(8);
                 } else if (line.startsWith("Text:")) {
                     text = line.substring(5);
-                } 
+                }  else if (line.startsWith("Date:")) {
+                    date = line.substring(5);
+                }
 
             }
             return new Email(sender, receivers, subject, text);
