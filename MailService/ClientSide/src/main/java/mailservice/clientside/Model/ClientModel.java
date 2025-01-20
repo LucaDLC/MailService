@@ -103,6 +103,7 @@ public class ClientModel {
             if (socket == null || socket.isClosed()) {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(serverHost, serverPort), SOCKET_TIMEOUT);
+                socket.setSoTimeout(SOCKET_TIMEOUT);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
                 System.out.println("[INFO] Connected to server.");
@@ -147,7 +148,7 @@ public class ClientModel {
             System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
             out.flush();
-            Thread.sleep(250);
+            //Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
@@ -184,7 +185,7 @@ public class ClientModel {
         //return CommandResponse.SUCCESS;
         if (socket == null || socket.isClosed()) {
             System.err.println("[ERROR] Connection not established. Cannot receive messages.");
-            return null;
+            return CommandResponse.GENERIC_ERROR;
         }
         try {
             Response cmdResponse;
@@ -196,15 +197,15 @@ public class ClientModel {
                 return cmdResponse.responseName();
             } else {
                 System.err.println("[ERROR] Unexpected response type: " + inResponse.getClass());
-                return null;
+                return CommandResponse.GENERIC_ERROR;
             }
         } catch (IOException e) {
             System.err.println("[ERROR] Exception while reading server response: " + e.getMessage());
-            return null;
+            return CommandResponse.GENERIC_ERROR;
         }
         catch (ClassNotFoundException e) {
             System.err.println("[ERROR] Class not found while reading server response: " + e.getMessage());
-            return null;
+            return CommandResponse.GENERIC_ERROR;
         }
 
     }
