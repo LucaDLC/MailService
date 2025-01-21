@@ -131,21 +131,26 @@ public class ServerModel {
     }
 
     private void handleFetchEmail(String userEmail, Email forceAll, ObjectOutputStream out) throws IOException {
-        if (forceAll != null){ //qui bisognerà fare che scarica TUTTA la caselladi posta
+        if (forceAll != null){
             List<Email> emails = fetchEmails(userEmail);
             if (emails.isEmpty()) {
                 sendCMDResponse(out, SUCCESS);
             } else {
                 sendMail(out, SUCCESS, emails);
+                emails.forEach(email -> email.setToRead(true));
+                emails.forEach(this::saveEmailToFile);
             }
             controller.log(LogType.INFO, "Fetched all Mail: ");
         }
         else{ //mentre qui SOLO le NUOVE mail
             List<Email> emails = fetchEmails(userEmail);
+            emails.removeIf(Email::isToRead);
             if (emails.isEmpty()) {
                 sendCMDResponse(out, SUCCESS);
             } else {
                 sendMail(out, SUCCESS, emails);
+                emails.forEach(email -> email.setToRead(true));
+                emails.forEach(this::saveEmailToFile);
             }
             controller.log(LogType.INFO, "Fetched new Mail: ");
         }
@@ -153,7 +158,11 @@ public class ServerModel {
     }
 
     private List<Email> fetchEmails(String userEmail) {
-        File userFolder = createUserFolder(userEmail);
+        if(checkFolderName(userEmail) == null){
+            controller.log(LogType.ERROR, "User folder not found: " + userEmail);
+            return new ArrayList<>();
+        }
+        File userFolder = checkFolderName(userEmail);
         File[] emailFiles = userFolder.listFiles((dir, name) -> name.startsWith("email_"));
         List<Email> emails = new ArrayList<>();
         for (File emailFile : emailFiles) {
@@ -217,16 +226,15 @@ public class ServerModel {
                 "Receivers:" + String.join(",", email.getReceivers()) + "\n" +
                 "Subject:" + email.getSubject() + "\n" +
                 "Text:" + email.getText() + "\n" +
-                "Date:" + email.getDate() + "\n";
+                "Date:" + email.getDate() + "\n" +
+                "IsToRead:" + email.isToRead() + "\n";
     }
 
     private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
-        if (!isValidEmail(email)) {
+        if (!isValidEmail(email) || checkFolderName(email) == null) {
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
-
-        createUserFolder(email);
         sendCMDResponse(out, SUCCESS);
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
@@ -258,12 +266,8 @@ public class ServerModel {
 
     }
 
-    private synchronized File getUserEmailFile(String userEmail) {
-        File userFolder = createUserFolder(userEmail);
-        return new File(userFolder, "sent_emails.txt");
-    }
 
-    private File createUserFolder(String username) {
+    /*private File createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         if(isValidEmail(username)){
             File folder = new File(baseDirectory, username);
@@ -275,7 +279,7 @@ public class ServerModel {
         else {
             return null;
         }
-    }
+    }*/
 
     private synchronized File checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
@@ -297,21 +301,14 @@ public class ServerModel {
         return emails.stream().allMatch(this::isValidEmail);
     }
 
-    private boolean shouldDelete(String line, String[] emailsToDelete) {
-        for (String email : emailsToDelete) {
-            if (line.contains(email.trim())) return true;
-        }
-        return false;
-    }
-
-    public void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
+    private void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
         Response response = new Response(cmdResponse, null);
         out.writeObject(response);
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
 
-    public void sendMail(ObjectOutputStream out, CommandResponse cmdResponse, List<Email> mail) throws IOException {
+    private void sendMail(ObjectOutputStream out, CommandResponse cmdResponse, List<Email> mail) throws IOException {
         Response response = new Response(cmdResponse, mail);
         out.writeObject(response);
         out.flush();

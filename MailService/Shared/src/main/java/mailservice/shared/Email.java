@@ -81,7 +81,7 @@ public class Email implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sender, receivers, subject, text, date, isToRead);
+        return Objects.hash(sender, receivers, subject, text, date);
     }
 
     @Override
