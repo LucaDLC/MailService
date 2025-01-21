@@ -50,7 +50,7 @@ public class ServerController {
             return;
         }
 
-        serverModel = new ServerModel(this); //passiamo il ServerController al ServerModel
+        serverModel = ServerModel.getInstance(this); //passiamo il ServerController al ServerModel
         serverModel.startServer();
         isServerRunning = true;
 
@@ -76,6 +76,7 @@ public class ServerController {
             //aggiorna lo stato dei bottoni
             startButton.setDisable(false);
             stopButton.setDisable(true);
+
 
             //aggiungiamo un messaggio di log per segnalare che il server è stato fermato
             log(LogType.INFO, "Server stopped");

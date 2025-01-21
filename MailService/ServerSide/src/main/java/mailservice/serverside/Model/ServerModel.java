@@ -30,13 +30,21 @@ public class ServerModel {
     private final int threadsNumber;
 
     private ServerController controller;
+    private static ServerModel instance;
 
-    public ServerModel(ServerController serverController) {
+    private ServerModel(ServerController serverController) {
         ConfigManager configManager = ConfigManager.getInstance();
         this.controller = serverController;
         this.port = Integer.parseInt(configManager.readProperty("Server.Port"));
         this.timeout = Integer.parseInt(configManager.readProperty("Server.Timeout"));
         this.threadsNumber = Integer.parseInt(configManager.readProperty("Server.Threads"));
+    }
+
+    public static synchronized ServerModel getInstance(ServerController serverController) {
+        if (instance == null) {
+            instance = new ServerModel(serverController);
+        }
+        return instance;
     }
 
     public void startServer() {
@@ -73,6 +81,7 @@ public class ServerModel {
             return;
         }
         running = false;
+        instance = null;
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
