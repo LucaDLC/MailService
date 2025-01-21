@@ -290,11 +290,11 @@ public class ServerModel {
 
 
     private boolean isValidEmail(String email) {
-        return email.matches("^[a-zA-Z0-9._%+-]+@rama.it$");
+        return (email.matches("^[a-zA-Z0-9._%+-]+@rama.it$") && checkFolderName(email) != null);
     }
 
-    private boolean areValidEmails(List<String> emails) {
-        return emails.stream().allMatch(this::isValidEmail);
+    private boolean areValidEmails(List<String> emailsReceivers) {
+        return emailsReceivers.stream().allMatch(this::isValidEmail);
     }
 
     private void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
