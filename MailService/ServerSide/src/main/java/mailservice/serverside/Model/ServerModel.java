@@ -62,7 +62,6 @@ public class ServerModel {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
-                serverSocket.setSoTimeout(timeout);
                 controller.log(LogType.INFO, "Server started on port " + port);
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
