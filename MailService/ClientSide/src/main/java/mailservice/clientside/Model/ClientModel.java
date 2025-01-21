@@ -6,9 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,13 +15,11 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mailservice.clientside.Configuration.*;
-import mailservice.clientside.Controller.MainController;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
 
 import static mailservice.shared.Email.generateEmptyEmail;
 import static mailservice.shared.enums.CommandRequest.*;
-import static mailservice.shared.enums.CommandResponse.*;
 
 
 

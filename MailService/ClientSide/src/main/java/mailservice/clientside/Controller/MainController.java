@@ -2,9 +2,6 @@ package mailservice.clientside.Controller;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML; //importo la classe FXML
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,13 +14,10 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.shared.Email;
 import mailservice.clientside.Model.ClientModel;
 
-import java.util.Collections;
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
