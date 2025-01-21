@@ -192,14 +192,21 @@ public class ServerModel {
     }
 
     private void saveEmailToFile(Email email) {
-        File userFolder = createUserFolder(email.getSender());
-        String emailFileName = "email_" + email.getId() + ".txt";
-        File emailFile = new File(userFolder, emailFileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
-            writer.write(emailToString(email));
-            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
-        } catch (IOException e) {
-            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+        for (String recipientSplit : email.getReceivers()) {
+            String trimmedRecipient = recipientSplit.trim();
+            if (checkFolderName(trimmedRecipient) == null) {
+                controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + trimmedRecipient);
+            }
+            else {
+                String emailFileName = "email_" + email.getId() + ".txt";
+                File emailFile = new File(checkFolderName(trimmedRecipient), emailFileName);
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+                    writer.write(emailToString(email));
+                    controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                } catch (IOException e) {
+                    controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                }
+            }
         }
     }
 
@@ -213,7 +220,7 @@ public class ServerModel {
                 "Date:" + email.getDate() + "\n";
     }
 
-    private synchronized void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
+    private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
         if (!isValidEmail(email)) {
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
