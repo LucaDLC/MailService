@@ -1,6 +1,41 @@
 /* Impostazione dello sfondo della finestra principale */
 .root {
-    -fx-background-color: white; /* La finestra principale ha lo sfondo bianco */
+    -fx-font-family: 'Segoe UI', sans-serif; /* Font aggiunto per coerenza */
+    -fx-background-color: white;
+}
+
+/* Stili aggiuntivi per i pulsanti comuni e nuovi elementi interfaccia, preservando gli stili del server */
+.button {
+    -fx-background-color: #007ACC; /* Colore blu per nuovi pulsanti */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-min-width: 100px;
+}
+
+.button:hover {
+    -fx-background-color: #005A99;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
+}
+
+/* Stili aggiuntivi per label e altri controlli senza modificare quelli esistenti */
+.label {
+    -fx-text-fill: #CCCCCC; /* Grigio chiaro per nuove etichette */
+    -fx-font-size: 14px;
+}
+
+/* Aggiungere stili per i campi di testo e altri input comuni, senza modificare gli stili esistenti del server */
+.text-field, .text-area {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #007ACC;
 }
 
 /* Impostazioni di stile per il ListView (log) */
@@ -52,18 +87,20 @@
 
 /* Modifica del colore dei bottoni al passaggio del mouse */
 #startButton:hover {
-    -fx-background-color: rgba(39, 174, 96, 0.6); /* Verde trasparente per "Start" */
-    -fx-text-fill: white; /* Testo bianco */
+    -fx-scale-x: 0.9; /* Riduce larghezza al 90% */
+    -fx-scale-y: 0.9; /* Riduce altezza al 90% */
+    -fx-background-color: rgba(39, 174, 96, 0.6); /* Verde chiaro durante hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 2); /* Ombra */
 }
 
 #stopButton:hover {
-    -fx-background-color: rgba(231, 76, 60, 0.6); /* Rosso trasparente per "Stop" */
-    -fx-text-fill: white; /* Testo bianco */
+    -fx-scale-x: 0.9; /* Riduce larghezza al 90% */
+    -fx-scale-y: 0.9; /* Riduce altezza al 90% */
+    -fx-background-color: rgba(231, 76, 60, 0.6); /* Rosso chiaro durante hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 2); /* Ombra */
 }
 
-/* Impostazioni per la scritta "Powered by:" */
-.label[alignment="CENTER_RIGHT"] {
-    -fx-font-size: 10px; /* Imposta una dimensione del font più piccola */
-    -fx-text-fill: #bfbfbf; /* Colore grigio per il testo */
-    -fx-font-family: "Arial"; /* Usa un font sans-serif */
+/* Stile per l'icona della cartella */
+#folderCreation {
+    -fx-cursor: hand; /* Cambia il cursore in una manina */
 }

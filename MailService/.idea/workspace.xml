@@ -6,7 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.png" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.png" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/server.css" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/server.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +81,7 @@
       <recent name="C:\Users\LucaDLC\Desktop\MailService\MailService\ClientSide\src\main\java\mailservice\clientside\Configuration" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\alexa\OneDrive\Desktop\GitHub\MailService\ServerSide\src\main\resources\mailservice\serverside" />
       <recent name="C:\Users\alexa\OneDrive\Documenti\GitHub\MailService\MailService\ServerSide\src\main\resources\mailservice\serverside" />
       <recent name="C:\Users\alexa\OneDrive\Documenti\GitHub\MailService\MailService\ClientSide\src\main\resources\mailservice\clientside" />
       <recent name="C:\Users\alexa\OneDrive\Documenti\GitHub\MailService\MailService\MailService\ClientSide\src\main\resources\mailservice\clientside" />

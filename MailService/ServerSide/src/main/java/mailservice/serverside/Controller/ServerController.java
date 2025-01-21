@@ -12,6 +12,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.scene.Cursor;
 import mailservice.serverside.Log.LogType;
 import mailservice.serverside.Model.ServerModel;
 
@@ -34,9 +35,11 @@ public class ServerController {
     @FXML
     public void initialize() {
         // Inizializza i pulsanti e l'interfaccia
+        startButton.setCursor(Cursor.HAND);
+        stopButton.setCursor(Cursor.HAND);
+        folderCreation.setCursor(Cursor.HAND); // Funziona dopo aver aggiunto l'import
         startButton.setDisable(false);
         stopButton.setDisable(true);
-
         if (ServerLog != null) {
             ServerLog.getItems().clear(); // Pulisce il log
         }

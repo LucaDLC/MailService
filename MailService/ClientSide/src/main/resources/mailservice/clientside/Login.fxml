@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="164.0" maxWidth="425.0" minWidth="425.0" prefHeight="120.0" prefWidth="425.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.LoginController">
+<AnchorPane maxHeight="164.0" maxWidth="425.0" minWidth="425.0" prefHeight="134.0" prefWidth="425.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.clientside.Controller.LoginController">
 
     <!-- Contenitore StackPane per centrare tutto -->
     <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
@@ -42,9 +42,9 @@
     </StackPane>
 
     <!-- Messaggi di successo o errore -->
-    <TextFlow fx:id="dangerAlert" prefHeight="2.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+    <TextFlow fx:id="dangerAlert" prefHeight="22.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
     </TextFlow>
 
-    <TextFlow fx:id="successAlert" prefHeight="3.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+    <TextFlow fx:id="successAlert" prefHeight="22.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
     </TextFlow>
 </AnchorPane>

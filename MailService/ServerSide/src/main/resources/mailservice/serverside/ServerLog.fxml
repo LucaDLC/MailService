@@ -5,23 +5,26 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.ServerController">
+<AnchorPane prefHeight="520.0" prefWidth="813.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.ServerController">
    <ListView fx:id="ServerLog" layoutX="18.0" prefHeight="595.0" prefWidth="1042.0" styleClass="Server-Log" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0" />
-   <Label layoutX="60.0" layoutY="12.0" text="ServerSide">
+   <Label layoutX="55.0" layoutY="17.0" text="ServerSide">
       <font>
          <Font name="System Italic" size="17.0" />
       </font>
    </Label>
-   <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="236.0" text="Powered by: Del Conte - Perrone - Budeanu" textFill="#bfbfbf" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0" />
-   <ImageView fitHeight="34.0" fitWidth="36.0" layoutX="20.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+   <Label alignment="CENTER_RIGHT" layoutX="650.0" layoutY="14.0" prefHeight="18.0" prefWidth="282.0" text="Powered by: Del Conte - Perrone - Budeanu" textFill="#bfbfbf" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="14.0">
+      <font>
+         <Font size="10.0" />
+      </font></Label>
+   <ImageView fitHeight="46.0" fitWidth="52.0" layoutX="9.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@Server.png" />
    </ImageView>
-   <HBox alignment="CENTER" spacing="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
-      <ImageView fitHeight="39.0" fitWidth="39.0" onMouseClicked="#onServerCreateFolder" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@Folder.png" />
-         </image>
-      </ImageView>
+   <ImageView fx:id="folderCreation" fitHeight="34.0" fitWidth="32.0" layoutX="18.0" layoutY="467.0" onMouseClicked="#onServerCreateFolder" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="18.0">
+      <image>
+         <Image url="@Folder.png" />
+      </image>
+   </ImageView>
+   <HBox alignment="CENTER" layoutX="73.0" layoutY="459.0" prefHeight="46.0" prefWidth="662.0" spacing="100.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="78.0">
 
       <Button fx:id="startButton" mnemonicParsing="false" onAction="#startServer" onMouseClicked="#onStart" prefHeight="34.0" prefWidth="88.0" text="Start Server" textFill="#0f842c" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
       <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopServer" onMouseClicked="#onStop" prefHeight="34.0" prefWidth="88.0" text="Stop Server" textFill="#941515" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />

@@ -1,53 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="164.0" maxWidth="425.0" minWidth="425.0" prefHeight="120.0" prefWidth="425.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.FolderController">
-
+<AnchorPane maxHeight="171.0" maxWidth="425.0" minWidth="299.0" prefHeight="171.0" prefWidth="347.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.FolderController">
     <!-- Contenitore StackPane per centrare tutto -->
     <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-        <!-- Contenitore orizzontale (HBox) per il layout -->
-        <HBox alignment="CENTER" prefHeight="120.0" prefWidth="425.0" spacing="10">
+        <children>
+            <VBox alignment="CENTER" prefHeight="171.0" prefWidth="345.0" spacing="20">
+                <children>
+                    <!-- TextField per l'username -->
+                    <TextField fx:id="FolderFieldID" maxWidth="-Infinity" prefHeight="35" prefWidth="259.0" promptText="FolderName">
+                        <font>
+                            <Font size="14" />
+                        </font>
+                        <cursor>
+                            <Cursor fx:constant="TEXT" />
+                        </cursor>
+                    </TextField>
 
-            <!-- TextField per l'username -->
-            <TextField fx:id="FolderFieldID" prefHeight="35" prefWidth="200" promptText="FolderName">
-                <font>
-                    <Font size="14" />
-                </font>
-                <cursor>
-                    <Cursor fx:constant="TEXT" />
-                </cursor>
-            </TextField>
-         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-            <children>
-      
-                  <!-- Bottone di Creazione Cartella -->
-                  <Button fx:id="FolderButton" onMouseClicked="#onFolderButtonClick" prefHeight="50" prefWidth="100.0" text="New" textFill="#4f8625">
-                      <font>
-                          <Font size="16.0" />
-                      </font>
-                      <cursor>
-                          <Cursor fx:constant="HAND" />
-                      </cursor>
-                  </Button>
-               <Button fx:id="DeleteFolderButton" layoutX="10.0" layoutY="10.0" onMouseClicked="#onDeleteFolderButtonClick" prefHeight="50" prefWidth="129.0" text="Delete" textFill="#853825">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-                  <cursor>
-                     <Cursor fx:constant="HAND" />
-                  </cursor>
-               </Button>
-            </children>
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-         </VBox>
-        </HBox>
+                    <!-- HBox per i bottoni con spaziatura maggiore -->
+                    <HBox alignment="CENTER" spacing="30">
+                        <!-- Bottone di Creazione Cartella -->
+                        <Button fx:id="FolderButton" onMouseClicked="#onFolderButtonClick" prefHeight="50" prefWidth="100.0" text="New" textFill="#4f8625">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                        <!-- Bottone di Eliminazione Cartella -->
+                        <Button fx:id="DeleteFolderButton" onMouseClicked="#onDeleteFolderButtonClick" prefHeight="50" prefWidth="129.0" text="Delete" textFill="#853825">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
+                            <cursor>
+                                <Cursor fx:constant="HAND" />
+                            </cursor>
+                        </Button>
+                    </HBox>
+                </children>
+            </VBox>
+        </children>
     </StackPane>
 
     <!-- Messaggi di successo o errore -->
