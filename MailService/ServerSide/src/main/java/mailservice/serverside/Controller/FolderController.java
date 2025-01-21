@@ -1,0 +1,76 @@
+package mailservice.serverside.Controller;
+
+import javafx.animation.PauseTransition;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
+import mailservice.serverside.Model.ServerModel;
+
+
+public class FolderController {
+
+    @FXML
+    private TextField FolderFieldID; //serve a inserire l'email dell'utente
+    @FXML
+    private Button FolderButton; //serve ad effettuare la creazione della cartella
+    @FXML
+    private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
+    @FXML
+    private TextFlow successAlert; //serve a visualizzare un messaggio di successo
+
+    @FXML
+    protected void onFolderButtonClick() {
+        String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
+
+        if(ServerModel.createUserFolder(folder)){
+            showSuccessAlert();
+        } else {
+            showDangerAlert("Folder name is not valid");
+        }
+    }
+
+    @FXML
+    private void showDangerAlert(String message) {
+        successAlert.setVisible(false); //nascondo il messaggio di successo
+        getDangerAlert();
+        Text dangerText = new Text(message);
+        dangerText.setFill(Color.RED);
+        dangerAlert.getChildren().add(dangerText);
+        dangerAlert.setVisible(true);
+        hideAlerts();
+    }
+
+    @FXML
+    private void showSuccessAlert() {
+        dangerAlert.setVisible(false); //nascondo il messaggio di errore
+        getSuccessAlert();
+        Text successText = new Text("Folder creation successful");
+        successText.setFill(Color.GREEN);
+        successAlert.getChildren().add(successText);
+        successAlert.setVisible(true);
+        hideAlerts();
+    }
+
+    @FXML
+    private void hideAlerts() {
+        // Nascondere gli alert dopo 3 secondi
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> {
+            dangerAlert.setVisible(false);
+            successAlert.setVisible(false);
+        });
+        pause.play();
+    }
+
+    public void getSuccessAlert() {
+        successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
+    }
+
+    public void getDangerAlert() {
+        dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
+    }
+}

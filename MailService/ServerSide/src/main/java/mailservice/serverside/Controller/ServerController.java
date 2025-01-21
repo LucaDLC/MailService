@@ -2,12 +2,20 @@ package mailservice.serverside.Controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import mailservice.serverside.Log.LogType;
 import mailservice.serverside.Model.ServerModel;
+
+import java.io.IOException;
 
 
 public class ServerController {
@@ -17,6 +25,8 @@ public class ServerController {
     private Button startButton; //serve a avviare il server
     @FXML
     private Button stopButton; //serve a fermare il server
+    @FXML
+    private ImageView folderCreation;
 
     private ServerModel serverModel;
     private boolean isServerRunning = false; //stato per monitorare se il server è avviato
@@ -77,6 +87,19 @@ public class ServerController {
     @FXML
     public void onStop() {
         stopServer();
+    }
+
+    @FXML
+    public void onServerCreateFolder() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/serverside/Folder.fxml"));
+        Parent mainView = loader.load(); //carico il file FXML
+        Scene mainScene = new Scene(mainView); //creo una nuova scena
+        Stage mainStage = new Stage(); //creo una nuova finestra
+
+        mainStage.setScene(mainScene); //imposto la scena nella finestra
+        mainStage.setTitle("Serverside - Folder Management");
+        mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+        mainStage.show();
     }
 
     //metodo per aggiungere un messaggio al log del server

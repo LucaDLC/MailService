@@ -248,7 +248,7 @@ public class ServerModel {
     }
 
     private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
-        if (!isValidEmail(email) || checkFolderName(email) == null) {
+        if (!isValidEmail(email)) {
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
@@ -284,19 +284,19 @@ public class ServerModel {
     }
 
 
-    /*private File createUserFolder(String username) {
+    public static synchronized boolean createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
-        if(isValidEmail(username)){
+        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
             File folder = new File(baseDirectory, username);
             if (!folder.exists()) {
                 folder.mkdirs();
             }
-            return folder;
+            return true;
         }
         else {
-            return null;
+            return false;
         }
-    }*/
+    }
 
     private File checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
