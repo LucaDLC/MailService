@@ -5,13 +5,6 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 public class ConfigManager {
-    /* SPIEGAZIONE CONFIG MANAGER
-    Questa Classe è usata per inizializzare e leggere le proprietà del ServerSide
-    Creo un file di configurazione se non esiste, altrimenti leggo le proprietà dal file
-    Volendo solo un istanza di questa classe, ho usato il Singleton Pattern mettendo il costruttore privato e usando un getInstance per ottenere l'istanza
-    Una volta chiamato il ConfigManager.getInstance() posso usare il metodo readProperty(Nome Proprietà) per leggere le proprietà
-    Essendo un Singleton, le proprietà vengono caricate una sola volta e poi restano in memoria e ConfigManager.getInstance() restituisce sempre la stessa istanza
-    */
     private final Properties prop;
 
     private ConfigManager() {
