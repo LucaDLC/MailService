@@ -209,8 +209,8 @@ public class ServerModel {
                     text = line.substring(5);
                 }  else if (line.startsWith("Date:")) {
                     date = line.substring(5);
-                } else if (line.startsWith("ToRead:")) {
-                    isToRead = Boolean.parseBoolean(line.substring(8));
+                } else if (line.startsWith("IsToRead:")) {
+                    isToRead = Boolean.parseBoolean(line.substring(9));
                 }
 
             }
