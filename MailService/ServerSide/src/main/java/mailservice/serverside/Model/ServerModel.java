@@ -1,6 +1,7 @@
 package mailservice.serverside.Model;
 
 import mailservice.serverside.Configuration.*;
+import mailservice.serverside.Controller.FolderController;
 import mailservice.serverside.Controller.ServerController;
 import mailservice.serverside.Log.LogType;
 
@@ -40,12 +41,14 @@ public class ServerModel {
         this.threadsNumber = Integer.parseInt(configManager.readProperty("Server.Threads"));
     }
 
+
     public static synchronized ServerModel getInstance(ServerController serverController) {
         if (instance == null) {
             instance = new ServerModel(serverController);
         }
         return instance;
     }
+
 
     public void startServer() {
         if (running) {
@@ -75,6 +78,7 @@ public class ServerModel {
         }).start();
     }
 
+
     public void stopServer() {
         if (!running) {
             controller.log(LogType.INFO, "Server is not running.");
@@ -101,6 +105,7 @@ public class ServerModel {
         }
     }
 
+
     private void handleClient(Socket clientSocket) {
         try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
@@ -126,6 +131,7 @@ public class ServerModel {
         }
     }
 
+
     private void handleSendEmail(String userEmail, Email mail, ObjectOutputStream out) throws IOException {
         if (!userEmail.equals(mail.getSender())) {
             sendCMDResponse(out, GENERIC_ERROR);
@@ -138,6 +144,7 @@ public class ServerModel {
         saveEmailToFile(mail);
         sendCMDResponse(out, SUCCESS);
     }
+
 
     private void handleFetchEmail(String userEmail, Email forceAll, ObjectOutputStream out) throws IOException {
         if (forceAll != null){
@@ -166,6 +173,7 @@ public class ServerModel {
 
     }
 
+
     private List<Email> fetchEmails(String userEmail) {
         if(checkFolderName(userEmail) == null){
             controller.log(LogType.ERROR, "User folder not found: " + userEmail);
@@ -182,6 +190,7 @@ public class ServerModel {
         }
         return emails;
     }
+
 
     private Email readEmailFromFile(File emailFile) {
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
@@ -216,6 +225,7 @@ public class ServerModel {
         }
     }
 
+
     private synchronized void saveEmailToFile(Email email) {
         for (String recipientSplit : email.getReceivers()) {
             String trimmedRecipient = recipientSplit.trim();
@@ -234,6 +244,7 @@ public class ServerModel {
             }
         }
     }
+
 
     private void cleanInvalidDirectories() {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
@@ -256,6 +267,7 @@ public class ServerModel {
         }
     }
 
+
     private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
         if (!isValidEmail(email)) {
             sendCMDResponse(out, ILLEGAL_PARAMS);
@@ -264,6 +276,7 @@ public class ServerModel {
         sendCMDResponse(out, SUCCESS);
         controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
+
 
     private synchronized void handleDeleteEmail(String requestOwner, Email mail, ObjectOutputStream out) throws IOException {
         if (checkFolderName(requestOwner) == null) {
@@ -293,7 +306,33 @@ public class ServerModel {
     }
 
 
-    public static synchronized boolean createUserFolder(String username) {
+    private File checkFolderName(String userEmail) {
+        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
+        File userFolder = new File(baseDirectory, userEmail);
+        if(userFolder.exists() && userFolder.isDirectory()){
+            return new File(baseDirectory, userEmail);
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    public static synchronized boolean FolderManagement(String username, boolean FolderCreation) {
+        if(username == null || username.isEmpty()) {
+            return false;
+        }
+
+        if(FolderCreation){
+            return createUserFolder(username);
+        }
+        else {
+            return deleteUserFolder(username);
+        }
+    }
+
+
+    private static synchronized boolean createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
             File folder = new File(baseDirectory, username);
@@ -307,7 +346,8 @@ public class ServerModel {
         }
     }
 
-    public static synchronized boolean deleteUserFolder(String username) {
+
+    private static synchronized boolean deleteUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
             File folder = new File(baseDirectory, username);
@@ -329,25 +369,16 @@ public class ServerModel {
         }
     }
 
-    private File checkFolderName(String userEmail) {
-        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
-        File userFolder = new File(baseDirectory, userEmail);
-        if(userFolder.exists() && userFolder.isDirectory()){
-            return new File(baseDirectory, userEmail);
-        }
-        else{
-            return null;
-        }
-    }
-
 
     private boolean isValidEmail(String email) {
         return (email.matches("^[a-zA-Z0-9._%+-]+@rama.it$") && checkFolderName(email) != null);
     }
 
+
     private boolean areValidEmails(List<String> emailsReceivers) {
         return emailsReceivers.stream().allMatch(this::isValidEmail);
     }
+
 
     private void sendCMDResponse(ObjectOutputStream out, CommandResponse cmdResponse) throws IOException {
         Response response = new Response(cmdResponse, null);
@@ -356,12 +387,14 @@ public class ServerModel {
         controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
 
+
     private void sendMail(ObjectOutputStream out, CommandResponse cmdResponse, List<Email> mail) throws IOException {
         Response response = new Response(cmdResponse, mail);
         out.writeObject(response);
         out.flush();
         controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
+
 
     public int getPort() {
         return port;

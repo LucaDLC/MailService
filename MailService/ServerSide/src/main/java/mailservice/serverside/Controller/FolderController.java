@@ -27,8 +27,7 @@ public class FolderController {
     @FXML
     protected void onFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-
-        if(ServerModel.createUserFolder(folder)){
+        if(ServerModel.FolderManagement(folder,true)){
             showSuccessAlert("Folder created successfully");
         } else {
             showDangerAlert("Folder name is not valid");
@@ -38,8 +37,7 @@ public class FolderController {
     @FXML
     protected void onDeleteFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-
-        if(ServerModel.deleteUserFolder(folder)){
+        if(ServerModel.FolderManagement(folder,false)){
             showSuccessAlert("Folder deleted successfully");
         } else {
             showDangerAlert("Folder name is not valid");
@@ -86,4 +84,5 @@ public class FolderController {
     public void getDangerAlert() {
         dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
     }
+
 }
