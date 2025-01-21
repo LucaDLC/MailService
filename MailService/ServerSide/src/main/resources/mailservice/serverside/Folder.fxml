@@ -33,7 +33,7 @@
                             </cursor>
                         </Button>
                         <!-- Bottone di Eliminazione Cartella -->
-                        <Button fx:id="DeleteFolderButton" onMouseClicked="#onDeleteFolderButtonClick" prefHeight="50" prefWidth="129.0" text="Delete" textFill="#853825">
+                        <Button fx:id="DeleteFolderButton" minWidth="96.0" onMouseClicked="#onDeleteFolderButtonClick" prefHeight="50" prefWidth="96.0" text="Delete" textFill="#853825">
                             <font>
                                 <Font size="16.0" />
                             </font>
