@@ -322,51 +322,43 @@ public class ServerModel {
         if(username == null || username.isEmpty()) {
             return false;
         }
-
-        if(FolderCreation){
-            return createUserFolder(username);
-        }
-        else {
-            return deleteUserFolder(username);
+        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
+            if (FolderCreation) {
+                return createUserFolder(username);
+            } else {
+                return deleteUserFolder(username);
+            }
+        }else{
+            return false;
         }
     }
 
 
     private static synchronized boolean createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
-        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
-            File folder = new File(baseDirectory, username);
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-            return true;
+        File folder = new File(baseDirectory, username);
+        if (!folder.exists()) {
+            return folder.mkdirs();
         }
-        else {
-            return false;
-        }
+        return true;
     }
 
 
     private static synchronized boolean deleteUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
-        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
-            File folder = new File(baseDirectory, username);
-            if (folder.exists()) {
-                for (File file : folder.listFiles()) {
-                    if (file.isDirectory()) {
-                        for (File nestedFile : file.listFiles()) {
-                            nestedFile.delete();
-                        }
+        File folder = new File(baseDirectory, username);
+        if (folder.exists()) {
+            for (File file : folder.listFiles()) {
+                if (file.isDirectory()) {
+                    for (File nestedFile : file.listFiles()) {
+                        nestedFile.delete();
                     }
-                    file.delete();
                 }
-                return folder.delete();
+                file.delete();
             }
-            return false;
+            return folder.delete();
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
 
