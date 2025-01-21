@@ -178,6 +178,7 @@ public class ServerModel {
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
             String line;
             String sender = "", subject = "", text = "", date = "";
+            boolean isToRead = false;
             List<String> receivers = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("Sender:")) {
@@ -190,10 +191,16 @@ public class ServerModel {
                     text = line.substring(5);
                 }  else if (line.startsWith("Date:")) {
                     date = line.substring(5);
+                } else if (line.startsWith("ToRead:")) {
+                    isToRead = Boolean.parseBoolean(line.substring(8));
                 }
 
             }
-            return new Email(sender, receivers, subject, text, date);
+            Email email = new Email(sender, receivers, subject, text, date);
+            if (isToRead) {
+                email.setToRead(true);
+            }
+            return email; //new Email(sender, receivers, subject, text, date);
         } catch (IOException e) {
             controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
             return null;
