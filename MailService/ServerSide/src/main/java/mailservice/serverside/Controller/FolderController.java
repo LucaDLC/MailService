@@ -21,13 +21,26 @@ public class FolderController {
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
     @FXML
     private TextFlow successAlert; //serve a visualizzare un messaggio di successo
+    @FXML
+    private Button DeleteFolderButton; //serve a eliminare la cartella
 
     @FXML
     protected void onFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
 
         if(ServerModel.createUserFolder(folder)){
-            showSuccessAlert();
+            showSuccessAlert("Folder created successfully");
+        } else {
+            showDangerAlert("Folder name is not valid");
+        }
+    }
+
+    @FXML
+    protected void onDeleteFolderButtonClick() {
+        String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
+
+        if(ServerModel.deleteUserFolder(folder)){
+            showSuccessAlert("Folder deleted successfully");
         } else {
             showDangerAlert("Folder name is not valid");
         }
@@ -45,10 +58,10 @@ public class FolderController {
     }
 
     @FXML
-    private void showSuccessAlert() {
+    private void showSuccessAlert(String message) {
         dangerAlert.setVisible(false); //nascondo il messaggio di errore
         getSuccessAlert();
-        Text successText = new Text("Folder creation successful");
+        Text successText = new Text(message);
         successText.setFill(Color.GREEN);
         successAlert.getChildren().add(successText);
         successAlert.setVisible(true);

@@ -307,6 +307,28 @@ public class ServerModel {
         }
     }
 
+    public static synchronized boolean deleteUserFolder(String username) {
+        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
+        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
+            File folder = new File(baseDirectory, username);
+            if (folder.exists()) {
+                for (File file : folder.listFiles()) {
+                    if (file.isDirectory()) {
+                        for (File nestedFile : file.listFiles()) {
+                            nestedFile.delete();
+                        }
+                    }
+                    file.delete();
+                }
+                return folder.delete();
+            }
+            return false;
+        }
+        else {
+            return false;
+        }
+    }
+
     private File checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File userFolder = new File(baseDirectory, userEmail);

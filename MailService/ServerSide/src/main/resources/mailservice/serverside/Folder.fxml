@@ -34,7 +34,7 @@
                           <Cursor fx:constant="HAND" />
                       </cursor>
                   </Button>
-               <Button fx:id="DeleteButton" layoutX="10.0" layoutY="10.0" onMouseClicked="#onDeleteButtonClick" prefHeight="50" prefWidth="129.0" text="Delete" textFill="#853825">
+               <Button fx:id="DeleteFolderButton" layoutX="10.0" layoutY="10.0" onMouseClicked="#onDeleteFolderButtonClick" prefHeight="50" prefWidth="129.0" text="Delete" textFill="#853825">
                   <font>
                      <Font size="16.0" />
                   </font>
