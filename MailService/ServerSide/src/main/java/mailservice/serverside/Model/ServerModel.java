@@ -200,7 +200,7 @@ public class ServerModel {
         }
     }
 
-    private void saveEmailToFile(Email email) {
+    private synchronized void saveEmailToFile(Email email) {
         for (String recipientSplit : email.getReceivers()) {
             String trimmedRecipient = recipientSplit.trim();
             if (checkFolderName(trimmedRecipient) == null) {
@@ -210,24 +210,13 @@ public class ServerModel {
                 String emailFileName = "email_" + email.getId() + ".txt";
                 File emailFile = new File(checkFolderName(trimmedRecipient), emailFileName);
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
-                    writer.write(emailToString(email));
+                    writer.write(email.toString());
                     controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                 } catch (IOException e) {
                     controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
                 }
             }
         }
-    }
-
-
-    private String emailToString(Email email) {
-        return "ID:" + email.getId() + "\n" +
-                "Sender:" + email.getSender() + "\n" +
-                "Receivers:" + String.join(",", email.getReceivers()) + "\n" +
-                "Subject:" + email.getSubject() + "\n" +
-                "Text:" + email.getText() + "\n" +
-                "Date:" + email.getDate() + "\n" +
-                "IsToRead:" + email.isToRead() + "\n";
     }
 
     private void handleLoginCheck(String email, ObjectOutputStream out) throws IOException {
@@ -281,7 +270,7 @@ public class ServerModel {
         }
     }*/
 
-    private synchronized File checkFolderName(String userEmail) {
+    private File checkFolderName(String userEmail) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File userFolder = new File(baseDirectory, userEmail);
         if(userFolder.exists() && userFolder.isDirectory()){

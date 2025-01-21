@@ -94,9 +94,13 @@ public class Email implements Serializable {
 
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        String formattedDate = (date != null) ? dateFormat.format(date) : "No Date";
-        return sender + " - " + subject + " (" + formattedDate + ")";
+        return "ID:" + getId() + "\n" +
+                "Sender:" + getSender() + "\n" +
+                "Receivers:" + String.join(",", getReceivers()) + "\n" +
+                "Subject:" + getSubject() + "\n" +
+                "Text:" + getText() + "\n" +
+                "Date:" + getDate() + "\n" +
+                "IsToRead:" + isToRead() + "\n";
     }
 
 
