@@ -18,7 +18,6 @@ import mailservice.shared.*;
 import mailservice.shared.enums.*;
 
 import static mailservice.shared.enums.CommandResponse.*;
-import static mailservice.shared.enums.CommandRequest.*;
 
 public class ServerModel {
     private final int port;
@@ -47,6 +46,7 @@ public class ServerModel {
         }
         running = true;
         serverThreads = Executors.newFixedThreadPool(threadsNumber);
+        cleanInvalidDirectories();
 
         new Thread(() -> {
             try {
@@ -221,6 +221,27 @@ public class ServerModel {
                     controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                 } catch (IOException e) {
                     controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void cleanInvalidDirectories() {
+        String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
+        File baseDir = new File(baseDirectory);
+        if (baseDir.exists() && baseDir.isDirectory()) {
+            for (File file : baseDir.listFiles()) {
+                if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")) {
+                    for (File subFile : file.listFiles()) {
+                        if (subFile.isDirectory()) {
+                            for (File nestedFile : subFile.listFiles()) {
+                                nestedFile.delete();
+                            }
+                        }
+                        subFile.delete();
+                    }
+                    file.delete();
+                    controller.log(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
                 }
             }
         }
