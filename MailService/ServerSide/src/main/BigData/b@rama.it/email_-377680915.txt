@@ -1,7 +1,0 @@
-ID:-377680915
-Sender:b@rama.it
-Receivers:a@rama.it,b@rama.it
-Subject:a
-Text:<html dir="ltr"><head></head><body contenteditable="true"><p><span style="font-family: &quot;&quot;;">a</span></p></body></html>
-Date:21/01/2025 17:35:45
-IsToRead:true
