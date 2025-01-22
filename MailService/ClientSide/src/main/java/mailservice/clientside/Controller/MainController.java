@@ -173,7 +173,7 @@ public class MainController {
             return;
         }
         System.out.println("[INFO] Forwarding Mail.");
-        showComposeWindow("", "Fwd: " + selectedEmail.getSubject(), "Forwarded message:\n\n" + selectedEmail.getText());
+        showComposeWindow("", "Fwd: " + selectedEmail.getSubject(), "Forwarded message: " + selectedEmail.getText());
     }
 
     @FXML
@@ -186,7 +186,7 @@ public class MainController {
             return;
         }
         System.out.println("[INFO] Replying Mail.");
-        showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "\n\n\n " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
+        showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
 
     @FXML
@@ -201,7 +201,7 @@ public class MainController {
         System.out.println("[INFO] Replying All Mail.");
 
         String allRecipients = String.join(", ", selectedEmail.getReceivers());
-        showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "\n\nOn " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " wrote:\n" + selectedEmail.getText());
+        showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
     private void showComposeWindow(String recipients, String subject, String body) {
         try {
