@@ -14,6 +14,7 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import mailservice.clientside.ClientApp;
 import mailservice.shared.Email;
 import mailservice.clientside.Model.ClientModel;
 
@@ -86,7 +87,7 @@ public class MainController {
             }
         });
 
-        clientModel.startPeriodicFetch();
+        ClientApp.startPeriodicFetch();
     }
 
 

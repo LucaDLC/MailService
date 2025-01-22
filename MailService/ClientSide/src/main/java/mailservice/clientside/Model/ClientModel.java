@@ -10,9 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -38,8 +36,7 @@ public class ClientModel {
     private ObjectInputStream in;
     private static final int SOCKET_TIMEOUT = 8000; // Timeout di 8 secondi
 
-    private static final int threadsNumber = 2;
-    private ScheduledExecutorService operationPool;
+
     private ObservableList<Email> emailList;
     private static ClientModel instance;
 
@@ -52,7 +49,6 @@ public class ClientModel {
             serverHost = configManager.readProperty("Client.ServerHost");
             serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
-            operationPool = Executors.newScheduledThreadPool(threadsNumber);
             emailList = FXCollections.observableArrayList();
         } catch (IllegalArgumentException e){
             System.err.println("[ERROR] Error in user.properties file");
@@ -73,6 +69,10 @@ public class ClientModel {
         return userLogged;
     }
 
+    public int getFetchPeriod() {
+        return fetchPeriod;
+    }
+
     public ObservableList<Email> getEmailList() {
         return emailList;
     }
@@ -80,21 +80,7 @@ public class ClientModel {
 
     public void logout() {
         userLogged = null;
-        if (operationPool != null) {
-            operationPool.shutdown();
-            try {
-                if (!operationPool.awaitTermination(5, TimeUnit.SECONDS)) {
-                    System.err.println("[ERROR] Forcefully shutting down operation pool...");
-                    operationPool.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                System.err.println("[ERROR] Interrupted during pool termination.");
-                operationPool.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-        disconnectFromServer();
-        System.out.println("[INFO] Client Process Terminated.");
+        instance = null;
     }
 
 
@@ -259,7 +245,7 @@ public class ClientModel {
     }
 
 
-    private void fetchEmails(boolean fullForceFetch) {
+    public void fetchEmails(boolean fullForceFetch) {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
         try {
             if (!connectToServer()) {
@@ -319,10 +305,6 @@ public class ClientModel {
 
     }
 
-    public void startPeriodicFetch() {
-        fetchEmails(true);
-        operationPool.scheduleAtFixedRate(() -> fetchEmails(false), 5, fetchPeriod, TimeUnit.SECONDS);
-    }
 
 }
 

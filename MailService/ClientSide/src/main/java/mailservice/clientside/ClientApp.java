@@ -7,8 +7,13 @@ import javafx.stage.Stage;
 import mailservice.clientside.Model.ClientModel;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ClientApp extends Application {
+    private static ScheduledExecutorService operationPool;
+    private static final int threadsNumber = 2;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -24,10 +29,30 @@ public class ClientApp extends Application {
     @Override
     public void stop() {
         System.out.println("[INFO] Application is stopping...");
-        ClientModel.getInstance().logout();
+        if (operationPool != null) {
+            operationPool.shutdown();
+            try {
+                if (!operationPool.awaitTermination(5, TimeUnit.SECONDS)) {
+                    System.err.println("[ERROR] Forcefully shutting down operation pool...");
+                    operationPool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                System.err.println("[ERROR] Interrupted during pool termination.");
+                operationPool.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+
+    }
+
+    public static void startPeriodicFetch() {
+        ClientModel client = ClientModel.getInstance();
+        client.fetchEmails(true);
+        operationPool.scheduleAtFixedRate(() -> client.fetchEmails(false), 5, client.getFetchPeriod(), TimeUnit.SECONDS);
     }
 
     public static void main(String[] args) {
+        operationPool = Executors.newScheduledThreadPool(threadsNumber);
         launch(args);
     }
 }
