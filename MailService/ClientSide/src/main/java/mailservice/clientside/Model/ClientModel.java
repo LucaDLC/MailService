@@ -5,7 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -305,6 +308,17 @@ public class ClientModel {
                 emailList.addAll(finalEmails); // Aggiorna la lista osservabile
             });
         }
+
+        Platform.runLater(() -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+            // Ordinamento in ordine decrescente
+            Comparator<Email> comparator = Comparator.comparing(
+                    (Email email) -> LocalDateTime.parse(email.getDate(), formatter)
+            ).reversed();
+
+            FXCollections.sort(emailList, comparator);
+        });
 
     }
 
