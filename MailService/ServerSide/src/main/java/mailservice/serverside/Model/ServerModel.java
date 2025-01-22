@@ -154,7 +154,20 @@ public class ServerModel {
             } else {
                 sendMail(out, SUCCESS, emails);
                 emails.forEach(email -> email.setToRead(true));
-                emails.forEach(this::saveEmailToFile);
+                emails.forEach(email -> {
+                    if (checkFolderName(userEmail) == null) {
+                        controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
+                    } else {
+                        String emailFileName = "email_" + email.getId() + ".txt";
+                        File emailFile = new File(checkFolderName(userEmail), emailFileName);
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+                            writer.write(email.toString());
+                            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                        } catch (IOException e) {
+                            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                        }
+                    }
+                });
             }
             controller.log(LogType.INFO, "Fetched all Mail: ");
         }
@@ -166,7 +179,20 @@ public class ServerModel {
             } else {
                 sendMail(out, SUCCESS, emails);
                 emails.forEach(email -> email.setToRead(true));
-                emails.forEach(this::saveEmailToFile);
+                emails.forEach(email -> {
+                    if (checkFolderName(userEmail) == null) {
+                        controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
+                    } else {
+                        String emailFileName = "email_" + email.getId() + ".txt";
+                        File emailFile = new File(checkFolderName(userEmail), emailFileName);
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+                            writer.write(email.toString());
+                            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                        } catch (IOException e) {
+                            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                        }
+                    }
+                });
             }
             controller.log(LogType.INFO, "Fetched new Mail: ");
         }
@@ -244,7 +270,6 @@ public class ServerModel {
             }
         }
     }
-
 
     private void cleanInvalidDirectories() {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
