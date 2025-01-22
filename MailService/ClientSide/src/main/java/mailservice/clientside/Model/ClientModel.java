@@ -90,11 +90,11 @@ public class ClientModel {
             } catch (InterruptedException e) {
                 System.err.println("[ERROR] Interrupted during pool termination.");
                 operationPool.shutdownNow();
-                //Thread.currentThread().interrupt();
+                Thread.currentThread().interrupt();
             }
         }
-        //disconnectFromServer();
-        System.out.println("[INFO] Client Process Terminated Successfully.");
+        disconnectFromServer();
+        System.out.println("[INFO] Client Process Terminated.");
     }
 
 
@@ -237,7 +237,7 @@ public class ClientModel {
             System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
             out.flush();
-            Thread.sleep(250);
+            //Thread.sleep(250);
             CommandResponse response = receiveMessage();
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
@@ -277,9 +277,7 @@ public class ClientModel {
                 out.writeObject(request);
             }
             out.flush();
-
-            Thread.sleep(250);
-
+            //Thread.sleep(250);
             Response response = (Response) in.readObject(); // Expecting a Response object
             if (response != null && response.responseName() == CommandResponse.SUCCESS) {
                 emails = response.args();  // Accessing the list directly
@@ -291,8 +289,6 @@ public class ClientModel {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("[ERROR] Error fetching emails: " + e.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         } finally {
             disconnectFromServer();
         }
