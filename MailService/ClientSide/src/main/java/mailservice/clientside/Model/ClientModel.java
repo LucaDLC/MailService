@@ -90,9 +90,10 @@ public class ClientModel {
             } catch (InterruptedException e) {
                 System.err.println("[ERROR] Interrupted during pool termination.");
                 operationPool.shutdownNow();
+                //Thread.currentThread().interrupt();
             }
         }
-        disconnectFromServer();
+        //disconnectFromServer();
         System.out.println("[INFO] Client Process Terminated Successfully.");
     }
 
