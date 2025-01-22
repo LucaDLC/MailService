@@ -27,10 +27,6 @@
          <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
             <Button fx:id="ComposeButton" onAction="#onComposeButtonClick" prefHeight="40.0" prefWidth="150.0" styleClass="button-primary" text="Compose" />
             <ListView fx:id="MailList" layoutX="50" layoutY="50" />
-            <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
-               <Button fx:id="ForwardButton" alignment="CENTER" onAction="#onForwardButtonClick" prefWidth="100.0" styleClass="button-primary" text="Forward" />
-               <Button fx:id="DeleteButton" alignment="CENTER" onAction="#onDeleteButtonClick" prefHeight="40.0" prefWidth="100.0" styleClass="button-danger" text="Delete" />
-            </HBox>
          </VBox>
          <!-- Destra -->
          <VBox alignment="BOTTOM_CENTER" prefHeight="413.0" prefWidth="543.0" spacing="10.0" style="-fx-padding: 10px;">
@@ -55,12 +51,13 @@
                </rowConstraints>
             </GridPane>
             <WebView fx:id="MailContent" prefHeight="303.0" prefWidth="469.0" />
-            <MenuButton fx:id="Reply" prefHeight="38.0" prefWidth="100.0" styleClass="button-primary" text="..." textAlignment="CENTER" textFill="WHITE">
-               <items>
-                  <MenuItem onAction="#onReplyButtonClick" text="Reply" />
-                  <MenuItem onAction="#onReplyAllButtonAction" text="Reply All" />
-               </items>
-            </MenuButton>
+            <HBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
+               <Button fx:id="ForwardButton" alignment="CENTER" onAction="#onForwardButtonClick" prefHeight="47.0" prefWidth="108.0" styleClass="button-primary" text="Forward" />
+               <Button fx:id="ReplyButton" alignment="CENTER" onAction="#onReplyButtonClick" prefHeight="47.0" prefWidth="108.0" styleClass="button-primary" text="Reply" />
+               <Button fx:id="ReplyAllButton" alignment="CENTER" onAction="#onReplyAllButtonAction" prefHeight="47.0" prefWidth="108.0" styleClass="button-primary" text="Reply All" />
+               <Button fx:id="DeleteButton" alignment="CENTER" onAction="#onDeleteButtonClick" prefHeight="46.0" prefWidth="109.0" styleClass="button-danger" text="Delete" />
+
+            </HBox>
          </VBox>
       </SplitPane>
    </center>

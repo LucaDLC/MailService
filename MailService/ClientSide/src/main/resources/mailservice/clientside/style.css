@@ -19,6 +19,17 @@
     -fx-border-radius: 5px;
     -fx-min-width: 100px; /* Imposta una larghezza minima per evitare il taglio del testo */
 }
+
+.menu-button{
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px; /* Aumenta il padding per più spazio interno */
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-min-width: 100px; /* Imposta una larghezza minima per evitare il taglio del testo */
+}
+
 .button:hover {
     -fx-background-color: #005A99;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
@@ -206,5 +217,6 @@
 .button:hover {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 1);
 }
+
 
 /* ======================================== */

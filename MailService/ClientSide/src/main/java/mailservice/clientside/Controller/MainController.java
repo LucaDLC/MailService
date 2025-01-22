@@ -47,7 +47,9 @@ public class MainController {
     @FXML
     public Button DeleteButton;
     @FXML
-    public MenuButton Reply;
+    public Button ReplyButton;
+    @FXML
+    public Button ReplyAllButton;
 
     private ClientModel clientModel = null;
 
