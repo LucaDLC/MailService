@@ -69,18 +69,14 @@ public class ClientModel {
         return userLogged;
     }
 
+
     public int getFetchPeriod() {
         return fetchPeriod;
     }
 
+
     public ObservableList<Email> getEmailList() {
         return emailList;
-    }
-
-
-    public void logout() {
-        userLogged = null;
-        instance = null;
     }
 
 
@@ -162,6 +158,7 @@ public class ClientModel {
         boolean result = sendCMD(LOGIN_CHECK, null);
         if(!result){
             instance = null;
+            userLogged = null;
         }
         return result;
     }
