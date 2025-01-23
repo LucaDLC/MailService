@@ -200,14 +200,11 @@ public class ClientModel {
             return false;
         }
 
-        List<String> trimmedReceivers = new ArrayList<>();
         for (String recipientSplit : receivers) {
-            String trimmedRecipient = recipientSplit.trim();
-            if (!ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
-                System.err.println("[ERROR] Invalid email insert during Compose phase: " + trimmedRecipient);
+            if (!ConfigManager.getInstance().validateEmail(recipientSplit)) {
+                System.err.println("[ERROR] Invalid email: " + recipientSplit);
                 return false;
             }
-            trimmedReceivers.add(trimmedRecipient);
         }
 
         if (!connectToServer()) {
@@ -215,7 +212,7 @@ public class ClientModel {
             return false;
         }
         try {
-            Email emailData = new Email(userLogged, trimmedReceivers, subject, content);
+            Email emailData = new Email(userLogged, receivers, subject, content);
             Request request = new Request(userLogged, SEND_EMAIL, emailData);
             System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
@@ -225,11 +222,10 @@ public class ClientModel {
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
                 System.out.println("[INFO] Mail sent successfully: " + response);
                 return true;
-            } else if(response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
+            } else if (response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
                 System.err.println("[ERROR] Receivers does not exist in the server " + response);
                 return false;
-            }
-            else {
+            } else {
                 System.err.println("[ERROR] Response is NULL or not SUCCESS: " + response);
                 return false;
             }
@@ -240,6 +236,7 @@ public class ClientModel {
             disconnectFromServer();
         }
     }
+
 
 
     public void fetchEmails(boolean fullForceFetch) {

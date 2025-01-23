@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,12 +42,13 @@ public class ComposeController{
         }
 
         List<String> recipients = Arrays.asList(recipient.split(","));
-
+        List<String> trimmedReceivers = new ArrayList<>();
         for (String recipientSplit : recipients) {
             // Rimuove gli spazi bianchi e valida l'email
-            String trimmedRecipient = recipientSplit.trim();
+            String trimmedRecipient = recipientSplit.trim().toLowerCase();
             if (ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
                 System.out.println("[INFO] Valid email: " + trimmedRecipient);
+                trimmedReceivers.add(trimmedRecipient);
             } else {
                 System.err.println("[ERROR] Invalid email: " + trimmedRecipient);
                 showDangerAlert("Invalid email: " + trimmedRecipient);
@@ -58,7 +60,7 @@ public class ComposeController{
             @Override
             protected Boolean call() {
                 ClientModel clientModel = ClientModel.getInstance();
-                return clientModel.sendEmail(recipients, subject, mailBody);
+                return clientModel.sendEmail(trimmedReceivers, subject, mailBody);
             }
         };
 
