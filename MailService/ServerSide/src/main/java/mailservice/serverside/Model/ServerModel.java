@@ -1,7 +1,6 @@
 package mailservice.serverside.Model;
 
 import mailservice.serverside.Configuration.*;
-import mailservice.serverside.Controller.FolderController;
 import mailservice.serverside.Controller.ServerController;
 import mailservice.serverside.Log.LogType;
 
@@ -65,14 +64,21 @@ public class ServerModel {
                 controller.log(LogType.INFO, "Server started on port " + port);
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
+                    clientSocket.setSoTimeout(timeout);
                     controller.log(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
                     serverThreads.submit(() -> handleClient(clientSocket));
+
                 }
             } catch (BindException e) {
                 controller.showErrorAlert("Port " + port + " is already in use.");
             } catch (IOException e) {
                 controller.log(LogType.ERROR, "Server error: " + e.getMessage());
             } finally {
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 stopServer();
             }
         }).start();
@@ -121,7 +127,7 @@ public class ServerModel {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            controller.log(LogType.ERROR, "Client disconnected or IO error: " + e.getMessage());
+            controller.log(LogType.INFO, "Client disconnected: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
