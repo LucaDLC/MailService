@@ -34,7 +34,7 @@ public class ClientModel {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private static final int SOCKET_TIMEOUT = 8000; // Timeout di 8 secondi
+    private static final int SOCKET_TIMEOUT = 3000; // Timeout di 3 secondi
 
 
     private ObservableList<Email> emailList;
@@ -93,7 +93,7 @@ public class ClientModel {
             }
             else {
                 System.out.println("[INFO] Already connected to server.");
-                return true;
+                return false;
             }
 
         } catch (IOException e) {
@@ -158,7 +158,6 @@ public class ClientModel {
         boolean result = sendCMD(LOGIN_CHECK, null);
         if(!result){
             instance = null;
-            userLogged = null;
         }
         return result;
     }
@@ -211,9 +210,9 @@ public class ClientModel {
             System.err.println("[ERROR] Unable to connect to server.");
             return false;
         }
+        Email emailData = new Email(userLogged, receivers, subject, content);
+        Request request = new Request(userLogged, SEND_EMAIL, emailData);
         try {
-            Email emailData = new Email(userLogged, receivers, subject, content);
-            Request request = new Request(userLogged, SEND_EMAIL, emailData);
             System.out.println("[DEBUG] Raw client request: " + request);
             out.writeObject(request);
             out.flush();
