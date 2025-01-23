@@ -29,6 +29,7 @@ public class LoginController {
     @FXML
     private TextFlow successAlert; //serve a visualizzare un messaggio di successo
 
+
     @FXML
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
@@ -71,10 +72,12 @@ public class LoginController {
         }
     }
 
+
     @FXML
     protected void onLoginButtonAction() {
         System.out.println("Attempting Login...");
     }
+
 
     @FXML
     private void showDangerAlert(String message) {
@@ -87,6 +90,7 @@ public class LoginController {
         hideAlerts();
     }
 
+
     @FXML
     private void showSuccessAlert() {
         dangerAlert.setVisible(false); //nascondo il messaggio di errore
@@ -97,6 +101,7 @@ public class LoginController {
         successAlert.setVisible(true);
         hideAlerts();
     }
+
 
     @FXML
     private void hideAlerts() {
@@ -109,9 +114,11 @@ public class LoginController {
         pause.play();
     }
 
+
     public void getSuccessAlert() {
         successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
     }
+
 
     public void getDangerAlert() {
         dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio

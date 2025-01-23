@@ -15,6 +15,7 @@ public class ClientApp extends Application {
     private static ScheduledExecutorService operationPool;
     private static final int threadsNumber = 2;
 
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Login.fxml"));
@@ -25,6 +26,7 @@ public class ClientApp extends Application {
 
         stage.setOnCloseRequest(event -> stop());
     }
+
 
     @Override
     public void stop() {
@@ -45,11 +47,13 @@ public class ClientApp extends Application {
 
     }
 
+
     public static void startPeriodicFetch() {
         ClientModel client = ClientModel.getInstance();
         client.fetchEmails(true);
         operationPool.scheduleAtFixedRate(() -> client.fetchEmails(false), 5, client.getFetchPeriod(), TimeUnit.SECONDS);
     }
+
 
     public static void main(String[] args) {
         operationPool = Executors.newScheduledThreadPool(threadsNumber);

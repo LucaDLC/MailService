@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -100,7 +99,6 @@ public class ClientModel {
             System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
             return false;
         }
-
 
     }
 
@@ -237,7 +235,6 @@ public class ClientModel {
     }
 
 
-
     public void fetchEmails(boolean fullForceFetch) {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
         try {
@@ -297,7 +294,6 @@ public class ClientModel {
         });
 
     }
-
 
 }
 

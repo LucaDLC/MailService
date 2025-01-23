@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class ServerApp extends Application {
 
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(mailservice.serverside.ServerApp.class.getResource("ServerLog.fxml"));
@@ -25,13 +26,16 @@ public class ServerApp extends Application {
 
     }
 
+
     @Override
     public void stop(){
         Platform.exit();
         System.exit(0);
     }
 
+
     public static void main(String[] args) {
         launch();
     }
+
 }

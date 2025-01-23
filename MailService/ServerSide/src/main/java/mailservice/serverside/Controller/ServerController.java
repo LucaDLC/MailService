@@ -32,6 +32,7 @@ public class ServerController {
     private ServerModel serverModel;
     private boolean isServerRunning = false; //stato per monitorare se il server è avviato
 
+
     @FXML
     public void initialize() {
         // Inizializza i pulsanti e l'interfaccia
@@ -45,7 +46,7 @@ public class ServerController {
         }
     }
 
-    //metodo per avviare il server
+
     @FXML
     public void startServer() {
         if (isServerRunning) {  // controllo se il server è già avviato
@@ -64,12 +65,14 @@ public class ServerController {
         //aggiungiamo un messaggio di log per segnalare che il server è stato avviato
         log(LogType.INFO,"Server started on port " + serverModel.getPort());
     }
+
+
     @FXML
     public void onStart() {
         startServer();
     }
 
-    //metodo per fermare il server
+
     @FXML
     public void stopServer() {
         if(serverModel != null && isServerRunning) {
@@ -88,10 +91,13 @@ public class ServerController {
             log(LogType.ERROR,"Server is not running");
         }
     }
+
+
     @FXML
     public void onStop() {
         stopServer();
     }
+
 
     @FXML
     public void onServerCreateFolder() throws IOException {
@@ -106,7 +112,7 @@ public class ServerController {
         mainStage.show();
     }
 
-    //metodo per aggiungere un messaggio al log del server
+
     public void log(LogType type, String message) {
         Platform.runLater(() -> {
             String formattedMessage = String.format("[%s] %s", type.name(), message);
@@ -115,7 +121,7 @@ public class ServerController {
         });
     }
 
-    //metodo per mostrare un alert in caso di errore
+
     public void showErrorAlert(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.ERROR);

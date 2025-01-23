@@ -50,8 +50,8 @@ public class MainController {
     public Button ReplyButton;
     @FXML
     public Button ReplyAllButton;
-
     private ClientModel clientModel = null;
+
 
     @FXML
     public void initialize() {
@@ -105,8 +105,7 @@ public class MainController {
         }
     }
 
-    //implementazione delle azioni da eseguire quando si preme il bottone
-    //metodo che viene chiamato quando si preme il bottone
+
     @FXML
     protected void onComposeButtonClick() {
         System.out.println("[INFO] Composing Mail.");
@@ -126,6 +125,7 @@ public class MainController {
             }
         });
     }
+
 
     @FXML
     protected void onDeleteButtonClick() {
@@ -166,6 +166,7 @@ public class MainController {
         });
     }
 
+
     @FXML
     protected void onForwardButtonClick() {
         Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
@@ -179,6 +180,7 @@ public class MainController {
         showComposeWindow("", "Fwd: " + selectedEmail.getSubject(), "Forwarded message: " + selectedEmail.getText());
     }
 
+
     @FXML
     protected void onReplyButtonClick() {
         Email selectedEmail = MailList.getSelectionModel().getSelectedItem();
@@ -191,6 +193,7 @@ public class MainController {
         System.out.println("[INFO] Replying Mail.");
         showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
+
 
     @FXML
     protected void onReplyAllButtonAction() {
@@ -206,6 +209,8 @@ public class MainController {
         String allRecipients = String.join(", ", selectedEmail.getReceivers());
         showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
+
+
     private void showComposeWindow(String recipients, String subject, String body) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
@@ -225,6 +230,8 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+
     @FXML
     private void showDangerAlert(String message) {
         if (dangerAlert != null) {
@@ -237,6 +244,7 @@ public class MainController {
             hideAlerts(); // Nascondi gli alert dopo 3 secondi
         }
     }
+
 
     @FXML
     private void showSuccessAlert(String message) {
@@ -251,6 +259,7 @@ public class MainController {
             hideAlerts(); // Nascondi gli alert dopo 3 secondi
         }
     }
+
 
     @FXML
     private void hideAlerts() {

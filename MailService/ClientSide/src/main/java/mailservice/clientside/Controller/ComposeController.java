@@ -30,6 +30,7 @@ public class ComposeController{
     @FXML
     private HTMLEditor MailBodyID; //serve a visualizzare e scrivere il corpo dell'email
 
+
     @FXML
     protected void onSendMailButtonClick() {
         String recipient = RecipientFieldID.getText().trim();
@@ -81,6 +82,7 @@ public class ComposeController{
         new Thread(sendEmailTask).start(); // Esegue il task in un thread separato
     }
 
+
     private void showDangerAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);  // Tipo di alert per errore
         alert.setTitle("Error");
@@ -96,6 +98,7 @@ public class ComposeController{
         //aggiungo il messaggio di errore al campo dangerAlert
     }
 
+
     private void showSuccessAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);  // Tipo di alert per successo
         alert.setTitle("Success");
@@ -110,6 +113,7 @@ public class ComposeController{
         alert.showAndWait();  // Mostra l'alert e aspetta che l'utente lo chiuda
         //aggiungo il messaggio di successo al campo successAlert
     }
+
 
     @FXML
     //metodo che viene chiamato quando si preme il bottone
@@ -132,17 +136,20 @@ public class ComposeController{
         }
     }
 
+
     public void setObjectFieldID(String obj) {
         if(ObjectFieldID != null) {
             ObjectFieldID.setText(obj);
         }
     }
 
+
     public void setRecipientFieldID(String obj) {
         if(RecipientFieldID != null) {
             RecipientFieldID.setText(obj);
         }
     }
+
 
     public void setMailBody(String body) {
         if(MailBodyID != null) {

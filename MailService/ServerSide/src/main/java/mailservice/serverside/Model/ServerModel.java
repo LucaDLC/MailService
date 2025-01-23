@@ -32,6 +32,7 @@ public class ServerModel {
     private ServerController controller;
     private static ServerModel instance;
 
+
     private ServerModel(ServerController serverController) {
         ConfigManager configManager = ConfigManager.getInstance();
         this.controller = serverController;
@@ -277,6 +278,7 @@ public class ServerModel {
         }
     }
 
+
     private void cleanInvalidDirectories() {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File baseDir = new File(baseDirectory);
@@ -359,7 +361,7 @@ public class ServerModel {
             } else {
                 return deleteUserFolder(username);
             }
-        }else{
+        } else {
             return false;
         }
     }

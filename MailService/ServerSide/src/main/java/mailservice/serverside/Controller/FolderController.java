@@ -24,6 +24,7 @@ public class FolderController {
     @FXML
     private Button DeleteFolderButton; //serve a eliminare la cartella
 
+
     @FXML
     protected void onFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
@@ -34,6 +35,7 @@ public class FolderController {
         }
     }
 
+
     @FXML
     protected void onDeleteFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
@@ -43,6 +45,7 @@ public class FolderController {
             showDangerAlert("Folder name is not valid");
         }
     }
+
 
     @FXML
     private void showDangerAlert(String message) {
@@ -55,6 +58,7 @@ public class FolderController {
         hideAlerts();
     }
 
+
     @FXML
     private void showSuccessAlert(String message) {
         dangerAlert.setVisible(false); //nascondo il messaggio di errore
@@ -65,6 +69,7 @@ public class FolderController {
         successAlert.setVisible(true);
         hideAlerts();
     }
+
 
     @FXML
     private void hideAlerts() {
@@ -77,9 +82,11 @@ public class FolderController {
         pause.play();
     }
 
+
     public void getSuccessAlert() {
         successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
     }
+
 
     public void getDangerAlert() {
         dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio

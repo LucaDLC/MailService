@@ -10,6 +10,7 @@ public class ConfigManager {
 
     private static ConfigManager instance;
 
+
     private ConfigManager() {
         prop = new Properties();    //inizializzo le proprietà
 
@@ -28,6 +29,7 @@ public class ConfigManager {
         }
     }
 
+
     public static ConfigManager getInstance(){
         if(instance ==null )
             instance = new ConfigManager();
@@ -35,9 +37,11 @@ public class ConfigManager {
         return instance;
     }   //restituisce un'unica istanza del ConfigManager, questo metodo è ciò che permette di usare il Singleton Pattern
 
+
     public String readProperty (String propName){
         return prop.getProperty(propName);
     }   //restituisce la proprietà richiesta
+
 
     public synchronized void setProperty (String propName, String propValue){
         try{
@@ -56,10 +60,12 @@ public class ConfigManager {
         }
     }
 
+
     private File getDir() {
         String url = new File("").getAbsolutePath() + File.separator + "ClientSide" + File.separator + "src" + File.separator + "main" + File.separator + "User.properties"; //ottengo il percorso del file
         return new File(url);   //restituisco il persorso del file di configurazione
     }
+
 
     public boolean validateEmail(String email) {
         return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());

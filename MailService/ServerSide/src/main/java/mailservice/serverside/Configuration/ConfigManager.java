@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 public class ConfigManager {
     private final Properties prop;
+    private static ConfigManager instance;
+
 
     private ConfigManager() {
         prop = new Properties();
@@ -27,7 +29,7 @@ public class ConfigManager {
         }
     }
 
-    private static ConfigManager instance;
+
     public static ConfigManager getInstance(){
         if(instance == null){
             instance = new ConfigManager();
@@ -35,14 +37,17 @@ public class ConfigManager {
         return instance;
     }
 
+
     public String readProperty (String propName){
         return prop.getProperty(propName);
     }
+
 
     private File getDir() {
         String uri = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "Server.properties";
         return new File(uri);
     }
+
 
     public boolean validateEmail(String email) {
         return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
