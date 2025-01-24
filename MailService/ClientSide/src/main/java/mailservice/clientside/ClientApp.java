@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientApp extends Application {
     private static ScheduledExecutorService operationPool;
-    private static final int threadsNumber = 1;
+    private static final int threadsNumber = 2;
 
 
     @Override
