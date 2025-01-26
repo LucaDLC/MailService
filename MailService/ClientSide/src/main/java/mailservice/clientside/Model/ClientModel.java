@@ -14,7 +14,6 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.*;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
@@ -80,7 +79,6 @@ public class ClientModel {
 
 
     public void logout () {
-        ClientApp.stopPeriodicFetch();
         disconnectFromServer();
         userLogged = null;
         instance = null;
@@ -168,9 +166,6 @@ public class ClientModel {
         if(!result){
             userLogged = null;
             instance = null;
-        }
-        else {
-            ClientApp.startPeriodicFetch();
         }
         return result;
     }

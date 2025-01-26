@@ -216,8 +216,26 @@ public class MainController {
 
     @FXML
     protected void onLogoutButtonClick() {
-        System.out.println("[INFO] Logging out...");
+        ClientApp.stopPeriodicFetch();
+        clientModel.logout ();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Login.fxml"));
+            Parent loginView = loader.load(); //carico il file FXML
+            Scene loginScene = new Scene(loginView); //creo una nuova scena
+            Stage loginStage = new Stage(); //creo una nuova finestra
 
+            loginStage.setScene(loginScene); //imposto la scena nella finestra
+            loginStage.setTitle("ClientSide - Login");
+            loginStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+            loginStage.show();
+
+            //chiudo la finestra del main
+            Stage stage = (Stage) LogoutButton.getScene().getWindow();
+            stage.close();
+        } catch (IOException e) {
+            System.err.println("Unable to load Login.fxml: " + e.getMessage());
+            showDangerAlert("Unable to load Login.fxml");
+        }
     }
 
 
