@@ -50,11 +50,14 @@ public class MainController {
     public Button ReplyButton;
     @FXML
     public Button ReplyAllButton;
+    @FXML
+    public Button LogoutButton;
+
     private ClientModel clientModel = null;
 
 
     @FXML
-    public void initialize() {
+    protected void initialize() {
         System.out.println("[INFO] Initializing MainController...");
         clientModel = ClientModel.getInstance();
 
@@ -208,6 +211,13 @@ public class MainController {
 
         String allRecipients = String.join(", ", selectedEmail.getReceivers());
         showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
+    }
+
+
+    @FXML
+    protected void onLogoutButtonClick() {
+        System.out.println("[INFO] Logging out...");
+
     }
 
 

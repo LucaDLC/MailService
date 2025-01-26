@@ -26,7 +26,8 @@
          <!-- Sinistra -->
          <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 10px;">
             <Button fx:id="ComposeButton" onAction="#onComposeButtonClick" prefHeight="40.0" prefWidth="150.0" styleClass="button-primary" text="Compose" />
-            <ListView fx:id="MailList" layoutX="50" layoutY="50" />
+            <ListView fx:id="MailList" layoutX="50" layoutY="50" prefHeight="331.0" prefWidth="214.0" />
+            <Button fx:id="LogoutButton" layoutX="52.0" layoutY="20.0" onAction="#onLogoutButtonClick" prefHeight="39.0" prefWidth="111.0" styleClass="button-danger" text="Logout" />
          </VBox>
          <!-- Destra -->
          <VBox alignment="BOTTOM_CENTER" prefHeight="413.0" prefWidth="543.0" spacing="10.0" style="-fx-padding: 10px;">
