@@ -16,7 +16,6 @@ public class ConfigManager {
 
         try{
             if (!path.exists()) { //se il file non esiste lo creo
-                prop.setProperty("Client.Mail", "Example@Rama.it"); //imposto l'email di default
                 prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
                 prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
                 prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
@@ -49,9 +48,6 @@ public class ConfigManager {
                 prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
                 prop.setProperty("Client.ServerPort", "42069"); //imposto le porta del server
                 prop.setProperty("Client.Fetch", "5");  //imposto l'ntervallo di controllo delle email(5 minuti)
-            }
-            if (propName.equals("Client.Mail")) {
-                prop.setProperty("Client.Mail", propValue);
             }
             prop.store(new FileOutputStream(path), null);
 
