@@ -232,9 +232,9 @@ public class MainController {
             //chiudo la finestra del main
             Stage stage = (Stage) LogoutButton.getScene().getWindow();
             stage.close();
+
         } catch (IOException e) {
             System.err.println("Unable to load Login.fxml: " + e.getMessage());
-            showDangerAlert("Unable to load Login.fxml");
         }
     }
 
