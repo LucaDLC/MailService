@@ -31,6 +31,18 @@ public class ClientApp extends Application {
     @Override
     public void stop() {
         System.out.println("[INFO] Application is stopping...");
+        stopPeriodicFetch();
+    }
+
+
+    public static void startPeriodicFetch() {
+        ClientModel client = ClientModel.getInstance();
+        client.fetchEmails(true);
+        operationPool.scheduleAtFixedRate(() -> client.fetchEmails(false), 5, client.getFetchPeriod(), TimeUnit.SECONDS);
+    }
+
+
+    public static void stopPeriodicFetch(){
         if (operationPool != null) {
             operationPool.shutdown();
             try {
@@ -44,14 +56,6 @@ public class ClientApp extends Application {
                 Thread.currentThread().interrupt();
             }
         }
-
-    }
-
-
-    public static void startPeriodicFetch() {
-        ClientModel client = ClientModel.getInstance();
-        client.fetchEmails(true);
-        operationPool.scheduleAtFixedRate(() -> client.fetchEmails(false), 5, client.getFetchPeriod(), TimeUnit.SECONDS);
     }
 
 

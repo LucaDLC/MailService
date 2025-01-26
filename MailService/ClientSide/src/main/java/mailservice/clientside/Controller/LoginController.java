@@ -39,8 +39,7 @@ public class LoginController {
         if(configManager.validateEmail(login))
         {
             System.out.println("[INFO] Email is valid");
-            configManager.setProperty("Client.Mail", login);
-            if(ClientModel.getInstance().wrapLoginCheck()){
+            if(ClientModel.getInstance().wrapLoginCheck(login)){
                 System.out.println("[INFO]The Email is a server user");
                 showSuccessAlert();
                 try {

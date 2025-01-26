@@ -6,12 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="0eca4d50-bac6-4a86-802b-cafb06b82858" name="Changes" comment="Main Improved, but Not Working ...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/java/mailservice/serverside/Controller/ServerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.png" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Folder.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.png" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/Server.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/ServerLog.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/server.css" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/src/main/resources/mailservice/serverside/server.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/User.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/User.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/ClientApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/src/main/java/mailservice/clientside/Model/ClientModel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,16 +118,16 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ClientApp" />
         <item itemvalue="Application.ServerApp" />
+        <item itemvalue="Application.ClientApp" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
-        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
       </set>
     </attachedChunks>
   </component>
@@ -200,6 +198,7 @@
       <workItem from="1734802764079" duration="3732000" />
       <workItem from="1734810025277" duration="77000" />
       <workItem from="1734810354315" duration="7203000" />
+      <workItem from="1737908800097" duration="1580000" />
     </task>
     <task id="LOCAL-00001" summary="Main Improved, but Not Working ...">
       <option name="closed" value="true" />

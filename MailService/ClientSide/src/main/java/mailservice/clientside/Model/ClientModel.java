@@ -14,6 +14,7 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import mailservice.clientside.ClientApp;
 import mailservice.clientside.Configuration.*;
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
@@ -44,7 +45,6 @@ public class ClientModel {
         ConfigManager configManager = ConfigManager.getInstance();
 
         try {
-            userLogged = configManager.readProperty("Client.Mail");
             serverHost = configManager.readProperty("Client.ServerHost");
             serverPort = Integer.parseInt(configManager.readProperty("Client.ServerPort"));
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
@@ -57,7 +57,7 @@ public class ClientModel {
 
 
     public static synchronized ClientModel getInstance() {
-        if (instance == null || !instance.wrapLoginCheck()) {
+        if (instance == null) {
             instance = new ClientModel();
         }
         return instance;
@@ -76,6 +76,14 @@ public class ClientModel {
 
     public ObservableList<Email> getEmailList() {
         return emailList;
+    }
+
+
+    public void logout () {
+        ClientApp.stopPeriodicFetch();
+        disconnectFromServer();
+        userLogged = null;
+        instance = null;
     }
 
 
@@ -152,10 +160,17 @@ public class ClientModel {
     }
 
 
-    public boolean wrapLoginCheck(){
+    public boolean wrapLoginCheck(String loginMail){
+        if (userLogged == null){
+            userLogged = loginMail;
+        }
         boolean result = sendCMD(LOGIN_CHECK, null);
         if(!result){
+            userLogged = null;
             instance = null;
+        }
+        else {
+            ClientApp.startPeriodicFetch();
         }
         return result;
     }
