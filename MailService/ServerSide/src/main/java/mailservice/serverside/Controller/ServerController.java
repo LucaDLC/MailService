@@ -34,7 +34,7 @@ public class ServerController {
 
 
     @FXML
-    public void initialize() {
+    protected void initialize() {
         // Inizializza i pulsanti e l'interfaccia
         startButton.setCursor(Cursor.HAND);
         stopButton.setCursor(Cursor.HAND);
@@ -48,7 +48,7 @@ public class ServerController {
 
 
     @FXML
-    public void startServer() {
+    protected void startServer() {
         if (isServerRunning) {  // controllo se il server è già avviato
             log(LogType.INFO,"Server is already running.");
             return;
@@ -68,13 +68,13 @@ public class ServerController {
 
 
     @FXML
-    public void onStart() {
+    protected void onStart() {
         startServer();
     }
 
 
     @FXML
-    public void stopServer() {
+    protected void stopServer() {
         if(serverModel != null && isServerRunning) {
             serverModel.stopServer();
             isServerRunning = false; //aggiorna lo stato del server
@@ -100,7 +100,7 @@ public class ServerController {
 
 
     @FXML
-    public void onServerCreateFolder() throws IOException {
+    protected void onServerCreateFolder() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/serverside/Folder.fxml"));
         Parent mainView = loader.load(); //carico il file FXML
         Scene mainScene = new Scene(mainView); //creo una nuova scena
@@ -122,7 +122,7 @@ public class ServerController {
     }
 
 
-    public void showErrorAlert(String message) {
+    protected void showErrorAlert(String message) {
         Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");

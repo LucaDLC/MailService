@@ -71,7 +71,7 @@ public class ServerModel {
 
                 }
             } catch (BindException e) {
-                controller.showErrorAlert("Port " + port + " is already in use.");
+                controller.log(LogType.ERROR,"Port " + port + " is already in use.");
             } catch (IOException e) {
                 controller.log(LogType.ERROR, "Server error: " + e.getMessage());
             } finally {

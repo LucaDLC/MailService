@@ -83,12 +83,12 @@ public class FolderController {
     }
 
 
-    public void getSuccessAlert() {
+    private void getSuccessAlert() {
         successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
     }
 
 
-    public void getDangerAlert() {
+    private void getDangerAlert() {
         dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
     }
 
