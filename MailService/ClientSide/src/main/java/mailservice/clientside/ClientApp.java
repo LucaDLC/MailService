@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientApp extends Application {
     private static ScheduledExecutorService operationPool;
-    private static final int threadsNumber = 2;
+    private static final int threadsNumber = 1;
 
 
     @Override
@@ -36,14 +36,16 @@ public class ClientApp extends Application {
 
 
     public static void startPeriodicFetch() {
+        if (operationPool == null || operationPool.isShutdown() || operationPool.isTerminated()) {
+            operationPool = Executors.newScheduledThreadPool(threadsNumber);
+        }
         ClientModel client = ClientModel.getInstance();
         client.fetchEmails(true);
         operationPool.scheduleAtFixedRate(() -> client.fetchEmails(false), 5, client.getFetchPeriod(), TimeUnit.SECONDS);
     }
 
-
     public static void stopPeriodicFetch(){
-        if (operationPool != null) {
+        if (operationPool != null && !operationPool.isShutdown()) {
             operationPool.shutdown();
             try {
                 if (!operationPool.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -52,15 +54,12 @@ public class ClientApp extends Application {
                 }
             } catch (InterruptedException e) {
                 System.err.println("[ERROR] Interrupted during pool termination.");
-                operationPool.shutdownNow();
                 Thread.currentThread().interrupt();
             }
         }
     }
 
-
     public static void main(String[] args) {
-        operationPool = Executors.newScheduledThreadPool(threadsNumber);
         launch(args);
     }
 }

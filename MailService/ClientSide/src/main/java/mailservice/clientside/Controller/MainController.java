@@ -216,26 +216,38 @@ public class MainController {
 
     @FXML
     protected void onLogoutButtonClick() {
-        ClientApp.stopPeriodicFetch();
-        clientModel.logout ();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Login.fxml"));
-            Parent loginView = loader.load(); //carico il file FXML
-            Scene loginScene = new Scene(loginView); //creo una nuova scena
-            Stage loginStage = new Stage(); //creo una nuova finestra
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Logout Confirmation");
+        confirmationAlert.setHeaderText(null);
+        confirmationAlert.setContentText("Are you sure you want to logout?");
 
-            loginStage.setScene(loginScene); //imposto la scena nella finestra
-            loginStage.setTitle("ClientSide - Login");
-            loginStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
-            loginStage.show();
+        confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                System.out.println("[INFO] Logging out...");
+                ClientApp.stopPeriodicFetch();
+                clientModel.logout ();
+                
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Login.fxml"));
+                    Parent loginView = loader.load(); //carico il file FXML
+                    Scene loginScene = new Scene(loginView); //creo una nuova scena
+                    Stage loginStage = new Stage(); //creo una nuova finestra
 
-            //chiudo la finestra del main
-            Stage stage = (Stage) LogoutButton.getScene().getWindow();
-            stage.close();
+                    loginStage.setScene(loginScene); //imposto la scena nella finestra
+                    loginStage.setTitle("ClientSide - Login");
+                    loginStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+                    loginStage.show();
 
-        } catch (IOException e) {
-            System.err.println("Unable to load Login.fxml: " + e.getMessage());
-        }
+                    //chiudo la finestra del main
+                    Stage stage = (Stage) LogoutButton.getScene().getWindow();
+                    stage.close();
+
+                } catch (IOException e) {
+                    System.err.println("Unable to load Login.fxml: " + e.getMessage());
+                }
+            }
+        });
+
     }
 
 
