@@ -69,6 +69,7 @@ public class ServerController {
 
     @FXML
     protected void onStart() {
+        ServerLog.getItems().clear();
         startServer();
     }
 
@@ -95,6 +96,7 @@ public class ServerController {
 
     @FXML
     public void onStop() {
+        ServerLog.getItems().clear();
         stopServer();
     }
 
@@ -118,6 +120,9 @@ public class ServerController {
             String formattedMessage = String.format("[%s] %s", type.name(), message);
             ServerLog.getItems().add(formattedMessage);
             ServerLog.scrollTo(ServerLog.getItems().size() - 1);
+            while (ServerLog.getItems().size() > 50) {
+                ServerLog.getItems().remove(0); // Rimuove la prima voce (la più vecchia)
+            }
         });
     }
 
