@@ -87,7 +87,7 @@ public class ClientModel {
     }
 
 
-    private boolean connectToServer() {
+    private synchronized boolean connectToServer() {
         try {
             if (socket == null || socket.isClosed()) {
                 socket = new Socket();
