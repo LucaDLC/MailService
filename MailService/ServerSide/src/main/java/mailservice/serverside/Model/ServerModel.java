@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import mailservice.shared.*;
 import mailservice.shared.enums.*;
 
@@ -31,6 +35,9 @@ public class ServerModel {
 
     private ServerController controller;
     private static ServerModel instance;
+    private ReadWriteLock RWlock = new ReentrantReadWriteLock();
+    private Lock readLock = RWlock.readLock();
+    private Lock writeLock = RWlock.writeLock();
 
 
     private ServerModel(ServerController serverController) {
@@ -226,6 +233,7 @@ public class ServerModel {
 
 
     private Email readEmailFromFile(File emailFile) {
+        readLock.lock();
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
             String line;
             String sender = "", subject = "", text = "", date = "";
@@ -256,10 +264,13 @@ public class ServerModel {
             controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
             return null;
         }
+        finally {
+            readLock.unlock();
+        }
     }
 
 
-    private synchronized void saveEmailToFile(Email email) {
+    private void saveEmailToFile(Email email) {
         for (String recipientSplit : email.getReceivers()) {
             String trimmedRecipient = recipientSplit.trim();
             if (checkFolderName(trimmedRecipient) == null) {
@@ -268,11 +279,15 @@ public class ServerModel {
             else {
                 String emailFileName = "email_" + email.getId() + ".txt";
                 File emailFile = new File(checkFolderName(trimmedRecipient), emailFileName);
+                writeLock.lock();
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                     writer.write(email.toString());
                     controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                 } catch (IOException e) {
                     controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                }
+                finally {
+                    writeLock.unlock();
                 }
             }
         }
@@ -280,11 +295,13 @@ public class ServerModel {
 
 
     private void cleanInvalidDirectories() {
+
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File baseDir = new File(baseDirectory);
         if (baseDir.exists() && baseDir.isDirectory()) {
             for (File file : baseDir.listFiles()) {
                 if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")) {
+                    writeLock.lock();
                     for (File subFile : file.listFiles()) {
                         if (subFile.isDirectory()) {
                             for (File nestedFile : subFile.listFiles()) {
@@ -295,6 +312,7 @@ public class ServerModel {
                     }
                     file.delete();
                     controller.log(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
+                    writeLock.unlock();
                 }
             }
         }
@@ -311,7 +329,7 @@ public class ServerModel {
     }
 
 
-    private synchronized void handleDeleteEmail(String requestOwner, Email mail, ObjectOutputStream out) throws IOException {
+    private void handleDeleteEmail(String requestOwner, Email mail, ObjectOutputStream out) throws IOException {
         if (checkFolderName(requestOwner) == null) {
             controller.log(LogType.ERROR, "User folder not found: " + requestOwner);
             sendCMDResponse(out, ILLEGAL_PARAMS);
@@ -324,6 +342,7 @@ public class ServerModel {
 
         // Controlla l'esistenza del file ed elimina se esiste
         if (emailFile.exists()) {
+            writeLock.lock();
             if (emailFile.delete()) {
                 controller.log(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
                 sendCMDResponse(out, SUCCESS);
@@ -331,6 +350,7 @@ public class ServerModel {
                 controller.log(LogType.ERROR, "Failed to delete email file: " + emailFileName);
                 sendCMDResponse(out, GENERIC_ERROR);
             }
+            writeLock.unlock();
         } else {
             controller.log(LogType.ERROR, "Email file not found: " + emailFileName);
             sendCMDResponse(out, GENERIC_ERROR);
