@@ -49,7 +49,7 @@ public class ConfigManager {
     }
 
 
-    public boolean validateEmail(String email) {
+    /*public boolean validateEmail(String email) {
         return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
-    }
+    }*/
 }
