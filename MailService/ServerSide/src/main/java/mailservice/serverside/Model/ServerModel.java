@@ -11,11 +11,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import mailservice.shared.*;
@@ -35,9 +34,7 @@ public class ServerModel {
 
     private ServerController controller;
     private static ServerModel instance;
-    private ReadWriteLock RWlock = new ReentrantReadWriteLock();
-    private Lock readLock = RWlock.readLock();
-    private Lock writeLock = RWlock.writeLock();
+    private static final ConcurrentHashMap<String, ReentrantReadWriteLock> folderLocks = new ConcurrentHashMap<>();
 
 
     private ServerModel(ServerController serverController) {
@@ -232,8 +229,20 @@ public class ServerModel {
     }
 
 
+    private static ReentrantReadWriteLock getFolderLock(File folder) {
+        String folderPath = folder.getAbsolutePath();
+        return folderLocks.computeIfAbsent(folderPath, k -> new ReentrantReadWriteLock());
+    }
+
+
+    private static void removeFolderLock(File folder) {
+        folderLocks.remove(folder.getAbsolutePath());
+    }
+
+
     private Email readEmailFromFile(File emailFile) {
-        readLock.lock();
+        ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
+        lock.readLock().lock();
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
             String line;
             String sender = "", subject = "", text = "", date = "";
@@ -265,7 +274,7 @@ public class ServerModel {
             return null;
         }
         finally {
-            readLock.unlock();
+            lock.readLock().unlock();
         }
     }
 
@@ -279,7 +288,8 @@ public class ServerModel {
             else {
                 String emailFileName = "email_" + email.getId() + ".txt";
                 File emailFile = new File(checkFolderName(trimmedRecipient), emailFileName);
-                writeLock.lock();
+                ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
+                lock.writeLock().lock();
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                     writer.write(email.toString());
                     controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
@@ -287,7 +297,7 @@ public class ServerModel {
                     controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
                 }
                 finally {
-                    writeLock.unlock();
+                    lock.writeLock().unlock();
                 }
             }
         }
@@ -295,26 +305,31 @@ public class ServerModel {
 
 
     private void cleanInvalidDirectories() {
-
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File baseDir = new File(baseDirectory);
-        if (baseDir.exists() && baseDir.isDirectory()) {
-            for (File file : baseDir.listFiles()) {
-                if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")) {
-                    writeLock.lock();
-                    for (File subFile : file.listFiles()) {
-                        if (subFile.isDirectory()) {
-                            for (File nestedFile : subFile.listFiles()) {
-                                nestedFile.delete();
+        ReentrantReadWriteLock lock = getFolderLock(baseDir);
+        lock.writeLock().lock();
+        try {
+            if (baseDir.exists() && baseDir.isDirectory()) {
+                for (File file : baseDir.listFiles()) {
+                    if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")) {
+                        for (File subFile : file.listFiles()) {
+                            if (subFile.isDirectory()) {
+                                for (File nestedFile : subFile.listFiles()) {
+                                    nestedFile.delete();
+                                }
                             }
+                            subFile.delete();
                         }
-                        subFile.delete();
+                        removeFolderLock(file);
+                        file.delete();
+                        controller.log(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
+
                     }
-                    file.delete();
-                    controller.log(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
-                    writeLock.unlock();
                 }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -339,21 +354,25 @@ public class ServerModel {
         // Costruisce il nome del file
         String emailFileName = "email_" + mail.getId() + ".txt";
         File emailFile = new File(checkFolderName(requestOwner), emailFileName);
+        ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
+        lock.writeLock().lock();
+        try {
+            // Controlla l'esistenza del file ed elimina se esiste
+            if (emailFile.exists()) {
+                if (emailFile.delete()) {
+                    controller.log(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
+                    sendCMDResponse(out, SUCCESS);
+                } else {
+                    controller.log(LogType.ERROR, "Failed to delete email file: " + emailFileName);
+                    sendCMDResponse(out, GENERIC_ERROR);
+                }
 
-        // Controlla l'esistenza del file ed elimina se esiste
-        if (emailFile.exists()) {
-            writeLock.lock();
-            if (emailFile.delete()) {
-                controller.log(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
-                sendCMDResponse(out, SUCCESS);
             } else {
-                controller.log(LogType.ERROR, "Failed to delete email file: " + emailFileName);
+                controller.log(LogType.ERROR, "Email file not found: " + emailFileName);
                 sendCMDResponse(out, GENERIC_ERROR);
             }
-            writeLock.unlock();
-        } else {
-            controller.log(LogType.ERROR, "Email file not found: " + emailFileName);
-            sendCMDResponse(out, GENERIC_ERROR);
+        } finally {
+            lock.writeLock().unlock();
         }
 
     }
@@ -397,19 +416,27 @@ public class ServerModel {
     }
 
 
-    private static synchronized boolean deleteUserFolder(String username) {
+    private static boolean deleteUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
-        if (folder.exists()) {
-            for (File file : folder.listFiles()) {
-                if (file.isDirectory()) {
-                    for (File nestedFile : file.listFiles()) {
-                        nestedFile.delete();
+        ReentrantReadWriteLock lock = getFolderLock(folder);
+        lock.writeLock().lock();
+        try {
+            if (folder.exists()) {
+                for (File file : folder.listFiles()) {
+                    if (file.isDirectory()) {
+                        for (File nestedFile : file.listFiles()) {
+                            nestedFile.delete();
+                        }
                     }
+                    file.delete();
+                    removeFolderLock(file);
                 }
-                file.delete();
+                return folder.delete();
+
             }
-            return folder.delete();
+        } finally {
+            lock.writeLock().unlock();
         }
         return false;
     }
