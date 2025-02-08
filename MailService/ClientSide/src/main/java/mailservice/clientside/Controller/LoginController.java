@@ -50,11 +50,13 @@ public class LoginController {
 
                     mainStage.setScene(mainScene); //imposto la scena nella finestra
                     mainStage.setTitle("ClientSide - Main");
+                    mainStage.setResizable(false);
                     mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     mainStage.show();
 
                     //chiudo la finestra di login
                     Stage stage = (Stage) LoginButton.getScene().getWindow();
+                    stage.setResizable(false);
                     stage.close();
                 } catch (IOException e) {
                     System.err.println("Unable to load Main.fxml: " + e.getMessage());

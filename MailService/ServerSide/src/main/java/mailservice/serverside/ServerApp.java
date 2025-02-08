@@ -22,6 +22,10 @@ public class ServerApp extends Application {
 
         stage.setTitle("ServerSide - Log");
         stage.setScene(scene);
+
+        stage.setMinWidth(640);
+        stage.setMinHeight(480);
+
         stage.show();
 
     }

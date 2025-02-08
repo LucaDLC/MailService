@@ -110,7 +110,9 @@ public class ServerController {
 
         mainStage.setScene(mainScene); //imposto la scena nella finestra
         mainStage.setTitle("Serverside - Folder Management");
+        mainStage.setResizable(false);
         mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+
         mainStage.show();
     }
 

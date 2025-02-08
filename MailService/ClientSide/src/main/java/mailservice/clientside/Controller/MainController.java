@@ -120,6 +120,7 @@ public class MainController {
                 Stage composeStage = new Stage();
                 composeStage.setScene(composeScene);
                 composeStage.setTitle("ClientSide - Mail Compose");
+                composeStage.setResizable(false);
                 composeStage.initModality(Modality.APPLICATION_MODAL);
                 composeStage.show();
             } catch (IOException e) {
@@ -235,11 +236,13 @@ public class MainController {
 
                     loginStage.setScene(loginScene); //imposto la scena nella finestra
                     loginStage.setTitle("ClientSide - Login");
+                    loginStage.setResizable(false);
                     loginStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
                     loginStage.show();
 
                     //chiudo la finestra del main
                     Stage stage = (Stage) LogoutButton.getScene().getWindow();
+                    stage.setResizable(false);
                     stage.close();
 
                 } catch (IOException e) {

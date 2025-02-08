@@ -22,6 +22,7 @@ public class ClientApp extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("ClientSide - Login");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
 
         stage.setOnCloseRequest(event -> stop());
