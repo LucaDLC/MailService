@@ -63,7 +63,7 @@ public class LoginController {
                     showDangerAlert("Unable to load Main.fxml");
                 }
             } else {
-                System.err.println("[ERROR] The Email is not a server user");
+                System.err.println("[ERROR] Server is offline or The Email is not a server user");
                 showDangerAlert("Server is offline or user not registered yet");
             }
 
