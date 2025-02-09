@@ -34,7 +34,7 @@ public class ClientModel {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private static final int SOCKET_TIMEOUT = 3000; // Timeout di 3 secondi
-    private BooleanProperty isServerReachable = new SimpleBooleanProperty(false);
+    private final BooleanProperty isServerReachable = new SimpleBooleanProperty(false);
 
     private ObservableList<Email> emailList;
     private static ClientModel instance;
