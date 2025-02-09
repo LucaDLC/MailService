@@ -7,9 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -23,7 +21,6 @@ import mailservice.shared.enums.*;
 
 import static mailservice.shared.Email.generateEmptyEmail;
 import static mailservice.shared.enums.CommandRequest.*;
-
 
 
 public class ClientModel {
@@ -170,7 +167,7 @@ public class ClientModel {
     }
 
 
-    public boolean wrapLoginCheck(String loginMail){
+    public Map.Entry<Boolean, Boolean> wrapLoginCheck(String loginMail){
         if (userLogged == null){
             userLogged = loginMail;
         }
@@ -182,7 +179,7 @@ public class ClientModel {
         else {
             ClientApp.startPeriodicFetch();
         }
-        return result;
+        return new AbstractMap.SimpleEntry<>(isServerReachable.get(), result);
     }
 
 

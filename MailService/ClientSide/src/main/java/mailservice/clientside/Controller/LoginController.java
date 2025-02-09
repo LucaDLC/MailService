@@ -17,6 +17,7 @@ import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class LoginController {
 
@@ -36,35 +37,40 @@ public class LoginController {
         System.out.println("Email: " + login);
         ConfigManager configManager = ConfigManager.getInstance();
 
-        if(configManager.validateEmail(login))
-        {
+        if (configManager.validateEmail(login)) {
             System.out.println("[INFO] Email is valid");
-            if(ClientModel.getInstance().wrapLoginCheck(login)){
-                System.out.println("[INFO]The Email is a server user");
-                showSuccessAlert();
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
-                    Parent mainView = loader.load(); //carico il file FXML
-                    Scene mainScene = new Scene(mainView); //creo una nuova scena
-                    Stage mainStage = new Stage(); //creo una nuova finestra
+            Map.Entry<Boolean, Boolean> loginResult = ClientModel.getInstance().wrapLoginCheck(login);
+            if (loginResult.getKey()) {
+                if (loginResult.getValue()) {
+                    System.out.println("[INFO]The Email is a server user");
+                    showSuccessAlert();
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
+                        Parent mainView = loader.load(); //carico il file FXML
+                        Scene mainScene = new Scene(mainView); //creo una nuova scena
+                        Stage mainStage = new Stage(); //creo una nuova finestra
 
-                    mainStage.setScene(mainScene); //imposto la scena nella finestra
-                    mainStage.setTitle("ClientSide - Main");
-                    mainStage.setResizable(false);
-                    mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
-                    mainStage.show();
+                        mainStage.setScene(mainScene); //imposto la scena nella finestra
+                        mainStage.setTitle("ClientSide - Main");
+                        mainStage.setResizable(false);
+                        mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
+                        mainStage.show();
 
-                    //chiudo la finestra di login
-                    Stage stage = (Stage) LoginButton.getScene().getWindow();
-                    stage.setResizable(false);
-                    stage.close();
-                } catch (IOException e) {
-                    System.err.println("Unable to load Main.fxml: " + e.getMessage());
-                    showDangerAlert("Unable to load Main.fxml");
+                        //chiudo la finestra di login
+                        Stage stage = (Stage) LoginButton.getScene().getWindow();
+                        stage.setResizable(false);
+                        stage.close();
+                    } catch (IOException e) {
+                        System.err.println("Unable to load Main.fxml: " + e.getMessage());
+                        showDangerAlert("Unable to load Main.fxml");
+                    }
+                } else {
+                    System.err.println("[ERROR] The Email is not a server user");
+                    showDangerAlert("The Email user is not registered yet");
                 }
             } else {
-                System.err.println("[ERROR] Server is offline or The Email is not a server user");
-                showDangerAlert("Server is offline or user not registered yet");
+                System.err.println("[ERROR] Server is unreachable");
+                showDangerAlert("Server is unreachable");
             }
 
         } else {

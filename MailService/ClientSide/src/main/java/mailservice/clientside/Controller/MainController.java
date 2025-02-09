@@ -41,17 +41,17 @@ public class MainController {
     @FXML
     private TextFlow successAlert; //serve a visualizzare un messaggio di successo
     @FXML
-    public Button ComposeButton;
+    private Button ComposeButton;
     @FXML
-    public Button ForwardButton;
+    private Button ForwardButton;
     @FXML
-    public Button DeleteButton;
+    private Button DeleteButton;
     @FXML
-    public Button ReplyButton;
+    private Button ReplyButton;
     @FXML
-    public Button ReplyAllButton;
+    private Button ReplyAllButton;
     @FXML
-    public Button LogoutButton;
+    private Button LogoutButton;
 
     private ClientModel clientModel = null;
 
