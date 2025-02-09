@@ -63,7 +63,7 @@ public class MainController {
 
         if (clientModel == null) {
             System.err.println("[ERROR] Failed to initialize ClientModel.");
-            showDangerAlert("Initialization error.");
+            showDangerAlert("Initialization error.",false);
             ComposeButton.setDisable(true);
             ForwardButton.setDisable(true);
             DeleteButton.setDisable(true);
@@ -89,6 +89,14 @@ public class MainController {
         MailList.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 displayEmailDetails(newSelection);
+            }
+        });
+
+        clientModel.isServerReachable().addListener((obs, oldValue, newValue) -> {
+            if (!newValue) {
+                showDangerAlert("Server unreachable!",false);
+            } else {
+                hideAlerts(0);
             }
         });
 
@@ -137,7 +145,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to delete.");
+            showDangerAlert("Please select an email to delete.",true);
             return;
         }
 
@@ -164,7 +172,7 @@ public class MainController {
                     });
                 } else {
                     // Se l'eliminazione fallisce, mostra un messaggio di errore
-                    showDangerAlert("Failed to delete the selected email.");
+                    showDangerAlert("Failed to delete the selected email.",true);
                 }
             }
         });
@@ -177,7 +185,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to forward.");
+            showDangerAlert("Please select an email to forward.",true);
             return;
         }
         System.out.println("[INFO] Forwarding Mail.");
@@ -191,7 +199,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to reply.");
+            showDangerAlert("Please select an email to reply.",true);
             return;
         }
         System.out.println("[INFO] Replying Mail.");
@@ -205,7 +213,7 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to reply.");
+            showDangerAlert("Please select an email to reply.",true);
             return;
         }
         System.out.println("[INFO] Replying All Mail.");
@@ -276,38 +284,43 @@ public class MainController {
 
 
     @FXML
-    private void showDangerAlert(String message) {
-        if (dangerAlert != null) {
-            dangerAlert.getChildren().clear();
-            Text dangerText = new Text(message);
-            dangerText.setFill(Color.RED);
-            dangerAlert.getChildren().add(dangerText);
-            dangerAlert.setVisible(true);
-
-            hideAlerts(); // Nascondi gli alert dopo 3 secondi
-        }
+    private void showDangerAlert(String message, boolean hideAfterDelay) {
+        Platform.runLater(() -> {
+            if (dangerAlert != null) {
+                dangerAlert.getChildren().clear();
+                Text dangerText = new Text(message);
+                dangerText.setFill(Color.RED);
+                dangerAlert.getChildren().add(dangerText);
+                dangerAlert.setVisible(true);
+                if (hideAfterDelay) {
+                    hideAlerts(3); // Nascondi gli alert dopo 3 secondi
+                }
+            }
+        });
     }
 
 
     @FXML
     private void showSuccessAlert(String message) {
-        if(successAlert != null){
-            System.out.println("Showing success alert: " + message); // Aggiungi questa linea per il debug
-            successAlert.getChildren().clear();
-            Text successText = new Text(message);
-            successText.setFill(Color.GREEN);
-            successAlert.getChildren().add(successText);
-            successAlert.setVisible(true);
+        Platform.runLater(() -> {
+            if (successAlert != null) {
+                System.out.println("Showing success alert: " + message); // Aggiungi questa linea per il debug
+                successAlert.getChildren().clear();
+                Text successText = new Text(message);
+                successText.setFill(Color.GREEN);
+                successAlert.getChildren().add(successText);
+                successAlert.setVisible(true);
 
-            hideAlerts(); // Nascondi gli alert dopo 3 secondi
-        }
+                hideAlerts(3); // Nascondi gli alert dopo 3 secondi
+            }
+        });
     }
 
 
     @FXML
-    private void hideAlerts() {
+    private void hideAlerts(int delay) {
         // Nascondere gli alert dopo 3 secondi
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        PauseTransition pause = new PauseTransition(Duration.seconds(delay));
         pause.setOnFinished(event -> {
             dangerAlert.setVisible(false);
         });

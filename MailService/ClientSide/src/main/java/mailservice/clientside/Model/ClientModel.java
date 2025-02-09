@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mailservice.clientside.ClientApp;
@@ -35,7 +37,7 @@ public class ClientModel {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private static final int SOCKET_TIMEOUT = 3000; // Timeout di 3 secondi
-
+    private BooleanProperty isServerReachable = new SimpleBooleanProperty(false);
 
     private ObservableList<Email> emailList;
     private static ClientModel instance;
@@ -79,6 +81,11 @@ public class ClientModel {
     }
 
 
+    public BooleanProperty isServerReachable() {
+        return isServerReachable;
+    }
+
+
     public void logout () {
         ClientApp.stopPeriodicFetch();
         disconnectFromServer();
@@ -96,15 +103,18 @@ public class ClientModel {
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
                 System.out.println("[INFO] Connected to server.");
+                isServerReachable.set(true);
                 return true;
             }
             else {
                 System.out.println("[INFO] Already connected to server.");
+                isServerReachable.set(true);
                 return false;
             }
 
         } catch (IOException e) {
             System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
+            isServerReachable.set(false);
             return false;
         }
 
