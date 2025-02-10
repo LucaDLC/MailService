@@ -317,5 +317,15 @@ public class ClientModel {
 
     }
 
+    private void log(LogType type, String message){
+        String formattedMessage = String.format("[%s] %s", type.name(), message);
+        if(type.equals(LogType.ERROR)) {
+            System.err.println(formattedMessage);
+        }
+        else{
+        System.out.println(formattedMessage);
+        }
+    }
+
 }
 
