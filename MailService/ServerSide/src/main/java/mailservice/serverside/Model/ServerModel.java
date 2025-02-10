@@ -1,5 +1,8 @@
 package mailservice.serverside.Model;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import mailservice.serverside.Configuration.*;
 import mailservice.serverside.Controller.ServerController;
 import mailservice.shared.enums.LogType;
@@ -35,6 +38,7 @@ public class ServerModel {
     private ServerController controller;
     private static ServerModel instance;
     private static final ConcurrentHashMap<String, ReentrantReadWriteLock> folderLocks = new ConcurrentHashMap<>();
+    private ObservableList<String> Log = FXCollections.observableArrayList();
 
 
     private ServerModel(ServerController serverController) {
@@ -56,7 +60,7 @@ public class ServerModel {
 
     public void startServer() {
         if (running) {
-            controller.log(LogType.INFO, "Server is already running on port " + port);
+            addLog(LogType.INFO, "Server is already running on port " + port);
             return;
         }
         running = true;
@@ -66,18 +70,18 @@ public class ServerModel {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
-                controller.log(LogType.INFO, "Server started on port " + port);
+                addLog(LogType.INFO, "Server started on port " + port);
                 while (running) {
                     Socket clientSocket = serverSocket.accept();
                     clientSocket.setSoTimeout(timeout);
-                    controller.log(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
+                    addLog(LogType.INFO, "Client connected from: " + clientSocket.getInetAddress());
                     serverThreads.submit(() -> handleClient(clientSocket));
 
                 }
             } catch (BindException e) {
-                controller.log(LogType.ERROR,"Port " + port + " is already in use.");
+                addLog(LogType.ERROR,"Port " + port + " is already in use.");
             } catch (IOException e) {
-                controller.log(LogType.ERROR, "Server error: " + e.getMessage());
+                addLog(LogType.ERROR, "Server error: " + e.getMessage());
             } finally {
                 try {
                     serverSocket.close();
@@ -92,7 +96,7 @@ public class ServerModel {
 
     public void stopServer() {
         if (!running) {
-            controller.log(LogType.INFO, "Server is not running.");
+            addLog(LogType.INFO, "Server is not running.");
             return;
         }
         running = false;
@@ -107,9 +111,9 @@ public class ServerModel {
                     serverThreads.shutdownNow();
                 }
             }
-            controller.log(LogType.INFO, "Server shutdown complete.");
+            addLog(LogType.INFO, "Server shutdown complete.");
         } catch (IOException | InterruptedException e) {
-            controller.log(LogType.ERROR, "Error while shutting down server: " + e.getMessage());
+            addLog(LogType.ERROR, "Error while shutting down server: " + e.getMessage());
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
@@ -122,7 +126,7 @@ public class ServerModel {
              ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
             Request clientMessage;
             while ((clientMessage = (Request) in.readObject()) != null) {
-                controller.log(LogType.SYSTEM, "Received message: " + clientMessage);
+                addLog(LogType.SYSTEM, "Received message: " + clientMessage);
                 switch (clientMessage.cmdName()) {
                     case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
                     case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(),clientMessage.mail(), out);
@@ -132,12 +136,12 @@ public class ServerModel {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            controller.log(LogType.INFO, "Client disconnected: " + e.getMessage());
+            addLog(LogType.INFO, "Client disconnected: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
             } catch (IOException e) {
-                controller.log(LogType.ERROR, "Error closing client socket: " + e.getMessage());
+                addLog(LogType.ERROR, "Error closing client socket: " + e.getMessage());
             }
         }
     }
@@ -167,20 +171,20 @@ public class ServerModel {
                 emails.forEach(email -> email.setToRead(true));
                 emails.forEach(email -> {
                     if (checkFolderName(userEmail) == null) {
-                        controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
+                        addLog(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
                     } else {
                         String emailFileName = "email_" + email.getId() + ".txt";
                         File emailFile = new File(checkFolderName(userEmail), emailFileName);
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                             writer.write(email.toString());
-                            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                            addLog(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                         } catch (IOException e) {
-                            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                            addLog(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
                         }
                     }
                 });
             }
-            controller.log(LogType.INFO, "Fetched all Mail: ");
+            addLog(LogType.INFO, "Fetched all Mail: ");
         }
         else{ //mentre qui SOLO le NUOVE mail
             List<Email> emails = fetchEmails(userEmail);
@@ -192,20 +196,20 @@ public class ServerModel {
                 emails.forEach(email -> email.setToRead(true));
                 emails.forEach(email -> {
                     if (checkFolderName(userEmail) == null) {
-                        controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
+                        addLog(LogType.ERROR, "Failed to send email in order to User isn't registered: " + userEmail);
                     } else {
                         String emailFileName = "email_" + email.getId() + ".txt";
                         File emailFile = new File(checkFolderName(userEmail), emailFileName);
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                             writer.write(email.toString());
-                            controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                            addLog(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                         } catch (IOException e) {
-                            controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                            addLog(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
                         }
                     }
                 });
             }
-            controller.log(LogType.INFO, "Fetched new Mail: ");
+            addLog(LogType.INFO, "Fetched new Mail: ");
         }
 
     }
@@ -213,7 +217,7 @@ public class ServerModel {
 
     private List<Email> fetchEmails(String userEmail) {
         if(checkFolderName(userEmail) == null){
-            controller.log(LogType.ERROR, "User folder not found: " + userEmail);
+            addLog(LogType.ERROR, "User folder not found: " + userEmail);
             return new ArrayList<>();
         }
         File userFolder = checkFolderName(userEmail);
@@ -270,7 +274,7 @@ public class ServerModel {
             }
             return email; //new Email(sender, receivers, subject, text, date);
         } catch (IOException e) {
-            controller.log(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
+            addLog(LogType.ERROR, "Failed to read email from text file: " + e.getMessage());
             return null;
         }
         finally {
@@ -283,7 +287,7 @@ public class ServerModel {
         for (String recipientSplit : email.getReceivers()) {
             String trimmedRecipient = recipientSplit.trim();
             if (checkFolderName(trimmedRecipient) == null) {
-                controller.log(LogType.ERROR, "Failed to send email in order to User isn't registered: " + trimmedRecipient);
+                addLog(LogType.ERROR, "Failed to send email in order to User isn't registered: " + trimmedRecipient);
             }
             else {
                 String emailFileName = "email_" + email.getId() + ".txt";
@@ -292,9 +296,9 @@ public class ServerModel {
                 lock.writeLock().lock();
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                     writer.write(email.toString());
-                    controller.log(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
+                    addLog(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                 } catch (IOException e) {
-                    controller.log(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
+                    addLog(LogType.ERROR, "Failed to save email to text file: " + e.getMessage());
                 }
                 finally {
                     lock.writeLock().unlock();
@@ -323,7 +327,7 @@ public class ServerModel {
                         }
                         removeFolderLock(file);
                         file.delete();
-                        controller.log(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
+                        addLog(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
 
                     }
                 }
@@ -340,13 +344,13 @@ public class ServerModel {
             return;
         }
         sendCMDResponse(out, SUCCESS);
-        controller.log(LogType.SYSTEM, "Response flushed to client: Login successful.");
+        addLog(LogType.SYSTEM, "Response flushed to client: Login successful.");
     }
 
 
     private void handleDeleteEmail(String requestOwner, Email mail, ObjectOutputStream out) throws IOException {
         if (checkFolderName(requestOwner) == null) {
-            controller.log(LogType.ERROR, "User folder not found: " + requestOwner);
+            addLog(LogType.ERROR, "User folder not found: " + requestOwner);
             sendCMDResponse(out, ILLEGAL_PARAMS);
             return;
         }
@@ -360,15 +364,15 @@ public class ServerModel {
             // Controlla l'esistenza del file ed elimina se esiste
             if (emailFile.exists()) {
                 if (emailFile.delete()) {
-                    controller.log(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
+                    addLog(LogType.SYSTEM, "Email file deleted successfully: " + emailFileName);
                     sendCMDResponse(out, SUCCESS);
                 } else {
-                    controller.log(LogType.ERROR, "Failed to delete email file: " + emailFileName);
+                    addLog(LogType.ERROR, "Failed to delete email file: " + emailFileName);
                     sendCMDResponse(out, GENERIC_ERROR);
                 }
 
             } else {
-                controller.log(LogType.ERROR, "Email file not found: " + emailFileName);
+                addLog(LogType.ERROR, "Email file not found: " + emailFileName);
                 sendCMDResponse(out, GENERIC_ERROR);
             }
         } finally {
@@ -456,7 +460,7 @@ public class ServerModel {
         Response response = new Response(cmdResponse, null);
         out.writeObject(response);
         out.flush();
-        controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
+        addLog(LogType.SYSTEM, "Response flushed to client: " + response.toString());
     }
 
 
@@ -464,12 +468,30 @@ public class ServerModel {
         Response response = new Response(cmdResponse, mail);
         out.writeObject(response);
         out.flush();
-        controller.log(LogType.SYSTEM, "Response flushed to client: " + response.toString());
+        addLog(LogType.SYSTEM, "Response flushed to client: " + response.toString());
+    }
+
+
+    public void addLog(LogType type, String message) {
+        String formattedMessage = String.format("[%s] %s", type.name(), message);
+        Platform.runLater(() -> {
+            Log.add(formattedMessage);
+            // Mantieni la lista a un massimo di 50 messaggi (o 75, se preferisci)
+            while (Log.size() > 50) {
+                Log.remove(0);
+            }
+        });
     }
 
 
     public int getPort() {
         return port;
     }
+
+
+    public ObservableList<String> getLog() {
+        return Log;
+    }
+
 
 }

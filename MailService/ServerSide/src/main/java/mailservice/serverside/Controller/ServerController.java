@@ -44,17 +44,25 @@ public class ServerController {
         if (ServerLog != null) {
             ServerLog.getItems().clear(); // Pulisce il log
         }
+        serverModel = ServerModel.getInstance(this);
+        ServerLog.setItems(serverModel.getLog());
+        serverModel.getLog().addListener((javafx.collections.ListChangeListener<String>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    ServerLog.scrollTo(ServerLog.getItems().size() - 1);
+                }
+            }
+        });
     }
 
 
     @FXML
     protected void startServer() {
         if (isServerRunning) {  // controllo se il server è già avviato
-            log(LogType.INFO,"Server is already running.");
+            serverModel.addLog(LogType.INFO,"Server is already running.");
             return;
         }
 
-        serverModel = ServerModel.getInstance(this); //passiamo il ServerController al ServerModel
         serverModel.startServer();
         isServerRunning = true;
 
@@ -63,7 +71,7 @@ public class ServerController {
         stopButton.setDisable(false);
 
         //aggiungiamo un messaggio di log per segnalare che il server è stato avviato
-        log(LogType.INFO,"Server started on port " + serverModel.getPort());
+        serverModel.addLog(LogType.INFO,"Server started on port " + serverModel.getPort());
     }
 
 
@@ -86,10 +94,10 @@ public class ServerController {
 
 
             //aggiungiamo un messaggio di log per segnalare che il server è stato fermato
-            log(LogType.INFO, "Server stopped");
+            serverModel.addLog(LogType.INFO, "Server stopped");
         }
         else {
-            log(LogType.ERROR,"Server is not running");
+            serverModel.addLog(LogType.ERROR,"Server is not running");
         }
     }
 
@@ -114,18 +122,6 @@ public class ServerController {
         mainStage.initModality(Modality.APPLICATION_MODAL); //consente di interagire con entrambe le finestre
 
         mainStage.show();
-    }
-
-
-    public void log(LogType type, String message) {
-        Platform.runLater(() -> {
-            String formattedMessage = String.format("[%s] %s", type.name(), message);
-            ServerLog.getItems().add(formattedMessage);
-            ServerLog.scrollTo(ServerLog.getItems().size() - 1);
-            while (ServerLog.getItems().size() > 50) {
-                ServerLog.getItems().remove(0); // Rimuove la prima voce (la più vecchia)
-            }
-        });
     }
 
 
