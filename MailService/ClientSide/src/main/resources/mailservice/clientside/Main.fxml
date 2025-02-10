@@ -16,7 +16,7 @@
          <Label fx:id="MailLabel" style="-fx-text-fill: white; -fx-font-size: 18px;" text="perz@rama.it" />
          <TextFlow fx:id="dangerAlert" prefHeight="38.0" prefWidth="436.0" style="-fx-background-color: #FFCDD2; -fx-padding: 5px; -fx-border-color: #D32F2F; -fx-border-radius: 5px;" textAlignment="RIGHT" visible="false">
             <children>
-               <Text fx:id="dangerAlertText1" style="-fx-fill: #D32F2F;" text="Error message goes here." wrappingWidth="197.51756596565247" />
+               <Text fx:id="dangerAlertText" style="-fx-fill: #D32F2F;" text="Error message goes here." wrappingWidth="197.51756596565247" />
             </children>
          </TextFlow>
       </HBox>

@@ -44,7 +44,4 @@
     <!-- Messaggi di successo o errore -->
     <TextFlow fx:id="dangerAlert" prefHeight="22.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
     </TextFlow>
-
-    <TextFlow fx:id="successAlert" prefHeight="22.0" prefWidth="385.0" textAlignment="CENTER" visible="false" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
-    </TextFlow>
 </AnchorPane>

@@ -40,8 +40,6 @@ public class MainController {
     @FXML
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
     @FXML
-    private TextFlow successAlert; //serve a visualizzare un messaggio di successo
-    @FXML
     private Button ComposeButton;
     @FXML
     private Button ForwardButton;
@@ -169,7 +167,6 @@ public class MainController {
                     // Se l'eliminazione va a buon fine, rimuovi l'email dalla lista
                     MailList.getItems().remove(selectedEmail);
                     MailList.getSelectionModel().clearSelection();
-                    showSuccessAlert("Email deleted successfully.");
                     Platform.runLater(() -> {
                         SenderLabel.setText("");
                         ReceiverLabel.setText("");
@@ -177,6 +174,7 @@ public class MainController {
                         DateLabel.setText("");
                         MailContent.getEngine().loadContent(""); // Pulisce il contenuto del WebView
                     });
+                    showSuccessAlert("Email deleted successfully.");
                 } else {
                     // Se l'eliminazione fallisce, mostra un messaggio di errore
                     showDangerAlert("Failed to delete the selected email.",true);
@@ -318,34 +316,6 @@ public class MainController {
         });
     }
 
-
-    @FXML
-    private void showDangerAlert(String message, boolean hideAfterDelay) {
-        Platform.runLater(() -> {
-            if (dangerAlert != null) {
-                dangerAlert.getChildren().clear();
-                Text dangerText = new Text(message);
-                dangerText.setFill(Color.RED);
-                dangerAlert.getChildren().add(dangerText);
-                dangerAlert.setVisible(true);
-            }
-        });
-    }
-
-
-    @FXML
-    private void showSuccessAlert(String message) {
-        Platform.runLater(() -> {
-            if (successAlert != null) {
-                System.out.println("Showing success alert: " + message); // Aggiungi questa linea per il debug
-                successAlert.getChildren().clear();
-                Text successText = new Text(message);
-                successText.setFill(Color.GREEN);
-                successAlert.getChildren().add(successText);
-                successAlert.setVisible(true);
-            }
-        });
-    }
 
 
     @FXML

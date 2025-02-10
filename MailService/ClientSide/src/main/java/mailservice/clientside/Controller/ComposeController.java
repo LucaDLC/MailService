@@ -86,7 +86,7 @@ public class ComposeController{
 
     private void showDangerAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);  // Tipo di alert per errore
-        alert.setTitle("Error");
+        alert.setTitle("Compose Error");
         alert.setHeaderText(null);  // Nessun testo di intestazione
         alert.setContentText(message);  // Messaggio di errore
 
@@ -102,7 +102,7 @@ public class ComposeController{
 
     private void showSuccessAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);  // Tipo di alert per successo
-        alert.setTitle("Success");
+        alert.setTitle("Compose Success");
         alert.setHeaderText(null);  // Nessun testo di intestazione
         alert.setContentText(message);  // Messaggio di successo
 

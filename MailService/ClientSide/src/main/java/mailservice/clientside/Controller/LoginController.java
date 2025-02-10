@@ -30,8 +30,6 @@ public class LoginController {
     private Button LoginButton; //serve ad effettuare il login
     @FXML
     private TextFlow dangerAlert; //serve a visualizzare un messaggio di errore
-    @FXML
-    private TextFlow successAlert; //serve a visualizzare un messaggio di successo
 
 
     @FXML
@@ -46,7 +44,6 @@ public class LoginController {
             if (loginResult.getKey()) {
                 if (loginResult.getValue()) {
                     ClientModel.log(INFO,"The Email is a server user");
-                    showSuccessAlert();
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
                         Parent mainView = loader.load(); //carico il file FXML
@@ -91,8 +88,7 @@ public class LoginController {
 
     @FXML
     private void showDangerAlert(String message) {
-        successAlert.setVisible(false); //nascondo il messaggio di successo
-        getDangerAlert();
+        dangerAlert.getChildren().clear();
         Text dangerText = new Text(message);
         dangerText.setFill(Color.RED);
         dangerAlert.getChildren().add(dangerText);
@@ -101,17 +97,6 @@ public class LoginController {
     }
 
 
-    @FXML
-    private void showSuccessAlert() {
-        dangerAlert.setVisible(false); //nascondo il messaggio di errore
-        getSuccessAlert();
-        Text successText = new Text("Login successful");
-        successText.setFill(Color.GREEN);
-        successAlert.getChildren().add(successText);
-        successAlert.setVisible(true);
-        hideAlerts();
-    }
-
 
     @FXML
     private void hideAlerts() {
@@ -119,18 +104,9 @@ public class LoginController {
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> {
             dangerAlert.setVisible(false);
-            successAlert.setVisible(false);
         });
         pause.play();
     }
 
 
-    private void getSuccessAlert() {
-        successAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di successo nel caso in cui ci sia già un messaggio
-    }
-
-
-    private void getDangerAlert() {
-        dangerAlert.getChildren().clear(); //serve a pulire il campo dove verrà visualizzato il messaggio di errore nel caso in cui ci sia già un messaggio
-    }
 }
