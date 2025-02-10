@@ -146,7 +146,12 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to delete.",true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Delete Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Please select an email to delete.");
+
+            errorAlert.showAndWait();
             return;
         }
 
@@ -187,7 +192,12 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to forward.",true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Forward Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Please select an email to forward.");
+
+            errorAlert.showAndWait();
             return;
         }
         ClientModel.log(INFO, "Forwarding Mail.");
@@ -201,7 +211,12 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to reply.",true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Reply Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Please select an email to reply.");
+
+            errorAlert.showAndWait();
             return;
         }
         ClientModel.log(INFO, "Replying Mail.");
@@ -215,7 +230,12 @@ public class MainController {
 
         if (selectedEmail == null) {
             // Se nessuna email è selezionata, mostra un avviso
-            showDangerAlert("Please select an email to reply.",true);
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Reply All Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Please select an email to reply.");
+
+            errorAlert.showAndWait();
             return;
         }
         ClientModel.log(INFO, "Replying All Mail.");
@@ -237,7 +257,7 @@ public class MainController {
                 ClientModel.log(INFO, "Logging out...");
                 ClientApp.stopPeriodicFetch();
                 clientModel.logout ();
-                
+
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Login.fxml"));
                     Parent loginView = loader.load(); //carico il file FXML
