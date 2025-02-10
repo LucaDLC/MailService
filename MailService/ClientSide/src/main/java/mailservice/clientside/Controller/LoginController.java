@@ -20,8 +20,6 @@ import static mailservice.shared.enums.LogType.*;
 import java.io.IOException;
 import java.util.Map;
 
-import static mailservice.shared.enums.LogType.ERROR;
-
 public class LoginController {
 
     @FXML

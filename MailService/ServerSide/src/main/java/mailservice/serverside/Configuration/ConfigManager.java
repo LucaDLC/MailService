@@ -2,7 +2,6 @@ package mailservice.serverside.Configuration;
 
 import java.io.*;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 public class ConfigManager {
     private final Properties prop;
