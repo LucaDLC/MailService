@@ -21,6 +21,7 @@ import mailservice.shared.enums.*;
 
 import static mailservice.shared.Email.generateEmptyEmail;
 import static mailservice.shared.enums.CommandRequest.*;
+import static mailservice.shared.enums.CommandResponse.*;
 import static mailservice.shared.enums.LogType.*;
 
 
@@ -147,7 +148,7 @@ public class ClientModel {
             //Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
-            if (response != null && response.equals(CommandResponse.SUCCESS)) {
+            if (response != null && response.equals(SUCCESS)) {
                 log(INFO,"Command executed successfully: " + response);
                 return true;
             } else {
@@ -185,10 +186,10 @@ public class ClientModel {
 
 
     private CommandResponse receiveMessage() {
-        //return CommandResponse.SUCCESS;
+        //return SUCCESS;
         if (socket == null || socket.isClosed()) {
             log(ERROR,"Connection not established. Cannot receive messages.");
-            return CommandResponse.GENERIC_ERROR;
+            return GENERIC_ERROR;
         }
         try {
             Response cmdResponse;
@@ -200,15 +201,15 @@ public class ClientModel {
                 return cmdResponse.responseName();
             } else {
                 log(ERROR,"Unexpected response type: " + inResponse.getClass());
-                return CommandResponse.GENERIC_ERROR;
+                return GENERIC_ERROR;
             }
         } catch (IOException e) {
             log(ERROR,"Exception while reading server response: " + e.getMessage());
-            return CommandResponse.GENERIC_ERROR;
+            return GENERIC_ERROR;
         }
         catch (ClassNotFoundException e) {
             log(ERROR,"Class not found while reading server response: " + e.getMessage());
-            return CommandResponse.GENERIC_ERROR;
+            return GENERIC_ERROR;
         }
 
     }
@@ -239,10 +240,10 @@ public class ClientModel {
             out.flush();
             //Thread.sleep(250);
             CommandResponse response = receiveMessage();
-            if (response != null && response.equals(CommandResponse.SUCCESS)) {
+            if (response != null && response.equals(SUCCESS)) {
                 log(INFO,"Mail sent successfully: " + response);
                 return true;
-            } else if (response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
+            } else if (response != null && response.equals(ILLEGAL_PARAMS)) {
                 log(ERROR,"Receivers does not exist in the server " + response);
                 return false;
             } else {
@@ -278,7 +279,7 @@ public class ClientModel {
             out.flush();
             //Thread.sleep(250);
             Response response = (Response) in.readObject(); // Expecting a Response object
-            if (response != null && response.responseName() == CommandResponse.SUCCESS) {
+            if (response != null && response.responseName() == SUCCESS) {
                 emails = response.args();  // Accessing the list directly
                 if (emails == null) {
                     emails = new ArrayList<>();  // Ensure non-null list
