@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static mailservice.shared.enums.LogType.*;
+
 public class ClientApp extends Application {
     private static ScheduledExecutorService operationPool;
     private static final int threadsNumber = 1;
@@ -31,7 +33,7 @@ public class ClientApp extends Application {
 
     @Override
     public void stop() {
-        System.out.println("[INFO] Application is stopping...");
+        ClientModel.log(SYSTEM, "Application is stopping...");
         stopPeriodicFetch();
     }
 
@@ -50,11 +52,11 @@ public class ClientApp extends Application {
             operationPool.shutdown();
             try {
                 if (!operationPool.awaitTermination(5, TimeUnit.SECONDS)) {
-                    System.err.println("[ERROR] Forcefully shutting down operation pool...");
+                    ClientModel.log(ERROR, "Forcefully shutting down operation pool...");
                     operationPool.shutdownNow();
                 }
             } catch (InterruptedException e) {
-                System.err.println("[ERROR] Interrupted during pool termination.");
+                ClientModel.log(ERROR, "Interrupted during pool termination.");
                 Thread.currentThread().interrupt();
             }
         }

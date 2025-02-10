@@ -21,6 +21,7 @@ import mailservice.shared.enums.*;
 
 import static mailservice.shared.Email.generateEmptyEmail;
 import static mailservice.shared.enums.CommandRequest.*;
+import static mailservice.shared.enums.LogType.*;
 
 
 public class ClientModel {
@@ -49,7 +50,7 @@ public class ClientModel {
             fetchPeriod = Integer.parseInt(configManager.readProperty("Client.Fetch"));
             emailList = FXCollections.observableArrayList();
         } catch (IllegalArgumentException e){
-            System.err.println("[ERROR] Error in user.properties file");
+            log(ERROR,"Error in user.properties file");
         }
     }
 
@@ -99,18 +100,18 @@ public class ClientModel {
                 socket.setSoTimeout(SOCKET_TIMEOUT);
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
-                System.out.println("[INFO] Connected to server.");
+                log(INFO,"Connected to server.");
                 isServerReachable.set(true);
                 return true;
             }
             else {
-                System.out.println("[INFO] Already connected to server.");
+                log(INFO,"Already connected to server.");
                 isServerReachable.set(true);
                 return false;
             }
 
         } catch (IOException e) {
-            System.err.println("[ERROR] Unable to connect to server: " + e.getMessage());
+            log(ERROR,"Unable to connect to server: " + e.getMessage());
             isServerReachable.set(false);
             return false;
         }
@@ -124,9 +125,9 @@ public class ClientModel {
                 in.close();
                 out.close();
                 socket.close();
-                System.out.println("[INFO] Disconnected from server.");
+                log(INFO,"Disconnected from server.");
             } catch (IOException e) {
-                System.err.println("[ERROR] Error disconnecting: " + e.getMessage());
+                log(ERROR,"Error disconnecting: " + e.getMessage());
             }
         }
 
@@ -135,26 +136,26 @@ public class ClientModel {
 
     private boolean sendCMD(CommandRequest command, Email dataMail) {
         if (!connectToServer()) {
-            System.err.println("[ERROR] Unable to connect to server.");
+            log(ERROR,"Unable to connect to server.");
             return false;
         }
         Request request = new Request(userLogged, command, dataMail);
         try {
-            System.out.println("[DEBUG] Raw client request: " + request);
+            log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
             //Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
-                System.out.println("[INFO] Command executed successfully: " + response);
+                log(INFO,"Command executed successfully: " + response);
                 return true;
             } else {
-                System.err.println("[ERROR] Response is NULL or not SUCCESS: " + response);
+                log(ERROR,"Response is NULL or not SUCCESS: " + response);
                 return false;
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] Failed to send message: " + e.getMessage());
+            log(ERROR,"Failed to send message: " + e.getMessage());
             return false;
         } finally {
             disconnectFromServer();
@@ -186,7 +187,7 @@ public class ClientModel {
     private CommandResponse receiveMessage() {
         //return CommandResponse.SUCCESS;
         if (socket == null || socket.isClosed()) {
-            System.err.println("[ERROR] Connection not established. Cannot receive messages.");
+            log(ERROR,"Connection not established. Cannot receive messages.");
             return CommandResponse.GENERIC_ERROR;
         }
         try {
@@ -194,19 +195,19 @@ public class ClientModel {
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
                 cmdResponse = (Response) inResponse;
-                System.out.println("[DEBUG] Raw server response: " + cmdResponse);
+                log(SYSTEM," Raw server response: " + cmdResponse);
 
                 return cmdResponse.responseName();
             } else {
-                System.err.println("[ERROR] Unexpected response type: " + inResponse.getClass());
+                log(ERROR,"Unexpected response type: " + inResponse.getClass());
                 return CommandResponse.GENERIC_ERROR;
             }
         } catch (IOException e) {
-            System.err.println("[ERROR] Exception while reading server response: " + e.getMessage());
+            log(ERROR,"Exception while reading server response: " + e.getMessage());
             return CommandResponse.GENERIC_ERROR;
         }
         catch (ClassNotFoundException e) {
-            System.err.println("[ERROR] Class not found while reading server response: " + e.getMessage());
+            log(ERROR,"Class not found while reading server response: " + e.getMessage());
             return CommandResponse.GENERIC_ERROR;
         }
 
@@ -215,41 +216,41 @@ public class ClientModel {
 
     public boolean sendEmail(List<String> receivers, String subject, String content) {
         if (receivers == null || receivers.isEmpty()) {
-            System.err.println("[ERROR] No recipients provided for the email.");
+            log(ERROR,"No recipients provided for the email.");
             return false;
         }
 
         for (String recipientSplit : receivers) {
             if (!ConfigManager.getInstance().validateEmail(recipientSplit)) {
-                System.err.println("[ERROR] Invalid email: " + recipientSplit);
+                log(ERROR,"Invalid email: " + recipientSplit);
                 return false;
             }
         }
 
         if (!connectToServer()) {
-            System.err.println("[ERROR] Unable to connect to server.");
+            log(ERROR,"Unable to connect to server.");
             return false;
         }
         Email emailData = new Email(userLogged, receivers, subject, content);
         Request request = new Request(userLogged, SEND_EMAIL, emailData);
         try {
-            System.out.println("[DEBUG] Raw client request: " + request);
+            log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
             //Thread.sleep(250);
             CommandResponse response = receiveMessage();
             if (response != null && response.equals(CommandResponse.SUCCESS)) {
-                System.out.println("[INFO] Mail sent successfully: " + response);
+                log(INFO,"Mail sent successfully: " + response);
                 return true;
             } else if (response != null && response.equals(CommandResponse.ILLEGAL_PARAMS)) {
-                System.err.println("[ERROR] Receivers does not exist in the server " + response);
+                log(ERROR,"Receivers does not exist in the server " + response);
                 return false;
             } else {
-                System.err.println("[ERROR] Response is NULL or not SUCCESS: " + response);
+                log(ERROR,"Response is NULL or not SUCCESS: " + response);
                 return false;
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] Failed to send mail: " + e.getMessage());
+            log(ERROR,"Failed to send mail: " + e.getMessage());
             return false;
         } finally {
             disconnectFromServer();
@@ -261,17 +262,17 @@ public class ClientModel {
         List<Email> emails = new ArrayList<>(); // Lista vuota di default
         try {
             if (!connectToServer()) {
-                System.err.println("[ERROR] Unable to connect to server.");
+                log(ERROR,"Unable to connect to server.");
                 return; // Ritorna subito la lista vuota se non riesce a connettersi
             }
             if(fullForceFetch){
                 Request request = new Request(userLogged, FETCH_EMAIL, generateEmptyEmail());
-                System.out.println("[DEBUG] Raw client request: " + request);
+                log(SYSTEM,"Raw client request: " + request);
                 out.writeObject(request);
             }
             else {
                 Request request = new Request(userLogged, FETCH_EMAIL, null);
-                System.out.println("[DEBUG] Raw client request: " + request);
+                log(SYSTEM,"Raw client request: " + request);
                 out.writeObject(request);
             }
             out.flush();
@@ -283,10 +284,10 @@ public class ClientModel {
                     emails = new ArrayList<>();  // Ensure non-null list
                 }
             } else {
-                System.err.println("[ERROR] Invalid or empty response received.");
+                log(ERROR,"Invalid or empty response received.");
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("[ERROR] Error fetching emails: " + e.getMessage());
+            log(ERROR,"Error fetching emails: " + e.getMessage());
         } finally {
             disconnectFromServer();
         }
@@ -317,7 +318,7 @@ public class ClientModel {
 
     }
 
-    private void log(LogType type, String message){
+    public static void log(LogType type, String message){
         String formattedMessage = String.format("[%s] %s", type.name(), message);
         if(type.equals(LogType.ERROR)) {
             System.err.println(formattedMessage);

@@ -17,6 +17,7 @@ import javafx.util.Duration;
 import mailservice.clientside.ClientApp;
 import mailservice.shared.Email;
 import mailservice.clientside.Model.ClientModel;
+import static mailservice.shared.enums.LogType.*;
 
 import java.io.IOException;
 
@@ -58,11 +59,11 @@ public class MainController {
 
     @FXML
     protected void initialize() {
-        System.out.println("[INFO] Initializing MainController...");
+        ClientModel.log(SYSTEM,"Initializing MainController...");
         clientModel = ClientModel.getInstance();
 
         if (clientModel == null) {
-            System.err.println("[ERROR] Failed to initialize ClientModel.");
+            ClientModel.log(ERROR, "Failed to initialize ClientModel.");
             showDangerAlert("Initialization error.",false);
             ComposeButton.setDisable(true);
             ForwardButton.setDisable(true);
@@ -71,7 +72,7 @@ public class MainController {
             return;
         }
 
-        System.out.println("[INFO] ClientModel initialized successfully.");
+        ClientModel.log(SYSTEM, "ClientModel initialized successfully.");
         MailLabel.setText(clientModel.getUserEmail());
 
         // Collega la ListView alla lista osservabile
@@ -119,7 +120,7 @@ public class MainController {
 
     @FXML
     protected void onComposeButtonClick() {
-        System.out.println("[INFO] Composing Mail.");
+        ClientModel.log(INFO, "Composing Mail.");
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/MailCompose.fxml"));
@@ -132,7 +133,7 @@ public class MainController {
                 composeStage.initModality(Modality.APPLICATION_MODAL);
                 composeStage.show();
             } catch (IOException e) {
-                System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+                ClientModel.log(ERROR, "Failed to load MailCompose.fxml: " + e.getMessage());
                 e.printStackTrace();
             }
         });
@@ -189,7 +190,7 @@ public class MainController {
             showDangerAlert("Please select an email to forward.",true);
             return;
         }
-        System.out.println("[INFO] Forwarding Mail.");
+        ClientModel.log(INFO, "Forwarding Mail.");
         showComposeWindow("", "Fwd: " + selectedEmail.getSubject(), "Forwarded message: " + selectedEmail.getText());
     }
 
@@ -203,7 +204,7 @@ public class MainController {
             showDangerAlert("Please select an email to reply.",true);
             return;
         }
-        System.out.println("[INFO] Replying Mail.");
+        ClientModel.log(INFO, "Replying Mail.");
         showComposeWindow(selectedEmail.getSender(), "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
 
@@ -217,7 +218,7 @@ public class MainController {
             showDangerAlert("Please select an email to reply.",true);
             return;
         }
-        System.out.println("[INFO] Replying All Mail.");
+        ClientModel.log(INFO, "Replying All Mail.");
 
         String allRecipients = String.join(", ", selectedEmail.getReceivers());
         showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
@@ -233,7 +234,7 @@ public class MainController {
 
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                System.out.println("[INFO] Logging out...");
+                ClientModel.log(INFO, "Logging out...");
                 ClientApp.stopPeriodicFetch();
                 clientModel.logout ();
                 
@@ -278,7 +279,7 @@ public class MainController {
             composeStage.initModality(Modality.APPLICATION_MODAL);
             composeStage.show();
         } catch (IOException e) {
-            System.err.println("[ERROR] Failed to load MailCompose.fxml: " + e.getMessage());
+            ClientModel.log(ERROR, "Failed to load MailCompose.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }

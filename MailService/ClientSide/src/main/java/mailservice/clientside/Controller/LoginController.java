@@ -15,9 +15,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
+import static mailservice.shared.enums.LogType.*;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static mailservice.shared.enums.LogType.ERROR;
 
 public class LoginController {
 
@@ -34,15 +37,15 @@ public class LoginController {
     @FXML
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-        System.out.println("Email: " + login);
+        ClientModel.log(INFO,"Email: " + login);
         ConfigManager configManager = ConfigManager.getInstance();
 
         if (configManager.validateEmail(login)) {
-            System.out.println("[INFO] Email is valid");
+            ClientModel.log(INFO,"Email is valid");
             Map.Entry<Boolean, Boolean> loginResult = ClientModel.getInstance().wrapLoginCheck(login);
             if (loginResult.getKey()) {
                 if (loginResult.getValue()) {
-                    System.out.println("[INFO]The Email is a server user");
+                    ClientModel.log(INFO,"The Email is a server user");
                     showSuccessAlert();
                     try {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mailservice/clientside/Main.fxml"));
@@ -61,20 +64,20 @@ public class LoginController {
                         stage.setResizable(false);
                         stage.close();
                     } catch (IOException e) {
-                        System.err.println("Unable to load Main.fxml: " + e.getMessage());
+                        ClientModel.log(ERROR,"Unable to load Main.fxml: " + e.getMessage());
                         showDangerAlert("Unable to load Main.fxml");
                     }
                 } else {
-                    System.err.println("[ERROR] The Email is not a server user");
+                    ClientModel.log(ERROR,"The Email is not a server user");
                     showDangerAlert("The Email user is not registered yet");
                 }
             } else {
-                System.err.println("[ERROR] Server is unreachable");
+                ClientModel.log(ERROR,"Server is unreachable");
                 showDangerAlert("Server is unreachable");
             }
 
         } else {
-            System.err.println("[ERROR] Email is not Valid");
+            ClientModel.log(ERROR,"Email is not Valid");
             showDangerAlert("Invalid Email");
         }
     }

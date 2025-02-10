@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import mailservice.clientside.Configuration.ConfigManager;
 import mailservice.clientside.Model.ClientModel;
+import static mailservice.shared.enums.LogType.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,10 +49,10 @@ public class ComposeController{
             // Rimuove gli spazi bianchi e valida l'email
             String trimmedRecipient = recipientSplit.trim().toLowerCase();
             if (ConfigManager.getInstance().validateEmail(trimmedRecipient)) {
-                System.out.println("[INFO] Valid email: " + trimmedRecipient);
+                ClientModel.log(INFO,"Valid email: " + trimmedRecipient);
                 trimmedReceivers.add(trimmedRecipient);
             } else {
-                System.err.println("[ERROR] Invalid email: " + trimmedRecipient);
+                ClientModel.log(ERROR, "Invalid email: " + trimmedRecipient);
                 showDangerAlert("Invalid email: " + trimmedRecipient);
                 return;
             }
@@ -118,7 +119,7 @@ public class ComposeController{
     @FXML
     //metodo che viene chiamato quando si preme il bottone
     protected void onCancelFieldButtonClick() {
-        System.out.println("Deleting fields...");
+        ClientModel.log(INFO,"Deleting fields...");
 
         String recipient = RecipientFieldID.getText(); //prendo il destinatario
         String object = ObjectFieldID.getText(); //prendo l'oggetto
