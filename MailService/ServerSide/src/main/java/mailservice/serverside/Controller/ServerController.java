@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.Cursor;
-import mailservice.serverside.Log.LogType;
+import mailservice.shared.enums.LogType;
 import mailservice.serverside.Model.ServerModel;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package mailservice.serverside.Log;
+package mailservice.shared.enums;
 
 public enum LogType {
     INFO,

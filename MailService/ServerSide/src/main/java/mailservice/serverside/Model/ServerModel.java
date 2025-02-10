@@ -2,7 +2,7 @@ package mailservice.serverside.Model;
 
 import mailservice.serverside.Configuration.*;
 import mailservice.serverside.Controller.ServerController;
-import mailservice.serverside.Log.LogType;
+import mailservice.shared.enums.LogType;
 
 import java.io.*;
 import java.net.BindException;
