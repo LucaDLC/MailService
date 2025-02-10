@@ -174,10 +174,20 @@ public class MainController {
                         DateLabel.setText("");
                         MailContent.getEngine().loadContent(""); // Pulisce il contenuto del WebView
                     });
-                    showSuccessAlert("Email deleted successfully.");
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);  // Tipo di alert per successo
+                    alert.setTitle("Email deleted.");
+                    alert.setHeaderText(null);  // Nessun testo di intestazione
+                    alert.setContentText("Email deleted successfully.");
+                    alert.showAndWait();
+
                 } else {
                     // Se l'eliminazione fallisce, mostra un messaggio di errore
-                    showDangerAlert("Failed to delete the selected email.",true);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);  // Tipo di alert per successo
+                    alert.setTitle("Error Deleting Email.");
+                    alert.setHeaderText(null);  // Nessun testo di intestazione
+                    alert.setContentText("Failed to delete the selected email.");
+                    alert.showAndWait();
                 }
             }
         });
