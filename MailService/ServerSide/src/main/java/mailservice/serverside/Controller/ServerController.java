@@ -44,7 +44,7 @@ public class ServerController {
         if (ServerLog != null) {
             ServerLog.getItems().clear(); // Pulisce il log
         }
-        serverModel = ServerModel.getInstance(this);
+        serverModel = ServerModel.getInstance();
         ServerLog.setItems(serverModel.getLog());
         serverModel.getLog().addListener((javafx.collections.ListChangeListener<String>) change -> {
             while (change.next()) {

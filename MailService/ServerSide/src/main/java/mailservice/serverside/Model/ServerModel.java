@@ -35,24 +35,22 @@ public class ServerModel {
     private ExecutorService serverThreads;
     private final int threadsNumber;
 
-    private ServerController controller;
     private static ServerModel instance;
     private static final ConcurrentHashMap<String, ReentrantReadWriteLock> folderLocks = new ConcurrentHashMap<>();
     private ObservableList<String> Log = FXCollections.observableArrayList();
 
 
-    private ServerModel(ServerController serverController) {
+    private ServerModel() {
         ConfigManager configManager = ConfigManager.getInstance();
-        this.controller = serverController;
         this.port = Integer.parseInt(configManager.readProperty("Server.Port"));
         this.timeout = Integer.parseInt(configManager.readProperty("Server.Timeout"));
         this.threadsNumber = Integer.parseInt(configManager.readProperty("Server.Threads"));
     }
 
 
-    public static synchronized ServerModel getInstance(ServerController serverController) {
+    public static synchronized ServerModel getInstance() {
         if (instance == null) {
-            instance = new ServerModel(serverController);
+            instance = new ServerModel();
         }
         return instance;
     }
