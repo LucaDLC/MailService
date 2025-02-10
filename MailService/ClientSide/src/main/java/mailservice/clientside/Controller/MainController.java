@@ -162,6 +162,7 @@ public class MainController {
                 if (ClientModel.getInstance().wrapDeleteEmail(selectedEmail)) {
                     // Se l'eliminazione va a buon fine, rimuovi l'email dalla lista
                     MailList.getItems().remove(selectedEmail);
+                    MailList.getSelectionModel().clearSelection();
                     showSuccessAlert("Email deleted successfully.");
                     Platform.runLater(() -> {
                         SenderLabel.setText("");
