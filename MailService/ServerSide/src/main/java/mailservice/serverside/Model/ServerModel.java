@@ -392,9 +392,9 @@ public class ServerModel {
     }
 
 
-    public static synchronized boolean FolderManagement(String username, boolean FolderCreation) {
+    public static synchronized CommandResponse FolderManagement(String username, boolean FolderCreation) {
         if(username == null || username.isEmpty()) {
-            return false;
+            return ILLEGAL_PARAMS;
         }
         if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
             if (FolderCreation) {
@@ -403,22 +403,25 @@ public class ServerModel {
                 return deleteUserFolder(username);
             }
         } else {
-            return false;
+            return ILLEGAL_PARAMS;
         }
     }
 
 
-    private static synchronized boolean createUserFolder(String username) {
+    private static synchronized CommandResponse createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
         if (!folder.exists()) {
-            return folder.mkdirs();
+            folder.mkdirs();
+            return SUCCESS;
         }
-        return true;
+        else{
+            return GENERIC_ERROR;
+        }
     }
 
 
-    private static boolean deleteUserFolder(String username) {
+    private static CommandResponse deleteUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
         ReentrantReadWriteLock lock = getFolderLock(folder);
@@ -434,13 +437,14 @@ public class ServerModel {
                     file.delete();
                     removeFolderLock(file);
                 }
-                return folder.delete();
+                folder.delete();
+                return SUCCESS;
 
             }
         } finally {
             lock.writeLock().unlock();
         }
-        return false;
+        return GENERIC_ERROR;
     }
 
 

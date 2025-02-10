@@ -10,6 +10,8 @@ import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mailservice.serverside.Model.ServerModel;
 
+import static mailservice.shared.enums.CommandResponse.*;
+
 
 public class FolderController {
 
@@ -28,10 +30,13 @@ public class FolderController {
     @FXML
     protected void onFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-        if(ServerModel.FolderManagement(folder,true)){
+        if(ServerModel.FolderManagement(folder,true).equals(SUCCESS)){
             showSuccessAlert("Folder created successfully");
-        } else {
+        } else if(ServerModel.FolderManagement(folder,true).equals(ILLEGAL_PARAMS)){
             showDangerAlert("Folder name is not valid");
+        }
+        else {
+            showDangerAlert("Folder already exists");
         }
     }
 
@@ -39,10 +44,13 @@ public class FolderController {
     @FXML
     protected void onDeleteFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-        if(ServerModel.FolderManagement(folder,false)){
+        if(ServerModel.FolderManagement(folder,false).equals(SUCCESS)){
             showSuccessAlert("Folder deleted successfully");
-        } else {
+        } else if(ServerModel.FolderManagement(folder,false).equals(ILLEGAL_PARAMS)){
             showDangerAlert("Folder name is not valid");
+        }
+        else {
+            showDangerAlert("Folder does not exist");
         }
     }
 
