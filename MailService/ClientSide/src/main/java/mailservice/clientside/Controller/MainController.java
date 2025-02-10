@@ -64,7 +64,7 @@ public class MainController {
 
         if (clientModel == null) {
             ClientModel.log(ERROR, "Failed to initialize ClientModel.");
-            showDangerAlert("Initialization error.",false);
+            showStatus("Initialization error!");
             ComposeButton.setDisable(true);
             ForwardButton.setDisable(true);
             DeleteButton.setDisable(true);
@@ -94,10 +94,10 @@ public class MainController {
         });
 
         clientModel.isServerReachable().addListener((obs, oldValue, newValue) -> {
-            if (!newValue) {
-                showDangerAlert("Server unreachable!",false);
+            if (!newValue && clientModel!=null) {
+                showStatus("Server unreachable!");
             } else {
-                hideAlerts(0);
+                hideAlerts();
             }
         });
 
@@ -256,7 +256,7 @@ public class MainController {
                     stage.close();
 
                 } catch (IOException e) {
-                    System.err.println("Unable to load Login.fxml: " + e.getMessage());
+                    ClientModel.log(ERROR, "Unable to load Login.fxml: " + e.getMessage());
                 }
             }
         });
@@ -286,6 +286,20 @@ public class MainController {
 
 
     @FXML
+    private void showStatus(String message) {
+        Platform.runLater(() -> {
+            if (dangerAlert != null) {
+                dangerAlert.getChildren().clear();
+                Text dangerText = new Text(message);
+                dangerText.setFill(Color.RED);
+                dangerAlert.getChildren().add(dangerText);
+                dangerAlert.setVisible(true);
+            }
+        });
+    }
+
+
+    @FXML
     private void showDangerAlert(String message, boolean hideAfterDelay) {
         Platform.runLater(() -> {
             if (dangerAlert != null) {
@@ -294,9 +308,6 @@ public class MainController {
                 dangerText.setFill(Color.RED);
                 dangerAlert.getChildren().add(dangerText);
                 dangerAlert.setVisible(true);
-                if (hideAfterDelay) {
-                    hideAlerts(3); // Nascondi gli alert dopo 3 secondi
-                }
             }
         });
     }
@@ -312,17 +323,15 @@ public class MainController {
                 successText.setFill(Color.GREEN);
                 successAlert.getChildren().add(successText);
                 successAlert.setVisible(true);
-
-                hideAlerts(3); // Nascondi gli alert dopo 3 secondi
             }
         });
     }
 
 
     @FXML
-    private void hideAlerts(int delay) {
-        // Nascondere gli alert dopo 3 secondi
-        PauseTransition pause = new PauseTransition(Duration.seconds(delay));
+    private void hideAlerts() {
+        // Nascondere gli alert dopo 1 secondi
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
         pause.setOnFinished(event -> {
             dangerAlert.setVisible(false);
         });

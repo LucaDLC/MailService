@@ -85,7 +85,7 @@ public class LoginController {
 
     @FXML
     protected void onLoginButtonAction() {
-        System.out.println("Attempting Login...");
+        ClientModel.log(INFO, "Attempting Login...");
     }
 
 
