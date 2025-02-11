@@ -331,7 +331,9 @@ public class ServerModel {
 
                     }
                     else if(file.isDirectory() && file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")){
-                        FolderList.add(file.getName());
+                        if (!FolderList.contains(file.getName())) {
+                            FolderList.add(file.getName());
+                        }
                     }
                 }
             }
