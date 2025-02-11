@@ -1,0 +1,7 @@
+-- MailBox Database --
+
+BigData
+|
+|--- User@Rama.it
+     |
+     |--- Mail.txt
