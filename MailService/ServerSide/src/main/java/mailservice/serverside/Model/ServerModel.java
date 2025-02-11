@@ -401,11 +401,12 @@ public class ServerModel {
         if(username == null || username.isEmpty()) {
             return ILLEGAL_PARAMS;
         }
-        if(username.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
+        String lowerUsername = username.toLowerCase();
+        if(lowerUsername.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
             if (FolderCreation) {
-                return createUserFolder(username);
+                return createUserFolder(lowerUsername);
             } else {
-                return deleteUserFolder(username);
+                return deleteUserFolder(lowerUsername);
             }
         } else {
             return ILLEGAL_PARAMS;

@@ -33,6 +33,7 @@ public class LoginController {
     @FXML
     protected void onLoginButtonClick() {
         String login = LoginFieldID.getText()+ "@rama.it"; //aggiungo il dominio
+        login = login.toLowerCase();
         ClientModel.log(INFO,"Email: " + login);
         ConfigManager configManager = ConfigManager.getInstance();
 
