@@ -13,10 +13,10 @@
             <Image url="@logo.png" />
          </ImageView>
          <Label style="-fx-text-fill: white; -fx-font-size: 18px;" text="Welcome:" />
-         <Label fx:id="MailLabel" style="-fx-text-fill: white; -fx-font-size: 18px;" text="perz@rama.it" />
-         <TextFlow fx:id="dangerAlert" prefHeight="38.0" prefWidth="436.0" textAlignment="RIGHT" visible="false">
+         <Label fx:id="MailLabel" prefHeight="23.0" prefWidth="404.0" style="-fx-text-fill: white; -fx-font-size: 18px;" text="perz@rama.it" />
+         <TextFlow fx:id="dangerAlert" prefHeight="38.0" prefWidth="168.0" textAlignment="CENTER" visible="false">
             <children>
-               <Text fx:id="dangerAlertText" style="-fx-fill: #D32F2F;" text="Error message goes here." wrappingWidth="197.51756596565247" />
+               <Text fx:id="dangerAlertText" style="-fx-fill: #D32F2F;" text="Error message goes here." textAlignment="CENTER" wrappingWidth="155.517578125" />
             </children>
          </TextFlow>
       </HBox>

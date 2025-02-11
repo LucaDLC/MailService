@@ -62,7 +62,7 @@ public class MainController {
 
         if (clientModel == null) {
             ClientModel.log(ERROR, "Failed to initialize ClientModel.");
-            showStatus("Initialization error!");
+            showStatus("Initialization Error!");
             ComposeButton.setDisable(true);
             ForwardButton.setDisable(true);
             DeleteButton.setDisable(true);
@@ -93,7 +93,7 @@ public class MainController {
 
         clientModel.isServerReachable().addListener((obs, oldValue, newValue) -> {
             if (!newValue && clientModel!=null) {
-                showStatus("Server unreachable!");
+                showStatus("Server Unreachable!");
             } else {
                 hideAlerts();
             }
