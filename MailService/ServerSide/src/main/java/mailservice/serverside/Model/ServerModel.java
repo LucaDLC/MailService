@@ -38,6 +38,7 @@ public class ServerModel {
     private static ServerModel instance;
     private static final ConcurrentHashMap<String, ReentrantReadWriteLock> folderLocks = new ConcurrentHashMap<>();
     private ObservableList<String> Log = FXCollections.observableArrayList();
+    private ObservableList<String> FolderList = FXCollections.observableArrayList();
 
 
     private ServerModel() {
@@ -328,6 +329,9 @@ public class ServerModel {
                         addLog(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
 
                     }
+                    else if(file.isDirectory() && file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")){
+                        FolderList.add(file.getName());
+                    }
                 }
             }
         } finally {
@@ -392,7 +396,7 @@ public class ServerModel {
     }
 
 
-    public static synchronized CommandResponse FolderManagement(String username, boolean FolderCreation) {
+    public synchronized CommandResponse FolderManagement(String username, boolean FolderCreation) {
         if(username == null || username.isEmpty()) {
             return ILLEGAL_PARAMS;
         }
@@ -408,11 +412,13 @@ public class ServerModel {
     }
 
 
-    private static synchronized CommandResponse createUserFolder(String username) {
+    private synchronized CommandResponse createUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
         if (!folder.exists()) {
             folder.mkdirs();
+            FolderList.add(folder.getName());
+            addLog(LogType.SYSTEM, "Folder created: " + folder.getName());
             return SUCCESS;
         }
         else{
@@ -421,7 +427,7 @@ public class ServerModel {
     }
 
 
-    private static CommandResponse deleteUserFolder(String username) {
+    private CommandResponse deleteUserFolder(String username) {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
         ReentrantReadWriteLock lock = getFolderLock(folder);
@@ -438,6 +444,8 @@ public class ServerModel {
                     removeFolderLock(file);
                 }
                 folder.delete();
+                FolderList.remove(folder.getName());
+                addLog(LogType.SYSTEM, "Folder deleted: " + folder.getName());
                 return SUCCESS;
 
             }
@@ -493,6 +501,11 @@ public class ServerModel {
 
     public ObservableList<String> getLog() {
         return Log;
+    }
+
+
+    public ObservableList<String> getFolderList() {
+        return FolderList;
     }
 
 

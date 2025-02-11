@@ -3,6 +3,7 @@ package mailservice.serverside.Controller;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -30,8 +31,34 @@ public class FolderController {
     @FXML
     private ListView<String> folderListId; //serve a visualizzare la lista delle email presenti nella cartella
 
+    private ServerModel serverModel;
+
     @FXML
     protected void initialize() {
+        serverModel = ServerModel.getInstance();
+        folderListId.getItems().clear();
+        folderListId.setItems(serverModel.getFolderList());
+
+        // Set up il cell factory per visualizzare i soggetti delle email
+        folderListId.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(String folderName, boolean empty) {
+                super.updateItem(folderName, empty);
+                setText(empty || folderName == null ? null : folderName);
+            }
+        });
+
+        folderListId.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                FolderFieldID.setText(newSelection.replace("@rama.it", ""));
+            }
+        });
+
+        folderListId.focusedProperty().addListener((obs, oldFocus, newFocus) -> {
+            if (!newFocus) { // Se la ListView perde il focus
+                folderListId.getSelectionModel().clearSelection();
+            }
+        });
 
 
     }
@@ -40,9 +67,9 @@ public class FolderController {
     @FXML
     protected void onFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-        if(ServerModel.FolderManagement(folder,true).equals(SUCCESS)){
+        if(serverModel.FolderManagement(folder,true).equals(SUCCESS)){
             showSuccessAlert("Folder created successfully");
-        } else if(ServerModel.FolderManagement(folder,true).equals(ILLEGAL_PARAMS)){
+        } else if(serverModel.FolderManagement(folder,true).equals(ILLEGAL_PARAMS)){
             showDangerAlert("Folder name is not valid");
         }
         else {
@@ -54,9 +81,12 @@ public class FolderController {
     @FXML
     protected void onDeleteFolderButtonClick() {
         String folder = FolderFieldID.getText()+ "@rama.it"; //aggiungo il dominio
-        if(ServerModel.FolderManagement(folder,false).equals(SUCCESS)){
+        if(serverModel.FolderManagement(folder,false).equals(SUCCESS)){
+            folderListId.getItems().remove(folder);
+            folderListId.getSelectionModel().clearSelection();
+            FolderFieldID.clear();
             showSuccessAlert("Folder deleted successfully");
-        } else if(ServerModel.FolderManagement(folder,false).equals(ILLEGAL_PARAMS)){
+        } else if(serverModel.FolderManagement(folder,false).equals(ILLEGAL_PARAMS)){
             showDangerAlert("Folder name is not valid");
         }
         else {

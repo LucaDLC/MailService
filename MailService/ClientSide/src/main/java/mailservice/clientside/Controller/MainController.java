@@ -91,6 +91,7 @@ public class MainController {
             }
         });
 
+
         clientModel.isServerReachable().addListener((obs, oldValue, newValue) -> {
             if (!newValue && clientModel!=null) {
                 showStatus("Server Unreachable!");
