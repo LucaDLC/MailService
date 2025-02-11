@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane prefHeight="520.0" prefWidth="813.0" stylesheets="@server.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mailservice.serverside.Controller.ServerController">
-   <ListView fx:id="ServerLog" layoutX="18.0" prefHeight="595.0" prefWidth="1042.0" styleClass="Server-Log" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0" />
+   <ListView fx:id="ServerLog" layoutX="18.0" prefHeight="595.0" prefWidth="1042.0" styleClass="Server-Log" AnchorPane.bottomAnchor="75.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="50.0">
+      <cursor>
+         <Cursor fx:constant="CROSSHAIR" />
+      </cursor></ListView>
    <Label layoutX="55.0" layoutY="17.0" text="ServerSide">
       <font>
          <Font name="System Italic" size="17.0" />
@@ -23,11 +27,20 @@
       <image>
          <Image url="@Folder.png" />
       </image>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
    </ImageView>
    <HBox alignment="CENTER" layoutX="73.0" layoutY="459.0" prefHeight="46.0" prefWidth="662.0" spacing="100.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="78.0">
 
-      <Button fx:id="startButton" mnemonicParsing="false" onAction="#startServer" onMouseClicked="#onStart" prefHeight="34.0" prefWidth="88.0" text="Start Server" textFill="#0f842c" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
-      <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopServer" onMouseClicked="#onStop" prefHeight="34.0" prefWidth="88.0" text="Stop Server" textFill="#941515" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+      <Button fx:id="startButton" mnemonicParsing="false" onAction="#startServer" onMouseClicked="#onStart" prefHeight="34.0" prefWidth="88.0" text="Start Server" textFill="#0f842c" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopServer" onMouseClicked="#onStop" prefHeight="34.0" prefWidth="88.0" text="Stop Server" textFill="#941515" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
 
    </HBox>
 

@@ -3,12 +3,14 @@ package mailservice.serverside.Controller;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import mailservice.serverside.Model.ServerModel;
+import mailservice.shared.Email;
 
 import static mailservice.shared.enums.CommandResponse.*;
 
@@ -25,6 +27,14 @@ public class FolderController {
     private TextFlow successAlert; //serve a visualizzare un messaggio di successo
     @FXML
     private Button DeleteFolderButton; //serve a eliminare la cartella
+    @FXML
+    private ListView<String> folderListId; //serve a visualizzare la lista delle email presenti nella cartella
+
+    @FXML
+    protected void initialize() {
+
+
+    }
 
 
     @FXML
