@@ -172,7 +172,6 @@
 /*           Alert (TextFlow)               */
 /* ======================================== */
 #dangerAlert {
-    -fx-background-color: #FFCDD2; /* Sfondo rosso chiaro */
     -fx-padding: 5px;
     -fx-border-color: #D32F2F;
     -fx-border-radius: 5px;
