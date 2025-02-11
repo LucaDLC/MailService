@@ -43,6 +43,7 @@ public class ServerModel {
 
     private ServerModel() {
         ConfigManager configManager = ConfigManager.getInstance();
+        cleanInvalidDirectories();
         this.port = Integer.parseInt(configManager.readProperty("Server.Port"));
         this.timeout = Integer.parseInt(configManager.readProperty("Server.Timeout"));
         this.threadsNumber = Integer.parseInt(configManager.readProperty("Server.Threads"));
