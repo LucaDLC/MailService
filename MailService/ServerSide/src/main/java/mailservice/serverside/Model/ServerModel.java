@@ -123,25 +123,32 @@ public class ServerModel {
     private void handleClient(Socket clientSocket) {
         try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
-
+            Object RawRequest;
             Request clientMessage;
-            while ((clientMessage = (Request) in.readObject()) != null) {
-                addLog(LogType.SYSTEM, "Received message: " + clientMessage);
-                if(checkFolderName(clientMessage.logged()) == null){
+            while ((RawRequest = in.readObject()) != null) {
+                if (!(RawRequest instanceof Request)) {
+                    addLog(LogType.ERROR, "Invalid request received.");
                     sendCMDResponse(out, GENERIC_ERROR);
-                }
-                else {
-                    switch (clientMessage.cmdName()) {
-                        case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
-                        case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), clientMessage.mail(), out);
-                        case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
-                        case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
-                        default -> sendCMDResponse(out, GENERIC_ERROR);
+                } else {
+                    clientMessage = (Request) RawRequest;
+                    addLog(LogType.SYSTEM, "Received message: " + clientMessage);
+                    if (checkFolderName(clientMessage.logged()) == null) {
+                        sendCMDResponse(out, GENERIC_ERROR);
+                    } else {
+                        switch (clientMessage.cmdName()) {
+                            case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
+                            case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), clientMessage.mail(), out);
+                            case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
+                            case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
+                            default -> sendCMDResponse(out, GENERIC_ERROR);
+                        }
                     }
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             addLog(LogType.INFO, "Client disconnected: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            addLog(LogType.ERROR, "Error reading client message: " + e.getMessage());
         } finally {
             try {
                 clientSocket.close();
