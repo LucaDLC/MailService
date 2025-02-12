@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mailservice.serverside.Configuration.*;
-import mailservice.serverside.Controller.ServerController;
 import mailservice.shared.enums.LogType;
 
 import java.io.*;
@@ -124,15 +123,21 @@ public class ServerModel {
     private void handleClient(Socket clientSocket) {
         try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())) {
+
             Request clientMessage;
             while ((clientMessage = (Request) in.readObject()) != null) {
                 addLog(LogType.SYSTEM, "Received message: " + clientMessage);
-                switch (clientMessage.cmdName()) {
-                    case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
-                    case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(),clientMessage.mail(), out);
-                    case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
-                    case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
-                    default -> sendCMDResponse(out, GENERIC_ERROR);
+                if(checkFolderName(clientMessage.logged()) == null){
+                    sendCMDResponse(out, GENERIC_ERROR);
+                }
+                else {
+                    switch (clientMessage.cmdName()) {
+                        case LOGIN_CHECK -> handleLoginCheck(clientMessage.logged(), out);
+                        case FETCH_EMAIL -> handleFetchEmail(clientMessage.logged(), clientMessage.mail(), out);
+                        case SEND_EMAIL -> handleSendEmail(clientMessage.logged(), clientMessage.mail(), out);
+                        case DELETE_EMAIL -> handleDeleteEmail(clientMessage.logged(), clientMessage.mail(), out);
+                        default -> sendCMDResponse(out, GENERIC_ERROR);
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
