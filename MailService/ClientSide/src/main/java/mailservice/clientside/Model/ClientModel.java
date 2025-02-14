@@ -145,7 +145,6 @@ public class ClientModel {
             log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
-            //Thread.sleep(250);
             CommandResponse response = receiveMessage(); // Legge la risposta
 
             if (response != null && response.equals(SUCCESS)) {
@@ -238,7 +237,6 @@ public class ClientModel {
             log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
-            //Thread.sleep(250);
             CommandResponse response = receiveMessage();
             if (response != null && response.equals(SUCCESS)) {
                 log(INFO,"Mail sent successfully: " + response);
@@ -277,7 +275,6 @@ public class ClientModel {
                 out.writeObject(request);
             }
             out.flush();
-            //Thread.sleep(250);
             Response response = (Response) in.readObject(); // Expecting a Response object
             if (response != null && response.responseName() == SUCCESS) {
                 emails = response.args();  // Accessing the list directly
