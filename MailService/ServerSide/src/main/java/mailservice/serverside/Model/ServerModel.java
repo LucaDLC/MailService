@@ -328,7 +328,7 @@ public class ServerModel {
         try {
             if (baseDir.exists() && baseDir.isDirectory()) {
                 for (File file : baseDir.listFiles()) {
-                    if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")) {
+                    if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._]+@rama\\.it$")) {
                         for (File subFile : file.listFiles()) {
                             if (subFile.isDirectory()) {
                                 for (File nestedFile : subFile.listFiles()) {
@@ -342,7 +342,7 @@ public class ServerModel {
                         addLog(LogType.ERROR, "Deleted not conformed folder: " + file.getName());
 
                     }
-                    else if(file.isDirectory() && file.getName().matches("^[a-zA-Z0-9._%+-]+@rama\\.it$")){
+                    else if(file.isDirectory() && file.getName().matches("^[a-zA-Z0-9._]+@rama\\.it$")){
                         if (!FolderList.contains(file.getName())) {
                             FolderList.add(file.getName());
                         }
@@ -416,7 +416,7 @@ public class ServerModel {
             return ILLEGAL_PARAMS;
         }
         String lowerUsername = username.toLowerCase();
-        if(lowerUsername.matches("^[a-zA-Z0-9._%+-]+@rama.it$")){
+        if(lowerUsername.matches("^[a-zA-Z0-9._]+@rama.it$")){
             if (FolderCreation) {
                 return createUserFolder(lowerUsername);
             } else {
@@ -473,7 +473,7 @@ public class ServerModel {
 
 
     private boolean isValidEmail(String email) {
-        return (email.matches("^[a-zA-Z0-9._%+-]+@rama.it$") && checkFolderName(email) != null);
+        return (email.matches("^[a-zA-Z0-9._]+@rama.it$") && checkFolderName(email) != null);
     }
 
 

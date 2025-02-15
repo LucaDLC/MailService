@@ -42,7 +42,7 @@ public class ConfigManager {
     }   //restituisce la proprietà richiesta
 
 
-    public synchronized void setProperty (String propName, String propValue){
+    /*public synchronized void setProperty (String propName, String propValue){
         try{
             if (!path.exists()) { //se il file non esiste lo creo
                 prop.setProperty("Client.ServerHost", "127.0.0.1"); //imposto l'indirizzo IP del server
@@ -54,7 +54,7 @@ public class ConfigManager {
         } catch (IOException e){
             e.printStackTrace();    //stampo errore se qualcosa va storto
         }
-    }
+    }*/
 
 
     private File getDir() {
@@ -64,6 +64,6 @@ public class ConfigManager {
 
 
     public boolean validateEmail(String email) {
-        return Pattern.matches("^[a-zA-Z0-9.@_%+-]+@rama.it$", email.toLowerCase());
+        return Pattern.matches("^[a-zA-Z0-9._]+@rama.it$", email.toLowerCase());
     }
 }
