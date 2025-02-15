@@ -14,7 +14,6 @@ import javafx.scene.web.WebView;//importo la classe WebView, che visualizza cont
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import mailservice.clientside.ClientApp;
 import mailservice.shared.Email;
 import mailservice.clientside.Model.ClientModel;
 import static mailservice.shared.enums.LogType.*;
@@ -100,7 +99,6 @@ public class MainController {
             }
         });
 
-        ClientApp.startPeriodicFetch();
     }
 
 
@@ -264,7 +262,6 @@ public class MainController {
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 ClientModel.log(INFO, "Logging out...");
-                ClientApp.stopPeriodicFetch();
                 clientModel.logout ();
 
                 try {
