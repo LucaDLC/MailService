@@ -99,7 +99,6 @@ public class ServerModel {
             return;
         }
         running = false;
-        instance = null;
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
