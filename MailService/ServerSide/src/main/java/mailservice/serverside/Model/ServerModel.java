@@ -258,8 +258,8 @@ public class ServerModel {
 
     private Email readEmailFromFile(File emailFile) {
         ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
-        lock.readLock().lock();
         try (BufferedReader reader = new BufferedReader(new FileReader(emailFile))) {
+            lock.readLock().lock();
             String line;
             String sender = "", subject = "", text = "", date = "";
             boolean isToRead = false;
@@ -305,8 +305,8 @@ public class ServerModel {
                 String emailFileName = "email_" + email.getId() + ".txt";
                 File emailFile = new File(checkFolderName(trimmedRecipient), emailFileName);
                 ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
-                lock.writeLock().lock();
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+                    lock.writeLock().lock();
                     writer.write(email.toString());
                     addLog(LogType.SYSTEM, "Email saved as text successfully: " + emailFileName);
                 } catch (IOException e) {
@@ -324,8 +324,8 @@ public class ServerModel {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File baseDir = new File(baseDirectory);
         ReentrantReadWriteLock lock = getFolderLock(baseDir);
-        lock.writeLock().lock();
         try {
+            lock.writeLock().lock();
             if (baseDir.exists() && baseDir.isDirectory()) {
                 for (File file : baseDir.listFiles()) {
                     if (file.isDirectory() && !file.getName().matches("^[a-zA-Z0-9._]+@rama\\.it$")) {
@@ -376,8 +376,8 @@ public class ServerModel {
         String emailFileName = "email_" + mail.getId() + ".txt";
         File emailFile = new File(checkFolderName(requestOwner), emailFileName);
         ReentrantReadWriteLock lock = getFolderLock(emailFile.getParentFile());
-        lock.writeLock().lock();
         try {
+            lock.writeLock().lock();
             // Controlla l'esistenza del file ed elimina se esiste
             if (emailFile.exists()) {
                 if (emailFile.delete()) {
@@ -447,8 +447,8 @@ public class ServerModel {
         String baseDirectory = new File("").getAbsolutePath() + File.separator + "ServerSide" + File.separator + "src" + File.separator + "main" + File.separator + "BigData";
         File folder = new File(baseDirectory, username);
         ReentrantReadWriteLock lock = getFolderLock(folder);
-        lock.writeLock().lock();
         try {
+            lock.writeLock().lock();
             if (folder.exists()) {
                 for (File file : folder.listFiles()) {
                     if (file.isDirectory()) {
