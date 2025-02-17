@@ -295,14 +295,14 @@ public class ClientModel {
             disconnectFromServer();
         }
 
+        List<Email> finalEmails = emails;
+
         if (fullForceFetch) {
-            List<Email> finalEmails = emails;
             Platform.runLater(() -> {
                 emailList.setAll(finalEmails); // Aggiorna la lista osservabile
             });
         }
         else {
-            List<Email> finalEmails = emails;
             Platform.runLater(() -> {
                 emailList.addAll(finalEmails); // Aggiorna la lista osservabile
             });
