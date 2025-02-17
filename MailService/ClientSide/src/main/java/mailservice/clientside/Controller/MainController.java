@@ -19,6 +19,8 @@ import mailservice.clientside.Model.ClientModel;
 import static mailservice.shared.enums.LogType.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainController {
     //collegamento con la GUI tramite l'annotazione @FXML
@@ -247,8 +249,17 @@ public class MainController {
         }
         ClientModel.log(INFO, "Replying All Mail.");
 
-        String allRecipients = String.join(", ", selectedEmail.getReceivers());
-        showComposeWindow(allRecipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
+        List<String> allRecipients = selectedEmail.getReceivers().stream()
+                .filter(email -> !email.equals(clientModel.getUserEmail()))
+                .collect(Collectors.toList());
+
+        // Aggiungi il sender se non è già presente
+        if (!allRecipients.contains(selectedEmail.getSender())) {
+            allRecipients.add(selectedEmail.getSender());
+        }
+
+        String recipients = String.join(", ", allRecipients);
+        showComposeWindow(recipients, "Re: " + selectedEmail.getSubject(), "On " + selectedEmail.getDate() + ", " + selectedEmail.getSender() + " Wrote: " + selectedEmail.getText());
     }
 
 
