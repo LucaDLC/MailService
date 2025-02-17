@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -37,6 +38,7 @@ public class ClientModel {
     private ObjectInputStream in;
     private static final int SOCKET_TIMEOUT = 3000; // Timeout di 3 secondi
     private final BooleanProperty isServerReachable = new SimpleBooleanProperty(false);
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private ObservableList<Email> emailList;
     private static ClientModel instance;
@@ -93,8 +95,9 @@ public class ClientModel {
     }
 
 
-    private synchronized boolean connectToServer() {
+    private boolean connectToServer() {
         try {
+            lock.writeLock().lock();
             if (socket == null || socket.isClosed()) {
                 socket = new Socket();
                 socket.connect(new InetSocketAddress(serverHost, serverPort), SOCKET_TIMEOUT);
@@ -114,6 +117,7 @@ public class ClientModel {
         } catch (IOException e) {
             log(ERROR,"Unable to connect to server: " + e.getMessage());
             isServerReachable.set(false);
+            lock.writeLock().unlock();
             return false;
         }
 
@@ -129,9 +133,10 @@ public class ClientModel {
                 log(INFO,"Disconnected from server.");
             } catch (IOException e) {
                 log(ERROR,"Error disconnecting: " + e.getMessage());
+            } finally {
+                lock.writeLock().unlock();
             }
         }
-
     }
 
 
