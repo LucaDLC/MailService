@@ -127,8 +127,12 @@ public class ClientModel {
     private void disconnectFromServer() {
         if (socket != null && !socket.isClosed()) {
             try {
-                in.close();
-                out.close();
+                if (in != null) {
+                    in.close();
+                }
+                if (out != null) {
+                    out.close();
+                }
                 socket.close();
                 log(INFO,"Disconnected from server.");
             } catch (IOException e) {
