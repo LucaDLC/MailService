@@ -117,6 +117,7 @@ public class ClientModel {
         } catch (IOException e) {
             log(ERROR,"Unable to connect to server: " + e.getMessage());
             isServerReachable.set(false);
+            lock.writeLock().unlock();
             return false;
         }
 
@@ -133,7 +134,9 @@ public class ClientModel {
             } catch (IOException e) {
                 log(ERROR,"Error disconnecting: " + e.getMessage());
             } finally {
-                lock.writeLock().unlock();
+                if (lock.isWriteLockedByCurrentThread()) { // Verifica se la lock è detenuta
+                    lock.writeLock().unlock();
+                }
             }
         }
     }
