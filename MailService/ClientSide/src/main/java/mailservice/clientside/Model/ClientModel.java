@@ -117,7 +117,6 @@ public class ClientModel {
         } catch (IOException e) {
             log(ERROR,"Unable to connect to server: " + e.getMessage());
             isServerReachable.set(false);
-            lock.writeLock().unlock();
             return false;
         }
 
@@ -141,12 +140,12 @@ public class ClientModel {
 
 
     private boolean sendCMD(CommandRequest command, Email dataMail) {
-        if (!connectToServer()) {
-            log(ERROR,"Unable to connect to server.");
-            return false;
-        }
         Request request = new Request(userLogged, command, dataMail);
         try {
+            if (!connectToServer()) {
+                log(ERROR,"Unable to connect to server.");
+                return false;
+            }
             log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
@@ -191,11 +190,11 @@ public class ClientModel {
 
     private CommandResponse receiveMessage() {
         //return SUCCESS;
-        if (socket == null || socket.isClosed()) {
-            log(ERROR,"Connection not established. Cannot receive messages.");
-            return GENERIC_ERROR;
-        }
         try {
+            if (socket == null || socket.isClosed()) {
+                log(ERROR,"Connection not established. Cannot receive messages.");
+                return GENERIC_ERROR;
+            }
             Response cmdResponse;
             Object inResponse = in.readObject(); // Legge un oggetto dallo stream
             if (inResponse instanceof Response) {
@@ -232,13 +231,13 @@ public class ClientModel {
             }
         }
 
-        if (!connectToServer()) {
-            log(ERROR,"Unable to connect to server.");
-            return false;
-        }
         Email emailData = new Email(userLogged, receivers, subject, content);
         Request request = new Request(userLogged, SEND_EMAIL, emailData);
         try {
+            if (!connectToServer()) {
+                log(ERROR,"Unable to connect to server.");
+                return false;
+            }
             log(SYSTEM,"Raw client request: " + request);
             out.writeObject(request);
             out.flush();
