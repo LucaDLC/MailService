@@ -33,9 +33,9 @@ public class ClientModel {
     private int serverPort;
     private int fetchPeriod;
 
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private Socket socket = null;
+    private ObjectOutputStream out = null;
+    private ObjectInputStream in = null;
     private static final int SOCKET_TIMEOUT = 3000; // Timeout di 3 secondi
     private final BooleanProperty isServerReachable = new SimpleBooleanProperty(false);
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
