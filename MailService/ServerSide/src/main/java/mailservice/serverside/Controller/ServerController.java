@@ -124,14 +124,4 @@ public class ServerController {
         mainStage.show();
     }
 
-
-    protected void showErrorAlert(String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        });
-    }
 }
