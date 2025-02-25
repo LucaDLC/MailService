@@ -1,5 +1,5 @@
 # MailService 
-## A Java Client-Server application to implement an email service built with JavaFX 
+### A Java Client-Server application to implement an email service built with JavaFX 
 
 - The ClientAPP required a login and support the basic email operation like send an email, reply, reply all and forward it with an user-friendly UI
 
